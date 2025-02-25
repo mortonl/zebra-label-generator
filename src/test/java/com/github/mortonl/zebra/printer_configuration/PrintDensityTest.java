@@ -15,43 +15,43 @@ class PrintDensityTest
     private static Stream<Arguments> conversionTestData()
     {
         return Stream.of(
-            // DPI, mm, expected dots, actual DPI
-            Arguments.of(PrintDensity.DPI_152, 1.0, 6, 152),
-            Arguments.of(PrintDensity.DPI_203, 1.0, 8, 203),
-            Arguments.of(PrintDensity.DPI_300, 1.0, 12, 300),
-            Arguments.of(PrintDensity.DPI_600, 1.0, 24, 600),
-            Arguments.of(PrintDensity.DPI_152, 10.0, 60, 152),
-            Arguments.of(PrintDensity.DPI_203, 10.0, 80, 203),
-            Arguments.of(PrintDensity.DPI_300, 10.0, 120, 300),
-            Arguments.of(PrintDensity.DPI_600, 10.0, 240, 600),
-            Arguments.of(PrintDensity.DPI_203, 0.5, 4, 203),
-            Arguments.of(PrintDensity.DPI_300, 1.5, 18, 300),
+                // DPI, mm, expected dots, actual DPI
+                Arguments.of(PrintDensity.DPI_152, 1.0, 6, 152),
+                Arguments.of(PrintDensity.DPI_203, 1.0, 8, 203),
+                Arguments.of(PrintDensity.DPI_300, 1.0, 12, 300),
+                Arguments.of(PrintDensity.DPI_600, 1.0, 24, 600),
+                Arguments.of(PrintDensity.DPI_152, 10.0, 60, 152),
+                Arguments.of(PrintDensity.DPI_203, 10.0, 80, 203),
+                Arguments.of(PrintDensity.DPI_300, 10.0, 120, 300),
+                Arguments.of(PrintDensity.DPI_600, 10.0, 240, 600),
+                Arguments.of(PrintDensity.DPI_203, 0.5, 4, 203),
+                Arguments.of(PrintDensity.DPI_300, 1.5, 18, 300),
 
-            // Zero values
-            Arguments.of(PrintDensity.DPI_152, 0.0, 0, 152),
-            Arguments.of(PrintDensity.DPI_600, 0.0, 0, 600),
+                // Zero values
+                Arguments.of(PrintDensity.DPI_152, 0.0, 0, 152),
+                Arguments.of(PrintDensity.DPI_600, 0.0, 0, 600),
 
-            // Negative values
-            Arguments.of(PrintDensity.DPI_203, -1.0, -8, 203),
-            Arguments.of(PrintDensity.DPI_300, -1.5, -18, 300),
+                // Negative values
+                Arguments.of(PrintDensity.DPI_203, -1.0, -8, 203),
+                Arguments.of(PrintDensity.DPI_300, -1.5, -18, 300),
 
-            // Round trip cases
-            Arguments.of(PrintDensity.DPI_300, 10.5, 126, 300)
+                // Round trip cases
+                Arguments.of(PrintDensity.DPI_300, 10.5, 126, 300)
         );
     }
 
     private static Stream<Arguments> reverseConversionTestData()
     {
         return Stream.of(
-            // DPI, dots, expected mm, actual DPI
-            Arguments.of(PrintDensity.DPI_152, 6, 1.0, 152),
-            Arguments.of(PrintDensity.DPI_203, 8, 1.0, 203),
-            Arguments.of(PrintDensity.DPI_300, 12, 1.0, 300),
-            Arguments.of(PrintDensity.DPI_600, 24, 1.0, 600),
-            Arguments.of(PrintDensity.DPI_152, 60, 10.0, 152),
-            Arguments.of(PrintDensity.DPI_203, 80, 10.0, 203),
-            Arguments.of(PrintDensity.DPI_300, 120, 10.0, 300),
-            Arguments.of(PrintDensity.DPI_600, 240, 10.0, 600)
+                // DPI, dots, expected mm, actual DPI
+                Arguments.of(PrintDensity.DPI_152, 6, 1.0, 152),
+                Arguments.of(PrintDensity.DPI_203, 8, 1.0, 203),
+                Arguments.of(PrintDensity.DPI_300, 12, 1.0, 300),
+                Arguments.of(PrintDensity.DPI_600, 24, 1.0, 600),
+                Arguments.of(PrintDensity.DPI_152, 60, 10.0, 152),
+                Arguments.of(PrintDensity.DPI_203, 80, 10.0, 203),
+                Arguments.of(PrintDensity.DPI_300, 120, 10.0, 300),
+                Arguments.of(PrintDensity.DPI_600, 240, 10.0, 600)
         );
     }
 
@@ -124,8 +124,8 @@ class PrintDensityTest
     void testFromDotsPerInch_InvalidValue()
     {
         IllegalArgumentException exception = assertThrows(
-            IllegalArgumentException.class,
-            () -> PrintDensity.fromDotsPerInch(100)
+                IllegalArgumentException.class,
+                () -> PrintDensity.fromDotsPerInch(100)
         );
         assertEquals("No PrintDensity found for 100 DPI", exception.getMessage());
     }
@@ -134,8 +134,8 @@ class PrintDensityTest
     void testFromDotsPerMillimetre_InvalidValue()
     {
         IllegalArgumentException exception = assertThrows(
-            IllegalArgumentException.class,
-            () -> PrintDensity.fromDotsPerMillimetre(10)
+                IllegalArgumentException.class,
+                () -> PrintDensity.fromDotsPerMillimetre(10)
         );
         assertEquals("No PrintDensity found for 10 dots per millimetre", exception.getMessage());
     }

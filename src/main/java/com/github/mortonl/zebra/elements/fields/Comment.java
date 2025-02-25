@@ -3,6 +3,7 @@ package com.github.mortonl.zebra.elements.fields;
 import com.github.mortonl.zebra.elements.LabelElement;
 import com.github.mortonl.zebra.label_settings.LabelSize;
 import com.github.mortonl.zebra.printer_configuration.PrintDensity;
+import lombok.Builder;
 import lombok.Data;
 import lombok.NonNull;
 
@@ -12,6 +13,7 @@ import static com.github.mortonl.zebra.ZplCommand.FIELD_END;
 import static com.github.mortonl.zebra.ZplCommand.generateZplIICommand;
 
 @Data
+@Builder
 public class Comment implements LabelElement
 {
     @NonNull

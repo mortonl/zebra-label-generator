@@ -21,21 +21,24 @@ class FieldTest
     @Test
     void testToZplString()
     {
-        Field field = new Field("Test Data");
+        Field field = Field.builder().data("Test Data").build();
         String expected = FIELD_START + "Test Data" + FIELD_END;
         assertEquals(expected, field.toZplString(testDpi));
     }
 
     @ParameterizedTest(name = "Field with data \"{0}\" should be valid")
     @ValueSource(strings = {
-        "Test Data",
-        "123",
-        " ",
-        "Special Characters !@#$%"
+            "Test Data",
+            "123",
+            " ",
+            "Special Characters !@#$%"
     })
     void testValidateInContext_ValidData(String validData)
     {
-        Field field = new Field(validData);
+        Field field = Field
+                .builder()
+                .data(validData)
+                .build();
         assertDoesNotThrow(() -> field.validateInContext(testSize, testDpi));
     }
 
@@ -43,11 +46,50 @@ class FieldTest
     @NullSource
     void testValidateInContext_InvalidData(String invalidData)
     {
-        Field field = new Field(invalidData);
+        Field field = Field
+                .builder()
+                .data(invalidData)
+                .build();
         IllegalArgumentException exception = assertThrows(
-            IllegalArgumentException.class,
-            () -> field.validateInContext(testSize, testDpi)
+                IllegalArgumentException.class,
+                () -> field.validateInContext(testSize, testDpi)
         );
         assertEquals("Field Data cannot be null", exception.getMessage());
+    }
+
+    @Test
+    void testHexadecimalCharactersEnabled()
+    {
+        Field field = Field
+                .builder()
+                .data("test")
+                .enableHexCharacters(true)
+                .build();
+
+        assertEquals("^FH^FDtest^FS", field.toZplString(testDpi));
+    }
+
+    @Test
+    void testHexadecimalCharactersDisabled()
+    {
+        Field field = Field
+                .builder()
+                .data("test")
+                .enableHexCharacters(false)
+                .build();
+
+        assertEquals("^FDtest^FS", field.toZplString(testDpi));
+    }
+
+    @Test
+    void testHexadecimalCharactersNull()
+    {
+        Field field = Field
+                .builder()
+                .data("test")
+                .enableHexCharacters(null)
+                .build();
+
+        assertEquals("^FDtest^FS", field.toZplString(testDpi));
     }
 }

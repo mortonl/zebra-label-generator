@@ -1,6 +1,6 @@
 package com.github.mortonl.zebra.elements.graphics;
 
-import com.github.mortonl.zebra.elements.PositionedElement;
+import com.github.mortonl.zebra.elements.PositionedAndSizedElement;
 import com.github.mortonl.zebra.formatting.LineColor;
 import com.github.mortonl.zebra.label_settings.LabelSize;
 import com.github.mortonl.zebra.printer_configuration.PrintDensity;
@@ -12,8 +12,8 @@ import static com.github.mortonl.zebra.ZplCommand.GRAPHIC_BOX;
 import static com.github.mortonl.zebra.ZplCommand.generateZplIICommand;
 
 @Getter
-@SuperBuilder
-public class GraphicBox extends PositionedElement
+@SuperBuilder(setterPrefix = "with")
+public class GraphicBox extends PositionedAndSizedElement
 {
     private static final double MAX_DIMENSION = 1333.33;
     private static final double MIN_THICKNESS = 0.04;
@@ -21,15 +21,11 @@ public class GraphicBox extends PositionedElement
     private static final String DIMENSION_ERROR_MESSAGE =
         "Maximum value for width, height and thickness is " + MAX_DIMENSION;
 
-    private final Double widthMm;       // Width in dots (thickness-32000)
-
-    private final Double heightMm;      // Height in dots (thickness-32000)
-
-    private final Double thicknessMm;    // Border thickness in dots (1-32000)
+    private final Double thicknessMm;
 
     private final LineColor color;
 
-    private final Integer roundness;    // Degree of corner rounding (0-8)
+    private final Integer roundness;
 
     /**
      * Creates a horizontal line with specified widthMm
@@ -42,9 +38,8 @@ public class GraphicBox extends PositionedElement
     {
         return GraphicBox
             .builder()
-            .widthMm(widthMm)
-            .heightMm(thicknessMm) // Height must equal thicknessMm for a horizontal line
-            .thicknessMm(thicknessMm)
+            .withSize(widthMm, thicknessMm) // Height must equal thicknessMm for a horizontal line
+            .withThicknessMm(thicknessMm)
             .build();
     }
 
@@ -59,9 +54,8 @@ public class GraphicBox extends PositionedElement
     {
         return GraphicBox
             .builder()
-            .widthMm(thicknessMm) // Width must equal thicknessMm for a vertical line
-            .heightMm(heightMm)
-            .thicknessMm(thicknessMm)
+            .withSize(thicknessMm, heightMm) // Width must equal thicknessMm for a vertical line
+            .withThicknessMm(thicknessMm)
             .build();
     }
 
@@ -164,16 +158,5 @@ public class GraphicBox extends PositionedElement
         }
         double shorterSide = Math.min(widthMm, heightMm);
         return (int) ((roundness * shorterSide) / 16); // (roundness/8) * (shorterSide/2)
-    }
-
-    public static abstract class GraphicBoxBuilder<C extends GraphicBox, B extends GraphicBoxBuilder<C, B>>
-        extends PositionedElementBuilder<C, B>
-    {
-        public B ofSize(double widthMm, double heightMm)
-        {
-            this.widthMm = widthMm;
-            this.heightMm = heightMm;
-            return self();
-        }
     }
 }

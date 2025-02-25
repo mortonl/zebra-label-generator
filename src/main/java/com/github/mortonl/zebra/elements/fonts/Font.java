@@ -5,29 +5,25 @@ import com.github.mortonl.zebra.elements.LabelElement;
 import com.github.mortonl.zebra.formatting.Orientation;
 import com.github.mortonl.zebra.label_settings.LabelSize;
 import com.github.mortonl.zebra.printer_configuration.PrintDensity;
-import lombok.Builder;
-import lombok.Data;
+import lombok.Getter;
+import lombok.experimental.SuperBuilder;
 
 import static com.github.mortonl.zebra.ZplCommand.SET_FONT;
 
-@Data
-@Builder
+@Getter
+@SuperBuilder(setterPrefix = "with")
 public class Font implements LabelElement
 {
     private static final int MIN_DOTS = 10;
     private static final int MAX_DOTS = 32000;
 
-    @Builder.Default
-    private String fontName = "0";  // Default font
+    private char fontDesignation;
 
-    @Builder.Default
-    private Orientation orientation = Orientation.NORMAL;
+    private Orientation orientation;
 
-    @Builder.Default
-    private double heightMm = 2.0;  // Default height in millimeters
+    private double heightMm;
 
-    @Builder.Default
-    private double widthMm = 2.0;   // Default width in millimeters
+    private double widthMm;
 
     @Override
     public String toZplString(PrintDensity dpi)
@@ -36,11 +32,11 @@ public class Font implements LabelElement
         int widthDots = dpi.toDots(widthMm);
 
         return ZplCommand.generateZplIICommand(
-            SET_FONT,
-            fontName,
-            orientation.getValue(),
-            heightDots,
-            widthDots
+                // Fonts are a special case where the commands first parameter (character designation) is used as part of the command itself
+                SET_FONT + fontDesignation,
+                orientation.getValue(),
+                heightDots,
+                widthDots
         );
     }
 
@@ -54,8 +50,11 @@ public class Font implements LabelElement
 
     private void validateFontName()
     {
-        if (fontName == null || fontName.isEmpty()) {
-            throw new IllegalStateException("Font name cannot be null or empty");
+        boolean isValidFont = (fontDesignation >= 'A' && fontDesignation <= 'Z') ||
+                (fontDesignation >= '0' && fontDesignation <= '9');
+
+        if (!isValidFont) {
+            throw new IllegalStateException("Font name must be A-Z or 0-9");
         }
     }
 
@@ -65,19 +64,29 @@ public class Font implements LabelElement
 
         if (dots < MIN_DOTS) {
             throw new IllegalStateException(
-                String.format("Font %s %.2fmm is too small. Minimum %s is %.2fmm for %d DPI / %s dots per mm",
-                    dimensionName, dimensionValue, dimensionName,
-                    dpi.toMillimetres(MIN_DOTS),
-                    dpi.getDotsPerInch(),
-                    dpi.getDotsPerMillimetre()));
+                    String.format("Font %s %.2fmm is too small. Minimum %s is %.2fmm for %d DPI / %s dots per mm",
+                            dimensionName, dimensionValue, dimensionName,
+                            dpi.toMillimetres(MIN_DOTS),
+                            dpi.getDotsPerInch(),
+                            dpi.getDotsPerMillimetre()));
         }
         if (dots > MAX_DOTS) {
             throw new IllegalStateException(
-                String.format("Font %s %.2fmm is too large. Maximum %s is %.2fmm for %d DPI / %s dots per mm",
-                    dimensionName, dimensionValue, dimensionName,
-                    dpi.toMillimetres(MAX_DOTS),
-                    dpi.getDotsPerInch(),
-                    dpi.getDotsPerMillimetre()));
+                    String.format("Font %s %.2fmm is too large. Maximum %s is %.2fmm for %d DPI / %s dots per mm",
+                            dimensionName, dimensionValue, dimensionName,
+                            dpi.toMillimetres(MAX_DOTS),
+                            dpi.getDotsPerInch(),
+                            dpi.getDotsPerMillimetre()));
+        }
+    }
+
+    public static abstract class FontBuilder<C extends Font, B extends FontBuilder<C, B>>
+    {
+        public B withSize(double widthMm, double heightMm)
+        {
+            this.widthMm = widthMm;
+            this.heightMm = heightMm;
+            return self();
         }
     }
 }

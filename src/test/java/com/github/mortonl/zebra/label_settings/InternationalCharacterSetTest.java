@@ -24,9 +24,9 @@ class InternationalCharacterSetTest
     void testBuilder_ValidEncoding()
     {
         InternationalCharacterSet charSet = InternationalCharacterSet
-            .builder()
-            .encoding(testEncoding)
-            .build();
+                .builder()
+                .encoding(testEncoding)
+                .build();
 
         assertNotNull(charSet);
         assertEquals(testEncoding, charSet.getEncoding());
@@ -37,9 +37,9 @@ class InternationalCharacterSetTest
     {
         // Arrange
         InternationalCharacterSet charSet = InternationalCharacterSet
-            .builder()
-            .encoding(testEncoding)
-            .build();
+                .builder()
+                .encoding(testEncoding)
+                .build();
 
         // Act
         String result = charSet.toZplString(testDpi);
@@ -53,9 +53,9 @@ class InternationalCharacterSetTest
     {
         // Arrange
         InternationalCharacterSet charSet = InternationalCharacterSet
-            .builder()
-            .encoding(testEncoding)
-            .build();
+                .builder()
+                .encoding(testEncoding)
+                .build();
 
         // Act & Assert
         assertDoesNotThrow(() -> charSet.validateInContext(testSize, testDpi));
@@ -66,14 +66,14 @@ class InternationalCharacterSetTest
     {
         // Arrange
         InternationalCharacterSet charSet = InternationalCharacterSet
-            .builder()
-            .encoding(null)
-            .build();
+                .builder()
+                .encoding(null)
+                .build();
 
         // Act & Assert
         IllegalArgumentException exception = assertThrows(
-            IllegalArgumentException.class,
-            () -> charSet.validateInContext(testSize, testDpi)
+                IllegalArgumentException.class,
+                () -> charSet.validateInContext(testSize, testDpi)
         );
 
         assertEquals("Encoding cannot be null", exception.getMessage());
@@ -84,9 +84,9 @@ class InternationalCharacterSetTest
     {
         // Arrange
         InternationalCharacterSet charSet = InternationalCharacterSet
-            .builder()
-            .encoding(testEncoding)
-            .build();
+                .builder()
+                .encoding(testEncoding)
+                .build();
 
         // Act & Assert
         assertEquals(testEncoding, charSet.getEncoding());
@@ -97,8 +97,8 @@ class InternationalCharacterSetTest
     {
         // Act
         InternationalCharacterSet charSet = InternationalCharacterSet
-            .builder()
-            .build();
+                .builder()
+                .build();
 
         // Assert
         assertNull(charSet.getEncoding());

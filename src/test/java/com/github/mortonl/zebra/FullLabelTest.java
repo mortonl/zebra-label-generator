@@ -32,10 +32,10 @@ public class FullLabelTest
 
         GraphicBox topBox = GraphicBox
             .builder()
-            .at(37.5, 0)
-            .ofSize(27.5, 10)
-            .thicknessMm(10.0)
-            .roundness(0)
+            .withPosition(37.5, 0)
+            .withSize(27.5, 10)
+            .withThicknessMm(10.0)
+            .withRoundness(0)
             .build();
 
         testLabel.validateAndAddElement(topBox);

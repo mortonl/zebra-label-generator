@@ -14,7 +14,7 @@ import static com.github.mortonl.zebra.ZplCommand.FIELD_START;
 import static com.github.mortonl.zebra.ZplCommand.generateZplIICommand;
 
 @Getter
-@SuperBuilder
+@SuperBuilder(setterPrefix = "with")
 public class BarcodePDF417 extends PositionedElement
 {
     /* Nullable */

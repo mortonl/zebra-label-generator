@@ -46,8 +46,7 @@ class PositionedElementTest
     {
         TestPositionedElement element = TestPositionedElement
             .builder()
-            .xAxisLocationMm(10.0)
-            .yAxisLocationMm(20.0)
+            .withPosition(10.0, 20.0)
             .build();
 
         String expected = "^FO" + X8_DOTS_PER_MM.toDots(10.0) + "," + X8_DOTS_PER_MM.toDots(20.0);
@@ -59,9 +58,8 @@ class PositionedElementTest
     {
         TestPositionedElement element = TestPositionedElement
             .builder()
-            .xAxisLocationMm(10.0)
-            .yAxisLocationMm(20.0)
-            .zOriginJustification(OriginJustification.LEFT)
+            .withPosition(10.0, 20.0)
+            .withZOriginJustification(OriginJustification.LEFT)
             .build();
 
         String expected = "^FO80,160,0";
@@ -74,8 +72,7 @@ class PositionedElementTest
     {
         TestPositionedElement element = TestPositionedElement
             .builder()
-            .xAxisLocationMm(x)
-            .yAxisLocationMm(y)
+            .withPosition(x, y)
             .build();
 
         assertDoesNotThrow(() -> element.validateInContext(TEST_LABEL, X8_DOTS_PER_MM));
@@ -87,8 +84,7 @@ class PositionedElementTest
     {
         TestPositionedElement element = TestPositionedElement
             .builder()
-            .xAxisLocationMm(x)
-            .yAxisLocationMm(y)
+            .withPosition(x, y)
             .build();
 
         IllegalStateException exception = assertThrows(
@@ -104,8 +100,8 @@ class PositionedElementTest
     {
         TestPositionedElement element = TestPositionedElement
             .builder()
-            .xAxisLocationMm(X8_DOTS_PER_MM.toMillimetres(MAX_AXIS_VALUE + 1))
-            .yAxisLocationMm(20.0)
+            .withXAxisLocationMm(X8_DOTS_PER_MM.toMillimetres(MAX_AXIS_VALUE + 1))
+            .withYAxisLocationMm(20.0)
             .build();
 
         IllegalArgumentException exception = assertThrows(
@@ -123,7 +119,7 @@ class PositionedElementTest
     {
         TestPositionedElement element = TestPositionedElement
             .builder()
-            .at(10.0, 20.0)
+            .withPosition(10.0, 20.0)
             .build();
 
         assertEquals(10.0, element.getXAxisLocationMm());
@@ -132,7 +128,7 @@ class PositionedElementTest
 
     // Concrete implementation for testing abstract class
     @Getter
-    @SuperBuilder
+    @SuperBuilder(setterPrefix = "with")
     private static class TestPositionedElement extends PositionedElement
     {
         protected TestPositionedElement(

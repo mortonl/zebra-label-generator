@@ -50,15 +50,15 @@ public enum LabelSize
     public static Optional<LabelSize> findClosestSize(double widthMm, double heightMm, double toleranceMm)
     {
         return Arrays
-            .stream(values())
-            .filter(size ->
-                Math.abs(size.widthMm - widthMm) <= toleranceMm &&
-                    Math.abs(size.heightMm - heightMm) <= toleranceMm)
-            .min((a, b) -> {
-                double aDiff = Math.abs(a.widthMm - widthMm) + Math.abs(a.heightMm - heightMm);
-                double bDiff = Math.abs(b.widthMm - widthMm) + Math.abs(b.heightMm - heightMm);
-                return Double.compare(aDiff, bDiff);
-            });
+                .stream(values())
+                .filter(size ->
+                        Math.abs(size.widthMm - widthMm) <= toleranceMm &&
+                                Math.abs(size.heightMm - heightMm) <= toleranceMm)
+                .min((a, b) -> {
+                    double aDiff = Math.abs(a.widthMm - widthMm) + Math.abs(a.heightMm - heightMm);
+                    double bDiff = Math.abs(b.widthMm - widthMm) + Math.abs(b.heightMm - heightMm);
+                    return Double.compare(aDiff, bDiff);
+                });
     }
 
     /**
@@ -72,7 +72,7 @@ public enum LabelSize
     public boolean matches(double widthMm, double heightMm, double toleranceMm)
     {
         return Math.abs(this.widthMm - widthMm) <= toleranceMm &&
-            Math.abs(this.heightMm - heightMm) <= toleranceMm;
+                Math.abs(this.heightMm - heightMm) <= toleranceMm;
     }
 
     @Override

@@ -6,12 +6,13 @@ import com.github.mortonl.zebra.printer_configuration.PrintDensity;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.experimental.SuperBuilder;
+import com.github.mortonl.zebra.elements.LabelElement;
 
 import static com.github.mortonl.zebra.ZplCommand.FIELD_ORIGIN;
 import static com.github.mortonl.zebra.ZplCommand.generateZplIICommand;
 
 @Data
-@SuperBuilder
+@SuperBuilder(setterPrefix = "with")
 @AllArgsConstructor
 public abstract class PositionedElement implements LabelElement
 {
@@ -29,15 +30,15 @@ public abstract class PositionedElement implements LabelElement
         StringBuilder zplString = new StringBuilder();
 
         zplString.append(generateZplIICommand(
-            FIELD_ORIGIN,
-            dpi.toDots(xAxisLocationMm),
-            dpi.toDots(yAxisLocationMm)
+                FIELD_ORIGIN,
+                dpi.toDots(xAxisLocationMm),
+                dpi.toDots(yAxisLocationMm)
         ));
 
         if (zOriginJustification != null) {
             zplString
-                .append(",")
-                .append(zOriginJustification.getValue());
+                    .append(",")
+                    .append(zOriginJustification.getValue());
         }
 
         return zplString.toString();
@@ -55,8 +56,8 @@ public abstract class PositionedElement implements LabelElement
     {
         if (value < MIN_AXIS_VALUE || value > MAX_AXIS_VALUE) {
             throw new IllegalArgumentException(
-                String.format("%s location must be between %d and %d dots",
-                    axis, MIN_AXIS_VALUE, MAX_AXIS_VALUE)
+                    String.format("%s location must be between %d and %d dots",
+                            axis, MIN_AXIS_VALUE, MAX_AXIS_VALUE)
             );
         }
     }
@@ -67,11 +68,11 @@ public abstract class PositionedElement implements LabelElement
             StringBuilder errorMessage = new StringBuilder();
             if (xAxisLocationMm > size.getWidthMm()) {
                 errorMessage.append(String.format("X-axis position (%.2f mm) exceeds label width (%.2f mm). ",
-                    xAxisLocationMm, size.getWidthMm()));
+                        xAxisLocationMm, size.getWidthMm()));
             }
             if (yAxisLocationMm > size.getHeightMm()) {
                 errorMessage.append(String.format("Y-axis position (%.2f mm) exceeds label height (%.2f mm). ",
-                    yAxisLocationMm, size.getHeightMm()));
+                        yAxisLocationMm, size.getHeightMm()));
             }
             errorMessage.append("The element must be positioned within the label dimensions.");
 
@@ -81,7 +82,7 @@ public abstract class PositionedElement implements LabelElement
 
     protected static abstract class PositionedElementBuilder<C extends PositionedElement, B extends PositionedElementBuilder<C, B>>
     {
-        public B at(double xAxisLocationMm, double yAxisLocationMm)
+        public B withPosition(double xAxisLocationMm, double yAxisLocationMm)
         {
             this.xAxisLocationMm = xAxisLocationMm;
             this.yAxisLocationMm = yAxisLocationMm;

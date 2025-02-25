@@ -85,12 +85,12 @@ public class BarcodePDF417Test
     {
         BarcodePDF417 barcode = BarcodePDF417
             .builder()
-            .orientation(Orientation.NORMAL)
-            .rowHeight(rowHeight)
-            .securityLevel(securityLevel)
-            .dataColumns(dataColumns)
-            .rows(rows)
-            .data(data)
+            .withOrientation(Orientation.NORMAL)
+            .withRowHeight(rowHeight)
+            .withSecurityLevel(securityLevel)
+            .withDataColumns(dataColumns)
+            .withRows(rows)
+            .withData(data)
             .build();
 
         assertThrows(IllegalStateException.class,
@@ -110,12 +110,12 @@ public class BarcodePDF417Test
     {
         BarcodePDF417 barcode = BarcodePDF417
             .builder()
-            .orientation(Orientation.NORMAL)
-            .rowHeight(rowHeight)
-            .securityLevel(securityLevel)
-            .dataColumns(dataColumns)
-            .rows(rows)
-            .data(data)
+            .withOrientation(Orientation.NORMAL)
+            .withRowHeight(rowHeight)
+            .withSecurityLevel(securityLevel)
+            .withDataColumns(dataColumns)
+            .withRows(rows)
+            .withData(data)
             .build();
 
         assertDoesNotThrow(() ->
@@ -137,12 +137,12 @@ public class BarcodePDF417Test
     {
         BarcodePDF417 barcode = BarcodePDF417
             .builder()
-            .orientation(orientation)
-            .rowHeight(rowHeight)
-            .securityLevel(securityLevel)
-            .dataColumns(dataColumns)
-            .rows(rows)
-            .data(data)
+            .withOrientation(orientation)
+            .withRowHeight(rowHeight)
+            .withSecurityLevel(securityLevel)
+            .withDataColumns(dataColumns)
+            .withRows(rows)
+            .withData(data)
             .build();
 
         assertEquals(expectedZpl, barcode.toZplString());
@@ -158,12 +158,12 @@ public class BarcodePDF417Test
     {
         BarcodePDF417 barcode = BarcodePDF417
             .builder()
-            .orientation(Orientation.NORMAL)
-            .rowHeight(10)
-            .securityLevel(5)
-            .dataColumns(15)
-            .rows(20)
-            .data("Test data")
+            .withOrientation(Orientation.NORMAL)
+            .withRowHeight(10)
+            .withSecurityLevel(5)
+            .withDataColumns(15)
+            .withRows(20)
+            .withData("Test data")
             .build();
 
         PrintDensity dpi = PrintDensity.DPI_203;

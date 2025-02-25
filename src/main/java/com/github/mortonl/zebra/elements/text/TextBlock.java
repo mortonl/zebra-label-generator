@@ -2,59 +2,62 @@ package com.github.mortonl.zebra.elements.text;
 
 import com.github.mortonl.zebra.elements.PositionedElement;
 import com.github.mortonl.zebra.elements.fields.Field;
+import com.github.mortonl.zebra.elements.fonts.Font;
 import com.github.mortonl.zebra.formatting.TextJustification;
 import com.github.mortonl.zebra.label_settings.LabelSize;
 import com.github.mortonl.zebra.printer_configuration.PrintDensity;
-import lombok.Builder;
 import lombok.Getter;
 import lombok.experimental.SuperBuilder;
 
 import static com.github.mortonl.zebra.ZplCommand.FIELD_BLOCK;
+import static com.github.mortonl.zebra.ZplCommand.FIELD_DATA;
 import static com.github.mortonl.zebra.ZplCommand.generateZplIICommand;
 import static com.github.mortonl.zebra.printer_configuration.PrintDensity.getMaxDotsPerMillimetre;
-import static com.github.mortonl.zebra.validation.Validator.validateNotEmpty;
 import static com.github.mortonl.zebra.validation.Validator.validateRange;
 
 @Getter
-@SuperBuilder
-public class TextBlock extends PositionedElement
+@SuperBuilder(setterPrefix = "with")
+public class TextBlock extends Text
 {
-    @Builder.Default
-    private double widthMm = 0;
+    private double widthMm;
 
-    @Builder.Default
-    private int maxLines = 1;
+    private int maxLines;
 
-    @Builder.Default
-    private double lineSpacingMm = 0;
+    private double lineSpacingMm;
 
-    @Builder.Default
-    private TextJustification justification = TextJustification.LEFT;
+    private TextJustification justification;
 
-    @Builder.Default
-    private double hangingIndentMm = 0;
-
-    private Field text;
+    private double hangingIndentMm;
 
     @Override
     public String toZplString(PrintDensity dpi)
     {
-        String elementPositionCommand = super.toZplString(dpi);
+        String textCommand = super.toZplString(dpi);
 
         String fieldBlockCommand = generateZplIICommand(FIELD_BLOCK,
-            dpi.toDots(widthMm),
-            maxLines,
-            dpi.toDots(lineSpacingMm),
-            justification.getValue(),
-            dpi.toDots(hangingIndentMm));
+                dpi.toDots(widthMm),
+                maxLines,
+                dpi.toDots(lineSpacingMm),
+                justification.getValue(),
+                dpi.toDots(hangingIndentMm));
 
-        return elementPositionCommand + fieldBlockCommand + text.toZplString(dpi);
+    // Find the position of ^FD
+    int fieldDataIndex = textCommand.indexOf(FIELD_DATA);
+    if (fieldDataIndex == -1) {
+        throw new IllegalStateException("Field data command (^FD) not found in text command");
     }
+
+    // Insert fieldBlock command before ^FD
+    return textCommand.substring(0, fieldDataIndex) +
+           fieldBlockCommand +
+           textCommand.substring(fieldDataIndex);
+}
+
 
     @Override
     public void validateInContext(LabelSize size, PrintDensity dpi) throws IllegalStateException
     {
-        validateNotEmpty(text.getData(), "Text");
+        super.validateInContext(size, dpi);
         validateDimensions(size, dpi);
     }
 

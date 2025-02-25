@@ -6,7 +6,7 @@
 
     <groupId>io.github.mortonl</groupId>
     <artifactId>zebra-label-generator</artifactId>
-    <version>1.0.0</version>
+    <version>1.0.1</version>
     <packaging>jar</packaging>
 
     <name>zebra-label-generator</name>
@@ -50,8 +50,8 @@
     </distributionManagement>
 
     <properties>
-        <maven.compiler.source>23</maven.compiler.source>
-        <maven.compiler.target>23</maven.compiler.target>
+        <maven.compiler.source>21</maven.compiler.source>
+        <maven.compiler.target>21</maven.compiler.target>
 
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 

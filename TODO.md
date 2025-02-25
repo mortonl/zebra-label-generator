@@ -1,6 +1,7 @@
 # TODO:
 
 ~~- Sort element positioning out
+
 - We know dpi and label size, posit~~ions should be set in millimetres and then dot position calculated dynamically
 
 - Sort setting printer defaults
