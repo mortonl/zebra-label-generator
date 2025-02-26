@@ -10,6 +10,7 @@ import lombok.experimental.SuperBuilder;
 import static com.github.mortonl.zebra.ZplCommand.FIELD_END;
 import static com.github.mortonl.zebra.ZplCommand.GRAPHIC_BOX;
 import static com.github.mortonl.zebra.ZplCommand.generateZplIICommand;
+import static com.github.mortonl.zebra.validation.Validator.validateRange;
 
 @Getter
 @SuperBuilder(setterPrefix = "with")
@@ -27,45 +28,13 @@ public class GraphicBox extends PositionedAndSizedElement
 
     private final Integer roundness;
 
-    /**
-     * Creates a horizontal line with specified widthMm
-     *
-     * @param widthMm     Width in dots (thicknessMm-32000)
-     * @param thicknessMm Line thicknessMm in dots (1-32000)
-     * @return GraphicBox configured as a horizontal line
-     */
-    public static GraphicBox horizontalLine(double widthMm, double thicknessMm)
-    {
-        return GraphicBox
-            .builder()
-            .withSize(widthMm, thicknessMm) // Height must equal thicknessMm for a horizontal line
-            .withThicknessMm(thicknessMm)
-            .build();
-    }
-
-    /**
-     * Creates a vertical line with specified heightMm
-     *
-     * @param heightMm    Height in dots (thicknessMm-32000)
-     * @param thicknessMm Line thicknessMm in dots (1-32000)
-     * @return GraphicBox configured as a vertical line
-     */
-    public static GraphicBox verticalLine(double heightMm, double thicknessMm)
-    {
-        return GraphicBox
-            .builder()
-            .withSize(thicknessMm, heightMm) // Width must equal thicknessMm for a vertical line
-            .withThicknessMm(thicknessMm)
-            .build();
-    }
-
     @Override
     public String toZplString(PrintDensity dpi)
     {
         return super.toZplString(dpi) + generateZplIICommand(GRAPHIC_BOX,
-            dpi.toDots(widthMm),
-            dpi.toDots(heightMm),
-            dpi.toDots(thicknessMm),
+            widthMm != null ? dpi.toDots(widthMm) : null,
+            heightMm != null ? dpi.toDots(heightMm) : null,
+            thicknessMm != null ? dpi.toDots(thicknessMm) : null,
             color != null ? color.getCode() : null,
             roundness
         ) + FIELD_END;
@@ -87,26 +56,27 @@ public class GraphicBox extends PositionedAndSizedElement
 
     private void validateRoundness()
     {
-        if (roundness != null && (roundness < 0 || roundness > 8)) {
-            throw new IllegalArgumentException("Roundness must be between 0 and 8");
+        if (roundness != null) {
+            validateRange(roundness, 0, 8, "Roundness");
         }
     }
 
     private void validateHeight(LabelSize size)
     {
         if (heightMm != null) {
-            if (thicknessMm != null && heightMm < thicknessMm) {
-                throw new IllegalArgumentException(
-                    String.format("Height must be at least equal to thickness (%d)", thicknessMm)
-                );
+            if (thicknessMm != null) {
+                if (heightMm < thicknessMm) {
+                    throw new IllegalStateException(
+                        String.format("Height must be at least equal to thickness (%.2f)", thicknessMm)
+                    );
+                }
             }
-            if (heightMm > MAX_DIMENSION) {
-                throw new IllegalArgumentException(DIMENSION_ERROR_MESSAGE);
-            }
-            // Check if height fits within label height
+
+            validateRange(heightMm, 0, MAX_DIMENSION, "Height");
+
             if (heightMm > size.getHeightMm()) {
-                throw new IllegalArgumentException(
-                    String.format("Height (%d mm) exceeds label height (%d mm)",
+                throw new IllegalStateException(
+                    String.format("Height (%.2f mm) exceeds label height (%.2f mm)",
                         heightMm, size.getHeightMm())
                 );
             }
@@ -116,18 +86,19 @@ public class GraphicBox extends PositionedAndSizedElement
     private void validateWidth(LabelSize size)
     {
         if (widthMm != null) {
-            if (thicknessMm != null && widthMm < thicknessMm) {
-                throw new IllegalArgumentException(
-                    String.format("Width must be at least equal to thickness (%d)", thicknessMm)
-                );
+            if (thicknessMm != null) {
+                if (widthMm < thicknessMm) {
+                    throw new IllegalStateException(
+                        String.format("Width must be at least equal to thickness (%.2f)", thicknessMm)
+                    );
+                }
             }
-            if (widthMm > MAX_DIMENSION) {
-                throw new IllegalArgumentException(DIMENSION_ERROR_MESSAGE);
-            }
-            // Check if width fits within label width
+
+            validateRange(widthMm, 0, MAX_DIMENSION, "Width");
+
             if (widthMm > size.getWidthMm()) {
-                throw new IllegalArgumentException(
-                    String.format("Width (%d mm) exceeds label width (%d mm)",
+                throw new IllegalStateException(
+                    String.format("Width (%.2f mm) exceeds label width (%.2f mm)",
                         widthMm, size.getWidthMm())
                 );
             }
@@ -137,14 +108,10 @@ public class GraphicBox extends PositionedAndSizedElement
     private void validateThickness()
     {
         if (thicknessMm != null) {
-            if (thicknessMm < MIN_THICKNESS) {
-                throw new IllegalArgumentException("Thickness must be at least " + MIN_THICKNESS);
-            }
-            if (thicknessMm > MAX_DIMENSION) {
-                throw new IllegalArgumentException(DIMENSION_ERROR_MESSAGE);
-            }
+            validateRange(thicknessMm, MIN_THICKNESS, MAX_DIMENSION, "Thickness");
         }
     }
+
 
     /**
      * Calculates the rounding radius based on the ZPL specification
@@ -158,5 +125,38 @@ public class GraphicBox extends PositionedAndSizedElement
         }
         double shorterSide = Math.min(widthMm, heightMm);
         return (int) ((roundness * shorterSide) / 16); // (roundness/8) * (shorterSide/2)
+    }
+
+    public static abstract class GraphicBoxBuilder<C extends GraphicBox, B extends GraphicBoxBuilder<C, B>>
+        extends PositionedAndSizedElementBuilder<C, B>
+    {
+    }
+
+    /**
+     * Creates a builder pre-configured for a horizontal line.
+     *
+     * @param widthMm     Width in millimeters (thickness-32000)
+     * @param thicknessMm Line thickness in millimeters (1-32000)
+     * @return a builder instance configured for a horizontal line
+     */
+    public static GraphicBoxBuilder<?, ?> horizontalLine(double widthMm, double thicknessMm)
+    {
+        return builder()
+            .withSize(widthMm, thicknessMm) // Height must equal thicknessMm for a horizontal line
+            .withThicknessMm(thicknessMm);
+    }
+
+    /**
+     * Creates a builder pre-configured for a vertical line.
+     *
+     * @param heightMm    Height in millimeters (thickness-32000)
+     * @param thicknessMm Line thickness in millimeters (1-32000)
+     * @return a builder instance configured for a vertical line
+     */
+    public static GraphicBoxBuilder<?, ?> verticalLine(double heightMm, double thicknessMm)
+    {
+        return builder()
+            .withSize(thicknessMm, heightMm) // Width must equal thicknessMm for a vertical line
+            .withThicknessMm(thicknessMm);
     }
 }

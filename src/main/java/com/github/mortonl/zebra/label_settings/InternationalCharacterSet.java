@@ -22,7 +22,7 @@ public class InternationalCharacterSet implements LabelElement
     }
 
     @Override
-    public void validateInContext(LabelSize size, PrintDensity dpi) throws IllegalStateException
+    public void validateInContext(LabelSize size, PrintDensity dpi) throws IllegalArgumentException
     {
         if (encoding == null) {
             throw new IllegalArgumentException("Encoding cannot be null");

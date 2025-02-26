@@ -26,9 +26,10 @@ public class Field implements LabelElement
             zplCommand.append(FIELD_HEXADECIMAL_INDICATOR);
         }
 
-        zplCommand.append(FIELD_START)
-                 .append(data)
-                 .append(FIELD_END);
+        zplCommand
+            .append(FIELD_START)
+            .append(data)
+            .append(FIELD_END);
 
         return zplCommand.toString();
     }
@@ -37,7 +38,7 @@ public class Field implements LabelElement
     public void validateInContext(LabelSize size, PrintDensity dpi) throws IllegalStateException
     {
         if (data == null) {
-            throw new IllegalArgumentException("Field Data cannot be null");
+            throw new IllegalStateException("Field Data cannot be null");
         }
     }
 }

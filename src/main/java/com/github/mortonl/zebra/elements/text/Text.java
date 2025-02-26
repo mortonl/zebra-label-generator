@@ -29,9 +29,11 @@ public class Text extends PositionedElement
             zplCommand.append(ZplCommand.FIELD_REVERSE_PRINT);
         }
 
-        zplCommand
-                .append(font.toZplString(dpi))
-                .append(content.toZplString(dpi));
+        if (font != null) {
+            zplCommand.append(font.toZplString(dpi));
+        }
+
+        zplCommand.append(content.toZplString(dpi));
 
         return zplCommand.toString();
     }
@@ -43,15 +45,25 @@ public class Text extends PositionedElement
     }
 
     public static abstract class TextBuilder<C extends Text, B extends TextBuilder<C, B>>
-            extends PositionedElement.PositionedElementBuilder<C, B>
+        extends PositionedElement.PositionedElementBuilder<C, B>
     {
+        public B withPlainTextContent(String contents)
+        {
+            this.content = Field
+                .builder()
+                .data(contents)
+                .enableHexCharacters(false)
+                .build();
+            return self();
+        }
+
         public B withHexadecimalContent(String contents)
         {
             this.content = Field
-                    .builder()
-                    .data(contents)
-                    .enableHexCharacters(true)
-                    .build();
+                .builder()
+                .data(contents)
+                .enableHexCharacters(true)
+                .build();
             return self();
         }
     }

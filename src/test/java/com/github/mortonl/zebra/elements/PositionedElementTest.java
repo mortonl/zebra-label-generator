@@ -104,8 +104,8 @@ class PositionedElementTest
             .withYAxisLocationMm(20.0)
             .build();
 
-        IllegalArgumentException exception = assertThrows(
-            IllegalArgumentException.class,
+        IllegalStateException exception = assertThrows(
+            IllegalStateException.class,
             () -> element.validateInContext(TEST_LABEL, X8_DOTS_PER_MM)
         );
 

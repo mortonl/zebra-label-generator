@@ -74,19 +74,19 @@
 //    private void validateParameters(int height, String data)
 //    {
 //        if (height < MIN_HEIGHT || height > MAX_HEIGHT) {
-//            throw new IllegalArgumentException(
+//            throw new IllegalStateException(
 //                    String.format("Height must be between %d and %d dots", MIN_HEIGHT, MAX_HEIGHT)
 //            );
 //        }
 //
 //        if (data == null || data.isEmpty()) {
-//            throw new IllegalArgumentException("Data cannot be null or empty");
+//            throw new IllegalStateException("Data cannot be null or empty");
 //        }
 //
 //        if (!CODE11_PATTERN.matcher(data)
 //                           .matches())
 //        {
-//            throw new IllegalArgumentException("Code 11 only supports digits and hyphens");
+//            throw new IllegalStateException("Code 11 only supports digits and hyphens");
 //        }
 //    }
 //

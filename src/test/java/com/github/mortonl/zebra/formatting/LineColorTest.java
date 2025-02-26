@@ -32,13 +32,13 @@ class LineColorTest
     void testFromCode_InvalidCode()
     {
         IllegalArgumentException exception = assertThrows(
-                IllegalArgumentException.class,
-                () -> LineColor.fromCode('X')
+            IllegalArgumentException.class,
+            () -> LineColor.fromCode('X')
         );
 
         assertEquals(
-                "Invalid color code: 'X'. Must be 'B' for black or 'W' for white",
-                exception.getMessage()
+            "Invalid color code: 'X'. Must be 'B' for black or 'W' for white",
+            exception.getMessage()
         );
     }
 

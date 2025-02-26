@@ -21,8 +21,8 @@ public class Validator
     {
         if (value < min || value > max) {
             throw new IllegalStateException(
-                    String.format("%s must be between %.2f and %.2f, but was %.2f",
-                            fieldName, min, max, value)
+                String.format("%s must be between %.2f and %.2f, but was %.2f",
+                    fieldName, min, max, value)
             );
         }
     }
@@ -40,8 +40,8 @@ public class Validator
     {
         if (value < min || value > max) {
             throw new IllegalStateException(
-                    String.format("%s must be between %d and %d, but was %d",
-                            fieldName, min, max, value)
+                String.format("%s must be between %d and %d, but was %d",
+                    fieldName, min, max, value)
             );
         }
     }
@@ -71,8 +71,8 @@ public class Validator
     {
         validateNotNull(value, fieldName);
         if (value
-                .trim()
-                .isEmpty())
+            .trim()
+            .isEmpty())
         {
             throw new IllegalStateException(fieldName + " cannot be empty");
         }

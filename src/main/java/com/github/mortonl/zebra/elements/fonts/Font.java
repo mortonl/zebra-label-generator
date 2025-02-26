@@ -32,11 +32,11 @@ public class Font implements LabelElement
         int widthDots = dpi.toDots(widthMm);
 
         return ZplCommand.generateZplIICommand(
-                // Fonts are a special case where the commands first parameter (character designation) is used as part of the command itself
-                SET_FONT + fontDesignation,
-                orientation.getValue(),
-                heightDots,
-                widthDots
+            // Fonts are a special case where the commands first parameter (character designation) is used as part of the command itself
+            SET_FONT + fontDesignation,
+            orientation.getValue(),
+            heightDots,
+            widthDots
         );
     }
 
@@ -51,7 +51,7 @@ public class Font implements LabelElement
     private void validateFontName()
     {
         boolean isValidFont = (fontDesignation >= 'A' && fontDesignation <= 'Z') ||
-                (fontDesignation >= '0' && fontDesignation <= '9');
+            (fontDesignation >= '0' && fontDesignation <= '9');
 
         if (!isValidFont) {
             throw new IllegalStateException("Font name must be A-Z or 0-9");
@@ -64,19 +64,19 @@ public class Font implements LabelElement
 
         if (dots < MIN_DOTS) {
             throw new IllegalStateException(
-                    String.format("Font %s %.2fmm is too small. Minimum %s is %.2fmm for %d DPI / %s dots per mm",
-                            dimensionName, dimensionValue, dimensionName,
-                            dpi.toMillimetres(MIN_DOTS),
-                            dpi.getDotsPerInch(),
-                            dpi.getDotsPerMillimetre()));
+                String.format("Font %s %.2fmm is too small. Minimum %s is %.2fmm for %d DPI / %s dots per mm",
+                    dimensionName, dimensionValue, dimensionName,
+                    dpi.toMillimetres(MIN_DOTS),
+                    dpi.getDotsPerInch(),
+                    dpi.getDotsPerMillimetre()));
         }
         if (dots > MAX_DOTS) {
             throw new IllegalStateException(
-                    String.format("Font %s %.2fmm is too large. Maximum %s is %.2fmm for %d DPI / %s dots per mm",
-                            dimensionName, dimensionValue, dimensionName,
-                            dpi.toMillimetres(MAX_DOTS),
-                            dpi.getDotsPerInch(),
-                            dpi.getDotsPerMillimetre()));
+                String.format("Font %s %.2fmm is too large. Maximum %s is %.2fmm for %d DPI / %s dots per mm",
+                    dimensionName, dimensionValue, dimensionName,
+                    dpi.toMillimetres(MAX_DOTS),
+                    dpi.getDotsPerInch(),
+                    dpi.getDotsPerMillimetre()));
         }
     }
 
