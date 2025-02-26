@@ -9,6 +9,7 @@ import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
 
+import java.util.Arrays;
 import java.util.stream.Stream;
 
 import static org.junit.jupiter.api.Assertions.assertAll;
@@ -146,7 +147,7 @@ class TextBlockTest
         // Extract the FB command parameters
         String fbCommand = zplString.substring(
             zplString.indexOf("^FB") + 3,
-            zplString.indexOf("^FD")
+            zplString.indexOf("^FH")
         );
         String[] parameters = fbCommand.split(",", -1);
 
@@ -192,6 +193,58 @@ class TextBlockTest
             () -> assertEquals("", parameters[2], "LineSpacing should be empty"),
             () -> assertEquals("C", parameters[3], "Justification should be Center"),
             () -> assertEquals("", parameters[4], "HangingIndent should be empty")
+        );
+    }
+
+    @Test
+    @DisplayName("Should maintain correct command order with hexadecimal content")
+    void shouldMaintainCorrectCommandOrder() {
+        TextBlock block = TextBlock
+            .builder()
+            .withWidthMm(50.0)
+            .withHexadecimalContent("48656C6C6F")
+            .build();
+
+        String zplString = block.toZplString(DEFAULT_DPI);
+        String[] commands = Arrays.stream(zplString.split("\\^"))
+                                  .filter(cmd -> !cmd.isEmpty())
+                                  .toArray(String[]::new);
+
+        assertAll(
+            () -> assertEquals("FO0,0", commands[0], "First command should be FO with coordinates"),
+            () -> assertEquals("FB400,,,,", commands[1], "Second command should be FB with parameters"),
+            () -> assertEquals("FH", commands[2], "Third command should be FH"),
+            () -> assertEquals("FD48656C6C6F", commands[3], "Fourth command should be FD with hex content"),
+            () -> assertEquals("FS", commands[4], "Last command should be FS"),
+            () -> assertEquals(5, commands.length, "Should have exactly 5 commands")
+        );
+    }
+
+    @Test
+    @DisplayName("Should correctly format hexadecimal content")
+    void shouldFormatHexadecimalContent()
+    {
+        TextBlock block = TextBlock
+            .builder()
+            .withWidthMm(50.0)
+            .withHexadecimalContent("48656C6C6F")
+            .build();
+
+        String zplString = block.toZplString(DEFAULT_DPI);
+        String[] commands = Arrays
+            .stream(zplString.split("\\^"))
+            .filter(cmd -> !cmd.isEmpty())
+            .toArray(String[]::new);
+
+        assertAll(
+            () -> assertTrue(zplString.contains("^FH"), "Should include hexadecimal indicator"),
+            () -> assertEquals("FD48656C6C6F",
+                Arrays
+                    .stream(commands)
+                    .filter(cmd -> cmd.startsWith("FD"))
+                    .findFirst()
+                    .orElseThrow(),
+                "Should include hex content without modification")
         );
     }
 }

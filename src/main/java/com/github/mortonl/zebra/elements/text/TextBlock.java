@@ -8,6 +8,7 @@ import lombok.experimental.SuperBuilder;
 
 import static com.github.mortonl.zebra.ZplCommand.FIELD_BLOCK;
 import static com.github.mortonl.zebra.ZplCommand.FIELD_DATA;
+import static com.github.mortonl.zebra.ZplCommand.FIELD_HEXADECIMAL_INDICATOR;
 import static com.github.mortonl.zebra.ZplCommand.generateZplIICommand;
 import static com.github.mortonl.zebra.printer_configuration.PrintDensity.getMaxDotsPerMillimetre;
 import static com.github.mortonl.zebra.validation.Validator.validateRange;
@@ -38,16 +39,19 @@ public class TextBlock extends Text
             justification != null ? justification.getValue() : null,
             hangingIndentMm != null ? dpi.toDots(hangingIndentMm) : null);
 
-        // Find the position of ^FD
+    // Find the position of ^FH and ^FD
+    int hexIndex = textCommand.indexOf(FIELD_HEXADECIMAL_INDICATOR);
         int fieldDataIndex = textCommand.indexOf(FIELD_DATA);
         if (fieldDataIndex == -1) {
             throw new IllegalStateException("Field data command (^FD) not found in text command");
         }
 
-        // Insert fieldBlock command before ^FD
-        return textCommand.substring(0, fieldDataIndex) +
+    // Insert fieldBlock command before ^FH if it exists, otherwise before ^FD
+    int insertPosition = (hexIndex != -1) ? hexIndex : fieldDataIndex;
+
+    return textCommand.substring(0, insertPosition) +
             fieldBlockCommand +
-            textCommand.substring(fieldDataIndex);
+        textCommand.substring(insertPosition);
     }
 
     @Override

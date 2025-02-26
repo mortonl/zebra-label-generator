@@ -34,7 +34,7 @@ public class Font implements LabelElement
         return ZplCommand.generateZplIICommand(
             // Fonts are a special case where the commands first parameter (character designation) is used as part of the command itself
             SET_FONT + fontDesignation,
-            orientation.getValue(),
+            orientation != null ? orientation.getValue() : null,
             heightDots,
             widthDots
         );
