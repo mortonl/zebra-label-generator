@@ -28,6 +28,34 @@ public class GraphicBox extends PositionedAndSizedElement
 
     private final Integer roundness;
 
+    /**
+     * Creates a builder pre-configured for a horizontal line.
+     *
+     * @param widthMm     Width in millimeters (thickness-32000)
+     * @param thicknessMm Line thickness in millimeters (1-32000)
+     * @return a builder instance configured for a horizontal line
+     */
+    public static GraphicBoxBuilder<?, ?> horizontalLine(double widthMm, double thicknessMm)
+    {
+        return builder()
+            .withSize(widthMm, thicknessMm) // Height must equal thicknessMm for a horizontal line
+            .withThicknessMm(thicknessMm);
+    }
+
+    /**
+     * Creates a builder pre-configured for a vertical line.
+     *
+     * @param heightMm    Height in millimeters (thickness-32000)
+     * @param thicknessMm Line thickness in millimeters (1-32000)
+     * @return a builder instance configured for a vertical line
+     */
+    public static GraphicBoxBuilder<?, ?> verticalLine(double heightMm, double thicknessMm)
+    {
+        return builder()
+            .withSize(thicknessMm, heightMm) // Width must equal thicknessMm for a vertical line
+            .withThicknessMm(thicknessMm);
+    }
+
     @Override
     public String toZplString(PrintDensity dpi)
     {
@@ -112,7 +140,6 @@ public class GraphicBox extends PositionedAndSizedElement
         }
     }
 
-
     /**
      * Calculates the rounding radius based on the ZPL specification
      *
@@ -130,33 +157,5 @@ public class GraphicBox extends PositionedAndSizedElement
     public static abstract class GraphicBoxBuilder<C extends GraphicBox, B extends GraphicBoxBuilder<C, B>>
         extends PositionedAndSizedElementBuilder<C, B>
     {
-    }
-
-    /**
-     * Creates a builder pre-configured for a horizontal line.
-     *
-     * @param widthMm     Width in millimeters (thickness-32000)
-     * @param thicknessMm Line thickness in millimeters (1-32000)
-     * @return a builder instance configured for a horizontal line
-     */
-    public static GraphicBoxBuilder<?, ?> horizontalLine(double widthMm, double thicknessMm)
-    {
-        return builder()
-            .withSize(widthMm, thicknessMm) // Height must equal thicknessMm for a horizontal line
-            .withThicknessMm(thicknessMm);
-    }
-
-    /**
-     * Creates a builder pre-configured for a vertical line.
-     *
-     * @param heightMm    Height in millimeters (thickness-32000)
-     * @param thicknessMm Line thickness in millimeters (1-32000)
-     * @return a builder instance configured for a vertical line
-     */
-    public static GraphicBoxBuilder<?, ?> verticalLine(double heightMm, double thicknessMm)
-    {
-        return builder()
-            .withSize(thicknessMm, heightMm) // Width must equal thicknessMm for a vertical line
-            .withThicknessMm(thicknessMm);
     }
 }

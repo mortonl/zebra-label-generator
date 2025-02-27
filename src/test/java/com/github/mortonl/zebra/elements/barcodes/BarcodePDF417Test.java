@@ -56,7 +56,7 @@ public class BarcodePDF417Test
                 20,
                 30,
                 "Test123",
-                "^B7N,10,5,20,30^FDTest123^FS"
+                "^FO100,148^B7N,10,5,20,30^FDTest123^FS"
             )
         );
     }
@@ -90,7 +90,7 @@ public class BarcodePDF417Test
             .withSecurityLevel(securityLevel)
             .withDataColumns(dataColumns)
             .withRows(rows)
-            .withData(data)
+            .withHexadecimalContent(data)
             .build();
 
         assertThrows(IllegalStateException.class,
@@ -115,7 +115,7 @@ public class BarcodePDF417Test
             .withSecurityLevel(securityLevel)
             .withDataColumns(dataColumns)
             .withRows(rows)
-            .withData(data)
+            .withPlainTextContent(data)
             .build();
 
         assertDoesNotThrow(() ->
@@ -137,15 +137,16 @@ public class BarcodePDF417Test
     {
         BarcodePDF417 barcode = BarcodePDF417
             .builder()
+            .withPosition(12.5, 18.5)
             .withOrientation(orientation)
             .withRowHeight(rowHeight)
             .withSecurityLevel(securityLevel)
             .withDataColumns(dataColumns)
             .withRows(rows)
-            .withData(data)
+            .withPlainTextContent(data)
             .build();
 
-        assertEquals(expectedZpl, barcode.toZplString());
+        assertEquals(expectedZpl, barcode.toZplString(PrintDensity.DPI_203));
     }
 
     /**
@@ -163,7 +164,7 @@ public class BarcodePDF417Test
             .withSecurityLevel(5)
             .withDataColumns(15)
             .withRows(20)
-            .withData("Test data")
+            .withPlainTextContent("Test data")
             .build();
 
         PrintDensity dpi = PrintDensity.DPI_203;

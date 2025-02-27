@@ -1,56 +1,35 @@
-package com.github.mortonl.zebra.elements.text;
+package com.github.mortonl.zebra.elements.barcodes;
 
-import com.github.mortonl.zebra.ZplCommand;
 import com.github.mortonl.zebra.elements.PositionedElement;
 import com.github.mortonl.zebra.elements.fields.Field;
-import com.github.mortonl.zebra.elements.fonts.Font;
 import com.github.mortonl.zebra.label_settings.LabelSize;
 import com.github.mortonl.zebra.printer_configuration.PrintDensity;
 import lombok.Getter;
 import lombok.experimental.SuperBuilder;
 
 import static com.github.mortonl.zebra.validation.Validator.validateNotEmpty;
+import static com.github.mortonl.zebra.validation.Validator.validateNotNull;
 
 @Getter
 @SuperBuilder(setterPrefix = "with")
-public class Text extends PositionedElement
+public class Barcode extends PositionedElement
 {
-    Boolean colorAndBackgroundReversed;
-    Font font;
-    Field content;
-
-    @Override
-    public String toZplString(PrintDensity dpi)
-    {
-        StringBuilder zplCommand = new StringBuilder();
-        zplCommand.append(super.toZplString(dpi));
-
-        if (Boolean.TRUE.equals(colorAndBackgroundReversed)) {
-            zplCommand.append(ZplCommand.FIELD_REVERSE_PRINT);
-        }
-
-        if (font != null) {
-            zplCommand.append(font.toZplString(dpi));
-        }
-
-        zplCommand.append(content.toZplString(dpi));
-
-        return zplCommand.toString();
-    }
+    Field data;
 
     @Override
     public void validateInContext(LabelSize size, PrintDensity dpi) throws IllegalStateException
     {
         super.validateInContext(size, dpi);
-        validateNotEmpty(content.getData(), "Text");
+        validateNotNull(data, "Data");
+        validateNotEmpty(data.getData(), "Data");
     }
 
-    public static abstract class TextBuilder<C extends Text, B extends TextBuilder<C, B>>
+    public static abstract class BarcodeBuilder<C extends Barcode, B extends BarcodeBuilder<C, B>>
         extends PositionedElement.PositionedElementBuilder<C, B>
     {
         public B withPlainTextContent(String contents)
         {
-            this.content = Field
+            this.data = Field
                 .builder()
                 .data(contents)
                 .enableHexCharacters(false)
@@ -60,7 +39,7 @@ public class Text extends PositionedElement
 
         public B withHexadecimalContent(String contents)
         {
-            this.content = Field
+            this.data = Field
                 .builder()
                 .data(contents)
                 .enableHexCharacters(true)

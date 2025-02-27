@@ -51,8 +51,8 @@ class TextBlockTest
     void shouldAllowAllNullParameters()
     {
         TextBlock block = TextBlock.builder()
-            .withPlainTextContent("test")
-            .build();
+                                   .withPlainTextContent("test")
+                                   .build();
         assertDoesNotThrow(() -> block.validateInContext(DEFAULT_SIZE, DEFAULT_DPI));
     }
 
@@ -198,7 +198,8 @@ class TextBlockTest
 
     @Test
     @DisplayName("Should maintain correct command order with hexadecimal content")
-    void shouldMaintainCorrectCommandOrder() {
+    void shouldMaintainCorrectCommandOrder()
+    {
         TextBlock block = TextBlock
             .builder()
             .withWidthMm(50.0)

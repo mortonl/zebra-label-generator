@@ -39,19 +39,19 @@ public class TextBlock extends Text
             justification != null ? justification.getValue() : null,
             hangingIndentMm != null ? dpi.toDots(hangingIndentMm) : null);
 
-    // Find the position of ^FH and ^FD
-    int hexIndex = textCommand.indexOf(FIELD_HEXADECIMAL_INDICATOR);
+        // Find the position of ^FH and ^FD
+        int hexIndex = textCommand.indexOf(FIELD_HEXADECIMAL_INDICATOR);
         int fieldDataIndex = textCommand.indexOf(FIELD_DATA);
         if (fieldDataIndex == -1) {
             throw new IllegalStateException("Field data command (^FD) not found in text command");
         }
 
-    // Insert fieldBlock command before ^FH if it exists, otherwise before ^FD
-    int insertPosition = (hexIndex != -1) ? hexIndex : fieldDataIndex;
+        // Insert fieldBlock command before ^FH if it exists, otherwise before ^FD
+        int insertPosition = (hexIndex != -1) ? hexIndex : fieldDataIndex;
 
-    return textCommand.substring(0, insertPosition) +
+        return textCommand.substring(0, insertPosition) +
             fieldBlockCommand +
-        textCommand.substring(insertPosition);
+            textCommand.substring(insertPosition);
     }
 
     @Override

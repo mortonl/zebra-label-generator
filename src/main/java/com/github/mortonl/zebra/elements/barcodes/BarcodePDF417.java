@@ -1,21 +1,17 @@
 package com.github.mortonl.zebra.elements.barcodes;
 
 import com.github.mortonl.zebra.ZplCommand;
-import com.github.mortonl.zebra.elements.PositionedElement;
 import com.github.mortonl.zebra.formatting.Orientation;
 import com.github.mortonl.zebra.label_settings.LabelSize;
 import com.github.mortonl.zebra.printer_configuration.PrintDensity;
 import lombok.Getter;
-import lombok.NonNull;
 import lombok.experimental.SuperBuilder;
 
-import static com.github.mortonl.zebra.ZplCommand.FIELD_END;
-import static com.github.mortonl.zebra.ZplCommand.FIELD_START;
 import static com.github.mortonl.zebra.ZplCommand.generateZplIICommand;
 
 @Getter
 @SuperBuilder(setterPrefix = "with")
-public class BarcodePDF417 extends PositionedElement
+public class BarcodePDF417 extends Barcode
 {
     /* Nullable */
     private final Orientation orientation;
@@ -27,12 +23,14 @@ public class BarcodePDF417 extends PositionedElement
     private final int dataColumns;         // 1 to 30
     /* Nullable */
     private final int rows;                // 3 to 90
-    @NonNull
-    private final String data;
 
-    public final String toZplString()
+    @Override
+    public String toZplString(PrintDensity dpi)
     {
-        return new StringBuilder()
+        StringBuilder zplCommand = new StringBuilder();
+
+        zplCommand
+            .append(super.toZplString(dpi))
             .append(generateZplIICommand(
                 ZplCommand.BARCODE_PDF_417,
                 orientation.getValue(),
@@ -40,10 +38,9 @@ public class BarcodePDF417 extends PositionedElement
                 securityLevel,
                 dataColumns,
                 rows))
-            .append(FIELD_START)
-            .append(data)
-            .append(FIELD_END)
-            .toString();
+            .append(data.toZplString(dpi));
+
+        return zplCommand.toString();
     }
 
     @Override
@@ -55,10 +52,7 @@ public class BarcodePDF417 extends PositionedElement
 
     private void validateParameters()
     {
-        if (data == null || data.isEmpty()) {
-            throw new IllegalStateException("Data cannot be null or empty");
-        }
-        if (data.length() > 3000) {
+        if (data.getData().length() > 3000) {
             throw new IllegalStateException("Field data is limited to 3K characters");
         }
         if (rowHeight < 0) {
