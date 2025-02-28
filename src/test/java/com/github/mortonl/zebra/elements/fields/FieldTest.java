@@ -9,6 +9,7 @@ import org.junit.jupiter.params.provider.ValueSource;
 
 import static com.github.mortonl.zebra.ZplCommand.FIELD_END;
 import static com.github.mortonl.zebra.ZplCommand.FIELD_START;
+import static com.github.mortonl.zebra.elements.fields.Field.createField;
 import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
@@ -21,9 +22,8 @@ class FieldTest
     @Test
     void testToZplString()
     {
-        Field field = Field
-            .builder()
-            .data("Test Data")
+        Field field = createField()
+            .withData("Test Data")
             .build();
         String expected = FIELD_START + "Test Data" + FIELD_END;
         assertEquals(expected, field.toZplString(testDpi));
@@ -38,9 +38,8 @@ class FieldTest
     })
     void testValidateInContext_ValidData(String validData)
     {
-        Field field = Field
-            .builder()
-            .data(validData)
+        Field field = createField()
+            .withData(validData)
             .build();
         assertDoesNotThrow(() -> field.validateInContext(testSize, testDpi));
     }
@@ -49,9 +48,8 @@ class FieldTest
     @NullSource
     void testValidateInContext_InvalidData(String invalidData)
     {
-        Field field = Field
-            .builder()
-            .data(invalidData)
+        Field field = createField()
+            .withData(invalidData)
             .build();
         IllegalStateException exception = assertThrows(
             IllegalStateException.class,
@@ -63,10 +61,9 @@ class FieldTest
     @Test
     void testHexadecimalCharactersEnabled()
     {
-        Field field = Field
-            .builder()
-            .data("test")
-            .enableHexCharacters(true)
+        Field field = createField()
+            .withData("test")
+            .withEnableHexCharacters(true)
             .build();
 
         assertEquals("^FH^FDtest^FS", field.toZplString(testDpi));
@@ -75,10 +72,9 @@ class FieldTest
     @Test
     void testHexadecimalCharactersDisabled()
     {
-        Field field = Field
-            .builder()
-            .data("test")
-            .enableHexCharacters(false)
+        Field field = createField()
+            .withData("test")
+            .withEnableHexCharacters(false)
             .build();
 
         assertEquals("^FDtest^FS", field.toZplString(testDpi));
@@ -87,10 +83,9 @@ class FieldTest
     @Test
     void testHexadecimalCharactersNull()
     {
-        Field field = Field
-            .builder()
-            .data("test")
-            .enableHexCharacters(null)
+        Field field = createField()
+            .withData("test")
+            .withEnableHexCharacters(null)
             .build();
 
         assertEquals("^FDtest^FS", field.toZplString(testDpi));

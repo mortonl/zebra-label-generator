@@ -51,7 +51,7 @@ class BarcodeCode128Test
     void shouldCreateBarcodeWithDefaultValues()
     {
         BarcodeCode128 barcode = BarcodeCode128
-            .builder()
+            .createCode128Barcode()
             .withHeightMm(VALID_HEIGHT_MM)
             .withOrientation(Orientation.NORMAL)
             .build();
@@ -75,7 +75,7 @@ class BarcodeCode128Test
     )
     {
         BarcodeCode128 barcode = BarcodeCode128
-            .builder()
+            .createCode128Barcode()
             .withHeightMm(heightMm)
             .withOrientation(orientation)
             .withPrintInterpretationLineDesired(interpretationLine)
@@ -93,7 +93,7 @@ class BarcodeCode128Test
     void shouldThrowExceptionForInvalidHeights(float invalidHeight)
     {
         BarcodeCode128 barcode = BarcodeCode128
-            .builder()
+            .createCode128Barcode()
             .withHeightMm(invalidHeight)
             .withOrientation(Orientation.NORMAL)
             .build();
@@ -107,7 +107,7 @@ class BarcodeCode128Test
     void shouldThrowExceptionWhenOrientationIsNull()
     {
         BarcodeCode128 barcode = BarcodeCode128
-            .builder()
+            .createCode128Barcode()
             .withHeightMm(VALID_HEIGHT_MM)
             .withOrientation(null)
             .build();
@@ -122,7 +122,7 @@ class BarcodeCode128Test
     void shouldAcceptValidHeightsForDifferentDpis(PrintDensity dpi, float heightMm)
     {
         BarcodeCode128 barcode = BarcodeCode128
-            .builder()
+            .createCode128Barcode()
             .withHeightMm(heightMm)
             .withOrientation(Orientation.NORMAL)
             .withPlainTextContent("123456")

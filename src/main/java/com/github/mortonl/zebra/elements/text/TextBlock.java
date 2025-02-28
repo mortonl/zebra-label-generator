@@ -14,7 +14,7 @@ import static com.github.mortonl.zebra.printer_configuration.PrintDensity.getMax
 import static com.github.mortonl.zebra.validation.Validator.validateRange;
 
 @Getter
-@SuperBuilder(setterPrefix = "with")
+@SuperBuilder(builderMethodName = "createTextBlock", setterPrefix = "with")
 public class TextBlock extends Text
 {
     private Double widthMm;

@@ -12,7 +12,7 @@ import static com.github.mortonl.zebra.validation.Validator.validateNotNull;
 import static com.github.mortonl.zebra.validation.Validator.validateRange;
 
 @Getter
-@SuperBuilder(setterPrefix = "with")
+@SuperBuilder(builderMethodName = "createInterleaved2of5Barcode", setterPrefix = "with")
 public class BarcodeInterleaved2of5 extends Barcode
 {
     private final Orientation orientation;

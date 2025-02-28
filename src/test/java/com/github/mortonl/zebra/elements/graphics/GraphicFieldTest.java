@@ -51,7 +51,7 @@ class GraphicFieldTest
     {
         assertThrows(NullPointerException.class, () ->
                 GraphicField
-                    .builder()
+                    .createGraphicField()
                     .withPosition(0.0, 0.0)
                     .withBinaryByteCount(BINARY_BYTE_COUNT)
                     .withGraphicFieldCount(GRAPHIC_FIELD_COUNT)
@@ -66,7 +66,7 @@ class GraphicFieldTest
     void shouldAcceptValidParameters(Double xPositionMm, Double yPositionMm, String scenario)
     {
         GraphicField field = GraphicField
-            .builder()
+            .createGraphicField()
             .withPosition(xPositionMm, yPositionMm)
             .withData(SAMPLE_DATA)
             .withBinaryByteCount(BINARY_BYTE_COUNT)
@@ -82,7 +82,7 @@ class GraphicFieldTest
     void shouldRejectInvalidParameters(Double xPositionMm, Double yPositionMm, String scenario)
     {
         GraphicField field = GraphicField
-            .builder()
+            .createGraphicField()
             .withPosition(xPositionMm, yPositionMm)
             .withData(SAMPLE_DATA)
             .withBinaryByteCount(BINARY_BYTE_COUNT)
@@ -100,7 +100,7 @@ class GraphicFieldTest
     void shouldGenerateCompleteZplString()
     {
         GraphicField field = GraphicField
-            .builder()
+            .createGraphicField()
             .withPosition(50.0, 75.0)
             .withData(SAMPLE_DATA)
             .withBinaryByteCount(BINARY_BYTE_COUNT)
@@ -144,7 +144,7 @@ class GraphicFieldTest
     void shouldGenerateZplStringWithNullCompressionType()
     {
         GraphicField field = GraphicField
-            .builder()
+            .createGraphicField()
             .withPosition(50.0, 75.0)
             .withData(SAMPLE_DATA)
             .withBinaryByteCount(BINARY_BYTE_COUNT)

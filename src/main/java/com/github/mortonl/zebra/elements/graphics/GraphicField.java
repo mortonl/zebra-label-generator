@@ -14,7 +14,7 @@ import static com.github.mortonl.zebra.validation.Validator.validateNotEmpty;
 import static com.github.mortonl.zebra.validation.Validator.validateRange;
 
 @Getter
-@SuperBuilder(setterPrefix = "with")
+@SuperBuilder(builderMethodName = "createGraphicField", setterPrefix = "with")
 public class GraphicField extends PositionedElement
 {
     private static final int MIN_BYTE_VALUE = 1;

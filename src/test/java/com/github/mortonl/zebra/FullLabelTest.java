@@ -33,7 +33,7 @@ public class FullLabelTest
             .build();
 
         GraphicBox topBox = GraphicBox
-            .builder()
+            .createGraphicBox()
             .withPosition(37.5, 0)
             .withSize(27.5, 10)
             .withThicknessMm(10.0)
@@ -43,7 +43,7 @@ public class FullLabelTest
         testLabel.validateAndAddElement(topBox);
 
         GraphicField graphicField = GraphicField
-            .builder()
+            .createGraphicField()
             .withPosition(100.0, 100.0)
             .withCompressionType(CompressionType.ASCII_HEX)
             .withBinaryByteCount(11)

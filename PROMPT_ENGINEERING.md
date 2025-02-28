@@ -35,3 +35,4 @@ Generate unit tests meeting these criteria:
   PrintDensity.DPI_203; // 8 dots per mm
 - Parameterized tests are preferred and DisplayNames are required on classes, scenarios and tests
 - group multiple assertions in tests with assertAll to get all the failures in the result
+- ideally builder methods would be static imported but due to a compilation and annotation processing order issue with javac we cannot

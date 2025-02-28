@@ -11,7 +11,7 @@ import static com.github.mortonl.zebra.ZplCommand.generateZplIICommand;
 
 @Getter
 @Builder
-public class InternationalCharacterSet implements LabelElement
+public class InternationalCharacterSet extends LabelElement
 {
     private final FontEncoding encoding;
 

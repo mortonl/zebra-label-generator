@@ -3,17 +3,16 @@ package com.github.mortonl.zebra.elements;
 import com.github.mortonl.zebra.formatting.OriginJustification;
 import com.github.mortonl.zebra.label_settings.LabelSize;
 import com.github.mortonl.zebra.printer_configuration.PrintDensity;
-import lombok.AllArgsConstructor;
-import lombok.Data;
+import com.github.mortonl.zebra.validation.ValidationLevel;
+import lombok.Getter;
 import lombok.experimental.SuperBuilder;
 
 import static com.github.mortonl.zebra.ZplCommand.FIELD_ORIGIN;
 import static com.github.mortonl.zebra.ZplCommand.generateZplIICommand;
 
-@Data
-@SuperBuilder(setterPrefix = "with")
-@AllArgsConstructor
-public abstract class PositionedElement implements LabelElement
+@Getter
+@SuperBuilder(builderMethodName = "createPositionedElement", setterPrefix = "with")
+public abstract class PositionedElement extends LabelElement
 {
     public static final int MIN_AXIS_VALUE = 0;
     public static final int MAX_AXIS_VALUE = 32000;
@@ -46,9 +45,23 @@ public abstract class PositionedElement implements LabelElement
     @Override
     public void validateInContext(LabelSize size, PrintDensity dpi) throws IllegalStateException
     {
-        validateAxisValue(dpi.toDots(xAxisLocationMm), "X-axis");
-        validateAxisValue(dpi.toDots(yAxisLocationMm), "Y-axis");
-        validatePositionedOnLabel(size, dpi);
+        if (validationLevel == ValidationLevel.OFF) {
+            return; // Skip validation
+        }
+
+        // Perform validation based on the level
+        switch (validationLevel) {
+            case STRICT:
+            case NORMAL:
+                validateAxisValue(dpi.toDots(xAxisLocationMm), "X-axis");
+                validateAxisValue(dpi.toDots(yAxisLocationMm), "Y-axis");
+                validatePositionedOnLabel(size, dpi);
+                break;
+            case LENIENT:
+                break;
+            default:
+                break;
+        }
     }
 
     private void validateAxisValue(double value, String axis)

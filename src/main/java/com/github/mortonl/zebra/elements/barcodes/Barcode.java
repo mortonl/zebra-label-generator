@@ -11,7 +11,7 @@ import static com.github.mortonl.zebra.validation.Validator.validateNotEmpty;
 import static com.github.mortonl.zebra.validation.Validator.validateNotNull;
 
 @Getter
-@SuperBuilder(setterPrefix = "with")
+@SuperBuilder(builderMethodName = "createBarcode", setterPrefix = "with")
 public class Barcode extends PositionedElement
 {
     Field data;
@@ -29,21 +29,19 @@ public class Barcode extends PositionedElement
     {
         public B withPlainTextContent(String contents)
         {
-            this.data = Field
-                .builder()
-                .data(contents)
-                .enableHexCharacters(false)
-                .build();
+            this.data = Field.createField()
+                             .withData(contents)
+                             .withEnableHexCharacters(false)
+                             .build();
             return self();
         }
 
         public B withHexadecimalContent(String contents)
         {
-            this.data = Field
-                .builder()
-                .data(contents)
-                .enableHexCharacters(true)
-                .build();
+            this.data = Field.createField()
+                             .withData(contents)
+                             .withEnableHexCharacters(true)
+                             .build();
             return self();
         }
     }

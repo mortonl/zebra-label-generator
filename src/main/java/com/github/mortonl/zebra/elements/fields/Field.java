@@ -11,8 +11,8 @@ import static com.github.mortonl.zebra.ZplCommand.FIELD_HEXADECIMAL_INDICATOR;
 import static com.github.mortonl.zebra.ZplCommand.FIELD_START;
 
 @Data
-@Builder
-public class Field implements LabelElement
+@Builder(builderMethodName = "createField", setterPrefix = "with")
+public class Field extends LabelElement
 {
     private final String data;
 

@@ -10,7 +10,7 @@ import lombok.experimental.SuperBuilder;
 import static com.github.mortonl.zebra.ZplCommand.generateZplIICommand;
 
 @Getter
-@SuperBuilder(setterPrefix = "with")
+@SuperBuilder(builderMethodName = "createPDF417Barcode", setterPrefix = "with")
 public class BarcodePDF417 extends Barcode
 {
     /* Nullable */

@@ -4,7 +4,7 @@ import lombok.Getter;
 import lombok.experimental.SuperBuilder;
 
 @Getter
-@SuperBuilder(setterPrefix = "with")
+@SuperBuilder(builderMethodName = "createPositionedAndSizedElement", setterPrefix = "with")
 public class PositionedAndSizedElement extends PositionedElement
 {
     protected Double widthMm;

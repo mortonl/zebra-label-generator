@@ -12,7 +12,7 @@ import lombok.experimental.SuperBuilder;
 import static com.github.mortonl.zebra.validation.Validator.validateNotEmpty;
 
 @Getter
-@SuperBuilder(setterPrefix = "with")
+@SuperBuilder(builderMethodName = "createText", setterPrefix = "with")
 public class Text extends PositionedElement
 {
     Boolean colorAndBackgroundReversed;
@@ -50,21 +50,19 @@ public class Text extends PositionedElement
     {
         public B withPlainTextContent(String contents)
         {
-            this.content = Field
-                .builder()
-                .data(contents)
-                .enableHexCharacters(false)
-                .build();
+            this.content = Field.createField()
+                                .withData(contents)
+                                .withEnableHexCharacters(false)
+                                .build();
             return self();
         }
 
         public B withHexadecimalContent(String contents)
         {
-            this.content = Field
-                .builder()
-                .data(contents)
-                .enableHexCharacters(true)
-                .build();
+            this.content = Field.createField()
+                                .withData(contents)
+                                .withEnableHexCharacters(true)
+                                .build();
             return self();
         }
     }

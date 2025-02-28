@@ -20,8 +20,7 @@ class FontTest
     @Test
     void testToZplString()
     {
-        Font font = Font
-            .builder()
+        Font font = Font.createFont()
             .withFontDesignation('A')
             .withOrientation(Orientation.NORMAL)
             .withSize(4.0, 3.0)
@@ -35,8 +34,7 @@ class FontTest
     @Test
     void testValidateInContext_ValidFont()
     {
-        Font font = Font
-            .builder()
+        Font font = Font.createFont()
             .withFontDesignation('A')
             .withSize(4.0, 3.0)
             .build();
@@ -48,8 +46,7 @@ class FontTest
     @ValueSource(chars = {'a', 'z', '#', '$', ' ', 'ñ'})
     void testValidateInContext_InvalidFontDesignation(char invalidDesignation)
     {
-        Font font = Font
-            .builder()
+        Font font = Font.createFont()
             .withFontDesignation(invalidDesignation)
             .withSize(4.0, 3.0)
             .build();
@@ -65,8 +62,7 @@ class FontTest
     @ValueSource(chars = {'A', 'Z', '0', '9', 'M', '5'})
     void testValidateInContext_ValidFontDesignation(char validDesignation)
     {
-        Font font = Font
-            .builder()
+        Font font = Font.createFont()
             .withFontDesignation(validDesignation)
             .withSize(4.0, 3.0)
             .build();
@@ -88,8 +84,7 @@ class FontTest
         String expectedMessage
     )
     {
-        Font font = Font
-            .builder()
+        Font font = Font.createFont()
             .withFontDesignation('A')
             .withSize(dimension.equals("width") ? invalidValue : 2.0, dimension.equals("height") ? invalidValue : 2.0)
             .build();
@@ -116,8 +111,7 @@ class FontTest
         String testDescription
     )
     {
-        Font font = Font
-            .builder()
+        Font font = Font.createFont()
             .withFontDesignation('A')
             .withSize(dimension.equals("width") ? boundaryValue : 2.0, dimension.equals("height") ? boundaryValue : 2.0)
             .build();

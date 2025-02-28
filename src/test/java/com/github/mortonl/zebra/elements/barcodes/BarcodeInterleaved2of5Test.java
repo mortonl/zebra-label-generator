@@ -36,7 +36,7 @@ class BarcodeInterleaved2of5Test
         void shouldThrowExceptionWhenOrientationIsNull()
         {
             BarcodeInterleaved2of5 barcode = BarcodeInterleaved2of5
-                .builder()
+                .createInterleaved2of5Barcode()
                 .withPlainTextContent("1234")
                 .withHeightInMillimetres(10)
                 .build();
@@ -52,7 +52,7 @@ class BarcodeInterleaved2of5Test
         void shouldThrowExceptionForInvalidHeights(double height)
         {
             BarcodeInterleaved2of5 barcode = BarcodeInterleaved2of5
-                .builder()
+                .createInterleaved2of5Barcode()
                 .withPlainTextContent("1234")
                 .withOrientation(Orientation.NORMAL)
                 .withHeightInMillimetres(height)
@@ -68,7 +68,7 @@ class BarcodeInterleaved2of5Test
         void shouldThrowExceptionForInvalidData(String data)
         {
             BarcodeInterleaved2of5 barcode = BarcodeInterleaved2of5
-                .builder()
+                .createInterleaved2of5Barcode()
                 .withPlainTextContent(data)
                 .withOrientation(Orientation.NORMAL)
                 .withHeightInMillimetres(10)
@@ -84,7 +84,7 @@ class BarcodeInterleaved2of5Test
         void shouldValidateDataLengthBasedOnCheckDigit(String data, boolean useCheckDigit)
         {
             BarcodeInterleaved2of5 barcode = BarcodeInterleaved2of5
-                .builder()
+                .createInterleaved2of5Barcode()
                 .withPlainTextContent(data)
                 .withOrientation(Orientation.NORMAL)
                 .withHeightInMillimetres(10)
@@ -112,7 +112,7 @@ class BarcodeInterleaved2of5Test
         void shouldGenerateCorrectZplString()
         {
             BarcodeInterleaved2of5 barcode = BarcodeInterleaved2of5
-                .builder()
+                .createInterleaved2of5Barcode()
                 .withPlainTextContent("1234")
                 .withOrientation(Orientation.NORMAL)
                 .withHeightInMillimetres(10)

@@ -11,7 +11,7 @@ import static com.github.mortonl.zebra.ZplCommand.BARCODE_CODE_128;
 import static com.github.mortonl.zebra.ZplCommand.generateZplIICommand;
 
 @Getter
-@SuperBuilder(setterPrefix = "with")
+@SuperBuilder(builderMethodName = "createCode128Barcode", setterPrefix = "with")
 public class BarcodeCode128 extends Barcode
 {
     private final float heightMm;

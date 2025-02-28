@@ -44,8 +44,8 @@ class CommentTest
     void testToZplString()
     {
         Comment comment = Comment
-            .builder()
-            .comment("Test Comment")
+            .createComment()
+            .withComment("Test Comment")
             .build();
         String expected = "^FX" + "Test Comment" + "^FS";
         assertEquals(expected, comment.toZplString(DEFAULT_DPI));

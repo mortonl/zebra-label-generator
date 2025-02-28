@@ -11,8 +11,8 @@ import lombok.experimental.SuperBuilder;
 import static com.github.mortonl.zebra.ZplCommand.SET_FONT;
 
 @Getter
-@SuperBuilder(setterPrefix = "with")
-public class Font implements LabelElement
+@SuperBuilder(builderMethodName = "createFont", setterPrefix = "with")
+public class Font extends LabelElement
 {
     private static final int MIN_DOTS = 10;
     private static final int MAX_DOTS = 32000;

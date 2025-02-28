@@ -13,7 +13,7 @@ import static com.github.mortonl.zebra.ZplCommand.generateZplIICommand;
 import static com.github.mortonl.zebra.validation.Validator.validateRange;
 
 @Getter
-@SuperBuilder(setterPrefix = "with")
+@SuperBuilder(builderMethodName = "createGraphicBox", setterPrefix = "with")
 public class GraphicBox extends PositionedAndSizedElement
 {
     private static final double MAX_DIMENSION = 1333.33;
@@ -37,7 +37,7 @@ public class GraphicBox extends PositionedAndSizedElement
      */
     public static GraphicBoxBuilder<?, ?> horizontalLine(double widthMm, double thicknessMm)
     {
-        return builder()
+        return createGraphicBox()
             .withSize(widthMm, thicknessMm) // Height must equal thicknessMm for a horizontal line
             .withThicknessMm(thicknessMm);
     }
@@ -51,7 +51,7 @@ public class GraphicBox extends PositionedAndSizedElement
      */
     public static GraphicBoxBuilder<?, ?> verticalLine(double heightMm, double thicknessMm)
     {
-        return builder()
+        return createGraphicBox()
             .withSize(thicknessMm, heightMm) // Width must equal thicknessMm for a vertical line
             .withThicknessMm(thicknessMm);
     }

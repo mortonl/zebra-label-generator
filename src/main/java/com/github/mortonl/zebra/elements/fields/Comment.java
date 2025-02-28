@@ -13,8 +13,8 @@ import static com.github.mortonl.zebra.ZplCommand.FIELD_END;
 import static com.github.mortonl.zebra.ZplCommand.generateZplIICommand;
 
 @Data
-@Builder
-public class Comment implements LabelElement
+@Builder(builderMethodName = "createComment", setterPrefix = "with")
+public class Comment extends LabelElement
 {
     @NonNull
     private final String comment;
