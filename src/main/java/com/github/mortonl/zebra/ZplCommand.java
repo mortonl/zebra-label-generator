@@ -6,6 +6,23 @@ import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
+/**
+ * Utility class containing ZPL II (Zebra Programming Language) command constants and helper methods.
+ * This class provides a centralized repository of ZPL commands and control characters used in
+ * label generation for Zebra printers.
+ *
+ * <p>Example of generating a complete label:</p>
+ * <pre>{@code
+ * StringBuilder label = new StringBuilder()
+ *     .append(ZplCommand.START_FORMAT)                                    // ^XA
+ *     .append(ZplCommand.generateZplIICommand(FIELD_ORIGIN, 50, 50))     // ^FO,50,50
+ *     .append(ZplCommand.generateZplIICommand(SET_FONT + "0",
+ *             Orientation.NORMAL.getValue(), 30, 20))                     // ^A0,N,30,20
+ *     .append(ZplCommand.generateZplIICommand(FIELD_DATA, "Hello"))      // ^FD,Hello
+ *     .append(ZplCommand.generateZplIICommand(FIELD_SEPARATOR))          // ^FS
+ *     .append(ZplCommand.END_FORMAT);                                    // ^XZ
+ * }</pre>
+ */
 @NoArgsConstructor(access = lombok.AccessLevel.PRIVATE)
 public class ZplCommand
 {
@@ -195,6 +212,31 @@ public class ZplCommand
     // Clear Printer
     public static final String CLEAR_BUFFER = "^CL";
 
+    /**
+     * Generates a properly formatted ZPL II command string with the specified parameters.
+     * The command will be prefixed with the control character (^) and parameters will be
+     * comma-separated.
+     *
+     * <p>Examples:</p>
+     * <pre>{@code
+     * // Basic field positioning
+     * generateZplIICommand(FIELD_ORIGIN, 100, 200)      // ^FO,100,200
+     *
+     * // Field data with text
+     * generateZplIICommand(FIELD_DATA, "Sample Text")    // ^FD,Sample Text
+     *
+     * // Barcode generation
+     * generateZplIICommand(BARCODE_CODE_128, 2, 50, "Y") // ^BC,2,50,Y
+     *
+     * // Print width specification
+     * generateZplIICommand(PRINT_WIDTH, 600)             // ^PW,600
+     * }</pre>
+     *
+     * @param command    The ZPL II command without the control character
+     * @param parameters Optional parameters for the command
+     * @return A properly formatted ZPL II command string ending with a newline
+     * @throws IllegalArgumentException if command is null or empty
+     */
     public static String generateZplIICommand(String command, Object... parameters)
     {
         if (parameters == null || parameters.length == 0) {

@@ -11,10 +11,15 @@ import com.github.mortonl.zebra.printer_configuration.PrintDensity;
 public interface LabelElement
 {
     /**
-     * Converts the label element to its ZPL (Zebra Programming Language) string representation.
+     * Generates the ZPL II commands for this label element.
      *
-     * @param dpi the print density configuration for the target printer
-     * @return a String containing the ZPL commands representing this element
+     * <p>The generated commands should include all necessary positioning and formatting
+     * instructions for the element. Only specified (non-null) parameters should be included
+     * in the generated command to allow printer defaults to take effect.</p>
+     *
+     * @param dpi The print density configuration for the target printer
+     * @return A String containing the ZPL commands representing this element
+     * @see PrintDensity
      */
     public String toZplString(PrintDensity dpi);
 

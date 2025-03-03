@@ -12,19 +12,76 @@ import static com.github.mortonl.zebra.ZplCommand.CONTROL_CHARACTERS;
 import static com.github.mortonl.zebra.ZplCommand.FIELD_END;
 import static com.github.mortonl.zebra.ZplCommand.generateZplIICommand;
 
+/**
+ * <p>Implements a comment element in ZPL II, which allows adding non-printing
+ * documentation within the label format. Comments are useful for:</p>
+ * <ul>
+ *     <li>Documenting label layouts</li>
+ *     <li>Adding version information</li>
+ *     <li>Including author attribution</li>
+ *     <li>Explaining complex label configurations</li>
+ * </ul>
+ *
+ * <p>Comments are ignored by the printer during label generation but are preserved
+ * in the ZPL code for documentation purposes.</p>
+ *
+ * <p><strong>Usage example:</strong></p>
+ * <pre>{@code
+ * Comment.builder()
+ *     .withContent("Label template v1.2 - Created by Luke Morton")
+ *     .build();
+ *
+ * Comment.builder()
+ *     .withContent("Configuration: High-resolution shipping label")
+ *     .build();
+ * }</pre>
+ *
+ * @see LabelElement The parent class for all label elements
+ */
 @Data
 @Builder
 public class Comment implements LabelElement
 {
+    /**
+     * The text content of the comment.
+     * Must not contain any ZPL control characters that could prematurely terminate the comment.
+     *
+     * <p>Restrictions:</p>
+     * <ul>
+     *     <li>Cannot be null (enforced by {@code @NonNull})</li>
+     *     <li>Cannot contain ZPL control characters (e.g., '~', '^')</li>
+     *     <li>No length restrictions other than practical memory limits</li>
+     * </ul>
+     *
+     * @param comment the text content for the comment, must not contain ZPL control characters
+     * @return the text content of the comment
+     */
     @NonNull
     private final String comment;
 
+    /**
+     * {@inheritDoc}
+     *
+     * <p>Generates a ZPL II comment command using the specified content.
+     * The comment is enclosed in appropriate ZPL command delimiters.</p>
+     *
+     * @return The ZPL II command string representing this comment
+     */
     @Override
     public String toZplString(PrintDensity dpi)
     {
         return generateZplIICommand(COMMENT, this.comment) + FIELD_END;
     }
 
+    /**
+     * {@inheritDoc}
+     *
+     * <p>Validates that the comment content does not contain any ZPL control characters
+     * that could cause parsing issues. These characters include command delimiters
+     * that would prematurely terminate the comment.</p>
+     *
+     * @throws IllegalStateException if the content contains any ZPL control characters
+     */
     @Override
     public void validateInContext(LabelSize size, PrintDensity dpi) throws IllegalStateException
     {

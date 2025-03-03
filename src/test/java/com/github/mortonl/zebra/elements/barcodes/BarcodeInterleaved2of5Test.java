@@ -1,6 +1,5 @@
 package com.github.mortonl.zebra.elements.barcodes;
 
-import com.github.mortonl.zebra.ZplCommand;
 import com.github.mortonl.zebra.formatting.Orientation;
 import com.github.mortonl.zebra.label_settings.LabelSize;
 import com.github.mortonl.zebra.printer_configuration.PrintDensity;
@@ -14,7 +13,6 @@ import org.junit.jupiter.params.provider.ValueSource;
 
 import java.util.stream.Stream;
 
-import static com.github.mortonl.zebra.ZplCommand.generateZplIICommand;
 import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
@@ -31,6 +29,14 @@ class BarcodeInterleaved2of5Test
     @DisplayName("Validation Tests")
     class ValidationTests
     {
+        private static Stream<Arguments> provideLengthTestCases()
+        {
+            return Stream.of(
+                Arguments.of("1234", false),  // even length, no check digit
+                Arguments.of("12345", true)   // odd length, with check digit
+            );
+        }
+
         @Test
         @DisplayName("Should throw exception when orientation is null")
         void shouldThrowExceptionWhenOrientationIsNull()
@@ -92,14 +98,6 @@ class BarcodeInterleaved2of5Test
                 .build();
 
             assertDoesNotThrow(() -> barcode.validateInContext(DEFAULT_SIZE, DEFAULT_DPI));
-        }
-
-        private static Stream<Arguments> provideLengthTestCases()
-        {
-            return Stream.of(
-                Arguments.of("1234", false),  // even length, no check digit
-                Arguments.of("12345", true)   // odd length, with check digit
-            );
         }
     }
 
