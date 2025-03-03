@@ -1,6 +1,7 @@
 package com.github.mortonl.zebra.elements.barcodes;
 
 import com.github.mortonl.zebra.ZebraLabel;
+import com.github.mortonl.zebra.elements.barcodes.code_128.Code128Mode;
 import com.github.mortonl.zebra.elements.fields.Field;
 import com.github.mortonl.zebra.formatting.Orientation;
 import com.github.mortonl.zebra.label_settings.LabelSize;
@@ -8,6 +9,7 @@ import com.github.mortonl.zebra.printer_configuration.PrintDensity;
 import com.github.mortonl.zebra.validation.Validator;
 import lombok.Getter;
 import lombok.experimental.SuperBuilder;
+import org.jetbrains.annotations.Nullable;
 
 import static com.github.mortonl.zebra.ZplCommand.BARCODE_CODE_128;
 import static com.github.mortonl.zebra.ZplCommand.generateZplIICommand;
@@ -75,6 +77,7 @@ import static com.github.mortonl.zebra.ZplCommand.generateZplIICommand;
  * </ul>
  *
  * @see Barcode The parent class for all barcode implementations
+ * @see Code128Mode Available modes for Code 128 barcode generation
  * @see Orientation Possible orientation values for the barcode
  * @see PrintDensity Printer DPI configuration
  * @see LabelSize Label dimension constraints
@@ -97,7 +100,7 @@ public class BarcodeCode128 extends Barcode
      * @param heightMm the height of the barcode in millimeters, must be within valid DPI-dependent range
      * @return the height of the barcode in millimeters
      */
-    private final float heightMm;
+    private final @Nullable Double heightMm;
 
     /**
      * The orientation of the barcode.
@@ -119,7 +122,7 @@ public class BarcodeCode128 extends Barcode
      * @return the current orientation setting of the barcode
      * @see Orientation
      */
-    private final Orientation orientation;
+    private final @Nullable Orientation orientation;
 
     /**
      * Controls the display of the interpretation line below the barcode.
@@ -130,10 +133,10 @@ public class BarcodeCode128 extends Barcode
      * The printer will use its default value (Y - enabled) unless modified by
      * previous commands.</p>
      *
-     * @param printInterpretationLineDesired true to show interpretation line below barcode, false to hide it
+     * @param printInterpretationLine true to show interpretation line below barcode, false to hide it
      * @return true if the interpretation line below barcode is enabled, false otherwise
      */
-    private final boolean printInterpretationLineDesired;
+    private final @Nullable Boolean printInterpretationLine;
 
     /**
      * Controls the display of the interpretation line above the barcode.
@@ -144,10 +147,10 @@ public class BarcodeCode128 extends Barcode
      * The printer will use its default value (N - disabled) unless modified by
      * previous commands.</p>
      *
-     * @param printInterpretationLineAboveDesired true to show interpretation line above barcode, false to show it below
+     * @param printInterpretationLineAbove true to show interpretation line above barcode, false to show it below
      * @return true if the interpretation line is shown above the barcode, false if shown below
      */
-    private final boolean printInterpretationLineAboveDesired;
+    private final @Nullable Boolean printInterpretationLineAbove;
 
     /**
      * Enables or disables the UCC check digit calculation.
@@ -161,7 +164,26 @@ public class BarcodeCode128 extends Barcode
      * @param uccCheckDigitEnabled true to enable automatic UCC check digit calculation, false to disable it
      * @return true if UCC check digit calculation is enabled, false otherwise
      */
-    private final boolean uccCheckDigitEnabled;
+    private final @Nullable Boolean uccCheckDigitEnabled;
+
+    /**
+     * Specifies the Code 128 encoding mode.
+     * <p>Available modes:</p>
+     * <ul>
+     *     <li>AUTO - Automatically selects optimal encoding</li>
+     *     <li>UCC_CASE - UCC case mode (limited to 19 digits)</li>
+     *     <li>MANUAL - Manual code set selection</li>
+     * </ul>
+     *
+     * <p>If not specified (null), this parameter is omitted from the ZPL command.
+     * The printer will use its default mode (AUTO) unless modified by
+     * previous commands.</p>
+     *
+     * @param mode the Code 128 encoding mode to set
+     * @return the current Code 128 encoding mode
+     * @see Code128Mode
+     */
+    private final Code128Mode mode;
 
     /**
      * {@inheritDoc}
@@ -177,13 +199,21 @@ public class BarcodeCode128 extends Barcode
     @Override
     public String toZplString(PrintDensity dpi)
     {
-        return generateZplIICommand(BARCODE_CODE_128,
-            orientation.getValue(),
-            dpi.toDots(heightMm),
-            printInterpretationLineDesired ? "Y" : "N",
-            printInterpretationLineAboveDesired ? "Y" : "N",
-            uccCheckDigitEnabled ? "Y" : "N"
-        );
+        StringBuilder zplCommand = new StringBuilder();
+
+        zplCommand
+            .append(super.toZplString(dpi))
+            .append(generateZplIICommand(BARCODE_CODE_128,
+                orientation != null ? orientation.getValue() : null,
+                dpi.toDots(heightMm),
+                printInterpretationLine != null ? printInterpretationLine ? "Y" : "N" : null,
+                printInterpretationLineAbove != null ? printInterpretationLineAbove ? "Y" : "N" : null,
+                uccCheckDigitEnabled != null ? uccCheckDigitEnabled ? "Y" : "N" : null,
+                mode != null ? mode.getValue() : null
+            ))
+            .append(getContent().toZplString(dpi));
+
+        return zplCommand.toString();
     }
 
     /**
@@ -198,17 +228,31 @@ public class BarcodeCode128 extends Barcode
     @Override
     public void validateInContext(LabelSize size, PrintDensity dpi)
     {
-        float minValidHeightMm = 1.0f / dpi.getMaxDotsPerMillimetre();
-        float maxValidHeightMm = 32000.0f / dpi.getMinDotsPerMillimetre();
+        double minValidHeightMm = 1.0 / dpi.getMaxDotsPerMillimetre();
+        double maxValidHeightMm = 32000.0 / dpi.getMinDotsPerMillimetre();
 
         Validator.validateRange(heightMm,
             minValidHeightMm,
             maxValidHeightMm,
             "Barcode height (mm)");
 
-        // Additional size validations can be added here if needed
+        // Validate mode-specific requirements
+        if (mode == Code128Mode.UCC_CASE) {
+
+            if (content == null || content.getData() == null) {
+                throw new IllegalStateException("Data cannot be null when using UCC Case Mode");
+            }
+
+            // Check digit count for UCC Case Mode
+            long digitCount = String.valueOf(content.getData()).chars()
+                                    .filter(Character::isDigit)
+                                    .count();
+
+            if (digitCount > 19) {
+                throw new IllegalStateException("UCC Case Mode cannot handle more than 19 digits");
+            }
+        }
+
         super.validateInContext(size, dpi);
     }
-
-
 }

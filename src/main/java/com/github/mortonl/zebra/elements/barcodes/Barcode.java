@@ -46,7 +46,7 @@ import static com.github.mortonl.zebra.validation.Validator.validateNotNull;
 public abstract class Barcode extends PositionedElement
 {
     /**
-     * The data to be encoded in the barcode.
+     * The content to be encoded in the barcode.
      * This field holds both the data and formatting information for the barcode content.
      *
      * <p><strong>Note:</strong> While this field is directly accessible, it's recommended
@@ -57,11 +57,11 @@ public abstract class Barcode extends PositionedElement
      * <p>The content field supports both plain text and hexadecimal data formats,
      * depending on the specific requirements of the barcode type and data being encoded.</p>
      *
-     * @param data the field containing the barcode content and its formatting information
+     * @param content the field containing the barcode content and its formatting information
      * @return the field containing the barcode content and its formatting information
      * @see Field
      */
-    Field data;
+    Field content;
 
     /**
      * {@inheritDoc}
@@ -93,8 +93,8 @@ public abstract class Barcode extends PositionedElement
     public void validateInContext(LabelSize size, PrintDensity dpi) throws IllegalStateException
     {
         super.validateInContext(size, dpi);
-        validateNotNull(data, "Data");
-        validateNotEmpty(data.getData(), "Data");
+        validateNotNull(content, "content");
+        validateNotEmpty(content.getData(), "Data");
     }
 
     /**
@@ -122,7 +122,7 @@ public abstract class Barcode extends PositionedElement
          */
         public B withPlainTextContent(String contents)
         {
-            this.data = Field
+            this.content = Field
                 .builder()
                 .data(contents)
                 .enableHexCharacters(false)
@@ -147,7 +147,7 @@ public abstract class Barcode extends PositionedElement
          */
         public B withHexadecimalContent(String contents)
         {
-            this.data = Field
+            this.content = Field
                 .builder()
                 .data(contents)
                 .enableHexCharacters(true)

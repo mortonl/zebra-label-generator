@@ -44,7 +44,7 @@ class BarcodeInterleaved2of5Test
             BarcodeInterleaved2of5 barcode = BarcodeInterleaved2of5
                 .builder()
                 .withPlainTextContent("1234")
-                .withHeightInMillimetres(10)
+                .withHeightMm(10)
                 .build();
 
             IllegalStateException exception = assertThrows(IllegalStateException.class,
@@ -61,7 +61,7 @@ class BarcodeInterleaved2of5Test
                 .builder()
                 .withPlainTextContent("1234")
                 .withOrientation(Orientation.NORMAL)
-                .withHeightInMillimetres(height)
+                .withHeightMm(height)
                 .build();
 
             assertThrows(IllegalStateException.class,
@@ -77,7 +77,7 @@ class BarcodeInterleaved2of5Test
                 .builder()
                 .withPlainTextContent(data)
                 .withOrientation(Orientation.NORMAL)
-                .withHeightInMillimetres(10)
+                .withHeightMm(10)
                 .build();
 
             assertThrows(IllegalStateException.class,
@@ -93,7 +93,7 @@ class BarcodeInterleaved2of5Test
                 .builder()
                 .withPlainTextContent(data)
                 .withOrientation(Orientation.NORMAL)
-                .withHeightInMillimetres(10)
+                .withHeightMm(10)
                 .withCalculateAndPrintMod10CheckDigit(useCheckDigit)
                 .build();
 
@@ -113,7 +113,7 @@ class BarcodeInterleaved2of5Test
                 .builder()
                 .withPlainTextContent("1234")
                 .withOrientation(Orientation.NORMAL)
-                .withHeightInMillimetres(10)
+                .withHeightMm(10)
                 .withPrintInterpretationLine(true)
                 .withPrintInterpretationLineAbove(false)
                 .withCalculateAndPrintMod10CheckDigit(false)

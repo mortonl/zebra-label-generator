@@ -148,7 +148,55 @@ public enum PrintDensity
      */
     public int toDots(double millimeters)
     {
-        return (int) Math.round(millimeters * dotsPerMillimetre);
+        return toDots(millimeters, RoundingMode.HALF_UP);
+    }
+
+    /**
+     * Converts a measurement in millimeters to dots at this print density,
+     * using the specified rounding mode.
+     *
+     * <p>Examples at 203 DPI (8 dots/mm) with different rounding modes:</p>
+     * <ul>
+     *     <li>1.4 mm (11.2 dots):
+     *         <ul>
+     *             <li>CEILING: 12 dots</li>
+     *             <li>FLOOR: 11 dots</li>
+     *             <li>HALF_UP: 11 dots</li>
+     *             <li>HALF_DOWN: 11 dots</li>
+     *             <li>UP: 12 dots</li>
+     *             <li>DOWN: 11 dots</li>
+     *         </ul>
+     *     </li>
+     *     <li>1.5 mm (12.0 dots):
+     *         <ul>
+     *             <li>All modes: 12 dots (exact value)</li>
+     *         </ul>
+     *     </li>
+     *     <li>1.6 mm (12.8 dots):
+     *         <ul>
+     *             <li>CEILING: 13 dots</li>
+     *             <li>FLOOR: 12 dots</li>
+     *             <li>HALF_UP: 13 dots</li>
+     *             <li>HALF_DOWN: 13 dots</li>
+     *             <li>UP: 13 dots</li>
+     *             <li>DOWN: 12 dots</li>
+     *         </ul>
+     *     </li>
+     * </ul>
+     *
+     * @param millimeters  The measurement in millimeters
+     * @param roundingMode The rounding mode to apply
+     * @return The equivalent number of dots, rounded according to the specified mode
+     * @throws IllegalArgumentException if roundingMode is null
+     */
+    public int toDots(double millimeters, RoundingMode roundingMode)
+    {
+        if (roundingMode == null) {
+            throw new IllegalArgumentException("Rounding mode cannot be null");
+        }
+        return BigDecimal.valueOf(millimeters * dotsPerMillimetre)
+                         .setScale(0, roundingMode)
+                         .intValue();
     }
 
     /**

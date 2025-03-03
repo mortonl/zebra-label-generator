@@ -53,11 +53,11 @@ public class Comment implements LabelElement
      *     <li>No length restrictions other than practical memory limits</li>
      * </ul>
      *
-     * @param comment the text content for the comment, must not contain ZPL control characters
+     * @param content the text content for the comment, must not contain ZPL control characters
      * @return the text content of the comment
      */
     @NonNull
-    private final String comment;
+    private final String content;
 
     /**
      * {@inheritDoc}
@@ -70,7 +70,7 @@ public class Comment implements LabelElement
     @Override
     public String toZplString(PrintDensity dpi)
     {
-        return generateZplIICommand(COMMENT, this.comment) + FIELD_END;
+        return generateZplIICommand(COMMENT, this.content) + FIELD_END;
     }
 
     /**
@@ -87,7 +87,7 @@ public class Comment implements LabelElement
     {
         if (CONTROL_CHARACTERS
             .stream()
-            .anyMatch(comment::contains))
+            .anyMatch(content::contains))
         {
             throw new IllegalStateException(
                 "Comments cannot contain the special characters " +

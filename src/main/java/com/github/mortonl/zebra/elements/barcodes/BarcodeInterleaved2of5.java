@@ -64,10 +64,10 @@ public class BarcodeInterleaved2of5 extends Barcode
      * Must be between {1.0/DPI} and {32000.0/DPI} millimeters,
      * and must fit within the label height.
      *
-     * @param heightInMillimetres the height of the barcode in millimeters, must be within DPI-dependent range
+     * @param heightMm the height of the barcode in millimeters, must be within DPI-dependent range
      * @return the height of the barcode in millimeters
      */
-    private final double heightInMillimetres;
+    private final double heightMm;
 
     /**
      * Controls whether to print the interpretation line (human-readable text)
@@ -125,11 +125,11 @@ public class BarcodeInterleaved2of5 extends Barcode
             .append(generateZplIICommand(
                 ZplCommand.BARCODE_INTERLEAVED_2_OF_5,
                 orientation != null ? orientation.getValue() : null,
-                dpi.toDots(heightInMillimetres),
+                dpi.toDots(heightMm),
                 printInterpretationLine ? "Y" : "N",
                 printInterpretationLineAbove ? "Y" : "N",
                 calculateAndPrintMod10CheckDigit ? "Y" : "N"))
-            .append(getData().toZplString(dpi));
+            .append(getContent().toZplString(dpi));
 
         return zplCommand.toString();
     }
@@ -176,13 +176,13 @@ public class BarcodeInterleaved2of5 extends Barcode
         double maxHeightMm = 32000.0 / PrintDensity.getMinDotsPerMillimetre();
 
         // Validate height range
-        validateRange(heightInMillimetres, minHeightMm, maxHeightMm, "Bar code height");
+        validateRange(heightMm, minHeightMm, maxHeightMm, "Bar code height");
 
         // Validate height fits within label
-        validateRange(heightInMillimetres, 0, size.getHeightMm(), "Bar code height");
+        validateRange(heightMm, 0, size.getHeightMm(), "Bar code height");
 
         // Validate data
-        String data = getData().getData();
+        String data = getContent().getData();
         validateNotNull(data, "Barcode data");
 
         if (!data.matches("\\d+")) {

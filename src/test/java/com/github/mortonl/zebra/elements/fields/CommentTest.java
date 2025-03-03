@@ -45,7 +45,7 @@ class CommentTest
     {
         Comment comment = Comment
             .builder()
-            .comment("Test Comment")
+            .content("Test Comment")
             .build();
         String expected = "^FX" + "Test Comment" + "^FS";
         assertEquals(expected, comment.toZplString(DEFAULT_DPI));

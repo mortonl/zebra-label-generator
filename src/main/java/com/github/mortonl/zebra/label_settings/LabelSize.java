@@ -4,6 +4,7 @@ import com.github.mortonl.zebra.printer_configuration.PrintDensity;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 
+import java.math.RoundingMode;
 import java.util.Arrays;
 import java.util.Optional;
 
@@ -197,27 +198,41 @@ public enum LabelSize
 
     /**
      * Converts the label height to dots based on the specified print density.
-     * The result is rounded to the nearest integer.
+     * The result is rounded down to ensure the label fits within the specified dimensions.
+     *
+     * <p>Example at 203 DPI (8 dots/mm):</p>
+     * <ul>
+     *     <li>25.4 mm → 203 dots</li>
+     *     <li>25.6 mm → 204 dots (25.6 * 8 = 204.8 rounds down to 204)</li>
+     *     <li>25.9 mm → 207 dots (25.9 * 8 = 207.2 rounds down to 207)</li>
+     * </ul>
      *
      * @param density the print density to use for conversion
-     * @return height in dots, rounded to the nearest integer
+     * @return height in dots, rounded down to the nearest integer
      * @see PrintDensity
      */
     public int getHeightInDots(PrintDensity density)
     {
-        return density.toDots(heightMm);
+        return density.toDots(heightMm, RoundingMode.DOWN);
     }
 
     /**
      * Converts the label width to dots based on the specified print density.
-     * The result is rounded to the nearest integer.
+     * The result is rounded down to ensure the label fits within the specified dimensions.
+     *
+     * <p>Example at 203 DPI (8 dots/mm):</p>
+     * <ul>
+     *     <li>101.6 mm → 812 dots</li>
+     *     <li>101.8 mm → 814 dots (101.8 * 8 = 814.4 rounds down to 814)</li>
+     *     <li>102.0 mm → 816 dots (102.0 * 8 = 816.0)</li>
+     * </ul>
      *
      * @param density the print density to use for conversion
-     * @return width in dots, rounded to the nearest integer
+     * @return width in dots, rounded down to the nearest integer
      * @see PrintDensity
      */
     public int getWidthInDots(PrintDensity density)
     {
-        return density.toDots(widthMm);
+        return density.toDots(widthMm, RoundingMode.DOWN);
     }
 }

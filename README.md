@@ -44,8 +44,8 @@ It's designed to make working with Zebra printers more straightforward and maint
         - Ellipses
         - Symbols
 - Graphic field validation
-    - I currently don't understand some of the examples i've seen of graphic fields being used where non-hex characters
-      were used in a hex command, when i can learn more about how this functionality is supposed to work i will add
+    - I currently don't understand some of the examples I've seen of graphic fields being used where non-hex characters
+      were used in a hex command, when I can learn more about how this functionality is supposed to work I will add
       better validation.
 - Setting defaults for the label
     - Warning when setting an item the same as a default setting?
@@ -108,8 +108,8 @@ This project was created as an alternative to existing solutions, with a specifi
 These projects in particular were
 
 - [W3 Blog France / Zebra ZPL Project](https://github.com/w3blogfr/zebra-zpl)
-  I was originally going to make use of this project but for many reasons i chose not to use it or fork it. In
-  particular i found i was having to rewrite a lot of the logic for my own use cases, and it wouldn't solve my initial
+  I was originally going to make use of this project but for many reasons I chose not to use it or fork it. In
+  particular, I found I was having to rewrite a lot of the logic for my own use cases, and it wouldn't solve my initial
   wishes for DPI agnostic programmatic label creation.
 
 ## Testing Labels

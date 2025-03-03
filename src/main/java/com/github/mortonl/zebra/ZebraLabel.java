@@ -1,7 +1,7 @@
 package com.github.mortonl.zebra;
 
 import com.github.mortonl.zebra.elements.LabelElement;
-import com.github.mortonl.zebra.formatting.FontEncoding;
+import com.github.mortonl.zebra.label_settings.InternationalCharacterSet;
 import com.github.mortonl.zebra.label_settings.LabelSize;
 import com.github.mortonl.zebra.printer_configuration.PrintDensity;
 import com.github.mortonl.zebra.printer_configuration.PrinterConfiguration;
@@ -12,7 +12,6 @@ import lombok.Data;
 import java.util.ArrayList;
 import java.util.List;
 
-import static com.github.mortonl.zebra.ZplCommand.CHANGE_INTERNATIONAL_CHARACTER_SET;
 import static com.github.mortonl.zebra.ZplCommand.END_FORMAT;
 import static com.github.mortonl.zebra.ZplCommand.LABEL_LENGTH;
 import static com.github.mortonl.zebra.ZplCommand.LINE_SEPERATOR;
@@ -80,7 +79,7 @@ public class ZebraLabel
      * @param internationalCharacterSet the character encoding
      * @return the current font encoding
      */
-    private final FontEncoding internationalCharacterSet;
+    private final InternationalCharacterSet internationalCharacterSet;
 
     /**
      * Creates a new label instance with validation of core configuration parameters.
@@ -92,7 +91,7 @@ public class ZebraLabel
      * @throws IllegalArgumentException if size or printer is null, or if label size exceeds printer capabilities
      */
     @Builder
-    private static ZebraLabel createWithValidation(LabelSize size, PrinterConfiguration printer, FontEncoding internationalCharacterSet)
+    private static ZebraLabel createWithValidation(LabelSize size, PrinterConfiguration printer, InternationalCharacterSet internationalCharacterSet)
     {
         validateConfiguration(size, printer);
         return new ZebraLabel(size, printer, new ArrayList<>(), internationalCharacterSet);
@@ -169,7 +168,7 @@ public class ZebraLabel
             .append(LINE_SEPERATOR);
 
         addLabelSize(builder, dpi);
-        addInternationalCharacterSet(builder);
+        addInternationalCharacterSet(builder, dpi);
 
         elements.forEach(element -> builder
             .append(element.toZplString(dpi))
@@ -195,11 +194,11 @@ public class ZebraLabel
     /**
      * Adds the international character set configuration to the ZPL II output if specified.
      */
-    private void addInternationalCharacterSet(StringBuilder builder)
+    private void addInternationalCharacterSet(StringBuilder builder, PrintDensity dpi)
     {
         if (internationalCharacterSet != null) {
             builder
-                .append(generateZplIICommand(CHANGE_INTERNATIONAL_CHARACTER_SET, internationalCharacterSet.getValue()))
+                .append(internationalCharacterSet.toZplString(dpi))
                 .append(LINE_SEPERATOR);
         }
     }

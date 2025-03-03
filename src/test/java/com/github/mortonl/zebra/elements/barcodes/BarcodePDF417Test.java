@@ -23,12 +23,12 @@ public class BarcodePDF417Test
     {
         return Stream.of(
             // Test case name, data, rowHeight, securityLevel, dataColumns, rows
-            Arguments.of("Empty Data", "", 10, 0, 1, 3),
-            Arguments.of("Excessive Data", new String(new char[3001]).replace('\0', 'a'), 10, 0, 1, 3),
-            Arguments.of("Invalid Data Columns", "Test", 10, 0, 31, 3),
-            Arguments.of("Invalid Rows", "Test", 10, 0, 1, 91),
-            Arguments.of("Invalid Security Level", "Test", 10, 9, 1, 3),
-            Arguments.of("Negative Row Height", "Test", -1, 0, 1, 3)
+            Arguments.of("Empty Data", "", 10.0, 0, 1, 3),
+            Arguments.of("Excessive Data", new String(new char[3001]).replace('\0', 'a'), 10.0, 0, 1, 3),
+            Arguments.of("Invalid Data Columns", "Test", 10.0, 0, 31, 3),
+            Arguments.of("Invalid Rows", "Test", 10.0, 0, 1, 91),
+            Arguments.of("Invalid Security Level", "Test", 10.0, 9, 1, 3),
+            Arguments.of("Negative Row Height", "Test", -1.0, 0, 1, 3)
         );
     }
 
@@ -38,7 +38,7 @@ public class BarcodePDF417Test
     private static Stream<Arguments> validBarcodeParameters()
     {
         return Stream.of(
-            Arguments.of("Valid Parameters", "Test data", 10, 5, 15, 20)
+            Arguments.of("Valid Parameters", "Test data", 10.0, 5, 15, 20)
         );
     }
 
@@ -51,12 +51,12 @@ public class BarcodePDF417Test
             Arguments.of(
                 "Normal Orientation",
                 Orientation.NORMAL,
+                0.625,
                 10,
-                5,
                 20,
                 30,
                 "Test123",
-                "^FO100,148^B7N,10,5,20,30^FDTest123^FS"
+                "^FO100,148^B7N,5,10,20,30,N^FDTest123^FS"
             )
         );
     }
@@ -77,7 +77,7 @@ public class BarcodePDF417Test
     void testValidateInContextWithInvalidParameters(
         String testName,
         String data,
-        int rowHeight,
+        double rowHeight,
         int securityLevel,
         int dataColumns,
         int rows
@@ -86,7 +86,7 @@ public class BarcodePDF417Test
         BarcodePDF417 barcode = BarcodePDF417
             .builder()
             .withOrientation(Orientation.NORMAL)
-            .withRowHeight(rowHeight)
+            .withRowHeightMm(rowHeight)
             .withSecurityLevel(securityLevel)
             .withDataColumns(dataColumns)
             .withRows(rows)
@@ -102,7 +102,7 @@ public class BarcodePDF417Test
     void testValidateInContextWithValidParameters(
         String testName,
         String data,
-        int rowHeight,
+        double rowHeightMm,
         int securityLevel,
         int dataColumns,
         int rows
@@ -111,7 +111,7 @@ public class BarcodePDF417Test
         BarcodePDF417 barcode = BarcodePDF417
             .builder()
             .withOrientation(Orientation.NORMAL)
-            .withRowHeight(rowHeight)
+            .withRowHeightMm(rowHeightMm)
             .withSecurityLevel(securityLevel)
             .withDataColumns(dataColumns)
             .withRows(rows)
@@ -127,7 +127,7 @@ public class BarcodePDF417Test
     void testToZplString(
         String testName,
         Orientation orientation,
-        int rowHeight,
+        double rowHeight,
         int securityLevel,
         int dataColumns,
         int rows,
@@ -139,10 +139,11 @@ public class BarcodePDF417Test
             .builder()
             .withPosition(12.5, 18.5)
             .withOrientation(orientation)
-            .withRowHeight(rowHeight)
+            .withRowHeightMm(rowHeight)
             .withSecurityLevel(securityLevel)
             .withDataColumns(dataColumns)
             .withRows(rows)
+            .withEnableRightSideTruncation(false)
             .withPlainTextContent(data)
             .build();
 
@@ -160,7 +161,7 @@ public class BarcodePDF417Test
         BarcodePDF417 barcode = BarcodePDF417
             .builder()
             .withOrientation(Orientation.NORMAL)
-            .withRowHeight(10)
+            .withRowHeightMm(10.0)
             .withSecurityLevel(5)
             .withDataColumns(15)
             .withRows(20)

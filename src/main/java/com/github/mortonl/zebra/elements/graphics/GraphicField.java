@@ -217,4 +217,16 @@ public class GraphicField extends PositionedElement
             );
         }
     }
+
+    /**
+     * Builder for creating GraphicField instances with type-safe configuration.
+     * Provides convenient methods for setting graphic data with different compression types.
+     *
+     * @param <C> The type of the GraphicField being built
+     * @param <B> The type of the builder itself
+     */
+    public static abstract class GraphicFieldBuilder<C extends GraphicField, B extends GraphicFieldBuilder<C, B>>
+        extends PositionedElementBuilder<C, B>
+    {
+    }
 }
