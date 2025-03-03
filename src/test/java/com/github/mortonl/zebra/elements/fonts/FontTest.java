@@ -21,10 +21,10 @@ class FontTest
     void testToZplString()
     {
         Font font = Font.createFont()
-            .withFontDesignation('A')
-            .withOrientation(Orientation.NORMAL)
-            .withSize(4.0, 3.0)
-            .build();
+                        .withFontDesignation('A')
+                        .withOrientation(Orientation.NORMAL)
+                        .withSize(4.0, 3.0)
+                        .build();
 
         String zplString = font.toZplString(testDpi);
 
@@ -35,9 +35,9 @@ class FontTest
     void testValidateInContext_ValidFont()
     {
         Font font = Font.createFont()
-            .withFontDesignation('A')
-            .withSize(4.0, 3.0)
-            .build();
+                        .withFontDesignation('A')
+                        .withSize(4.0, 3.0)
+                        .build();
 
         assertDoesNotThrow(() -> font.validateInContext(testSize, testDpi));
     }
@@ -47,9 +47,9 @@ class FontTest
     void testValidateInContext_InvalidFontDesignation(char invalidDesignation)
     {
         Font font = Font.createFont()
-            .withFontDesignation(invalidDesignation)
-            .withSize(4.0, 3.0)
-            .build();
+                        .withFontDesignation(invalidDesignation)
+                        .withSize(4.0, 3.0)
+                        .build();
 
         IllegalStateException exception = assertThrows(
             IllegalStateException.class,
@@ -63,9 +63,9 @@ class FontTest
     void testValidateInContext_ValidFontDesignation(char validDesignation)
     {
         Font font = Font.createFont()
-            .withFontDesignation(validDesignation)
-            .withSize(4.0, 3.0)
-            .build();
+                        .withFontDesignation(validDesignation)
+                        .withSize(4.0, 3.0)
+                        .build();
 
         assertDoesNotThrow(() -> font.validateInContext(testSize, testDpi));
     }
@@ -85,9 +85,9 @@ class FontTest
     )
     {
         Font font = Font.createFont()
-            .withFontDesignation('A')
-            .withSize(dimension.equals("width") ? invalidValue : 2.0, dimension.equals("height") ? invalidValue : 2.0)
-            .build();
+                        .withFontDesignation('A')
+                        .withSize(dimension.equals("width") ? invalidValue : 2.0, dimension.equals("height") ? invalidValue : 2.0)
+                        .build();
 
         IllegalStateException exception = assertThrows(
             IllegalStateException.class,
@@ -112,9 +112,9 @@ class FontTest
     )
     {
         Font font = Font.createFont()
-            .withFontDesignation('A')
-            .withSize(dimension.equals("width") ? boundaryValue : 2.0, dimension.equals("height") ? boundaryValue : 2.0)
-            .build();
+                        .withFontDesignation('A')
+                        .withSize(dimension.equals("width") ? boundaryValue : 2.0, dimension.equals("height") ? boundaryValue : 2.0)
+                        .build();
 
         assertDoesNotThrow(
             () -> font.validateInContext(testSize, testDpi),

@@ -1,0 +1,47 @@
+Release Notes - Zebra Label Generator Updates
+Code128 Barcode Improvements
+Builder Pattern Enhancements
+Fixed inheritance hierarchy in builder classes for PositionedElement and Font
+
+Added proper extends clauses to ensure builder methods are correctly inherited
+
+Standardized builder method naming with createX prefix
+
+BarcodeCode128 Improvements
+Added @Getter(is=true) for Boolean fields to generate more intuitive accessor methods
+
+Changed from getXXX() to isXXX() for boolean properties
+
+Added null safety check for truncateRightRowIndicatorsAndStopPattern in ZPL generation
+
+Test Suite Reorganization
+Structured tests into logical nested classes:
+
+BasicBarcodeCreationTests
+
+ZplCommandGenerationTests
+
+ValidationTests
+
+Added new test cases for:
+
+UCC CASE mode validation
+
+Complete barcode creation with all values
+
+Error message validation
+
+Improved test documentation and naming
+
+Added parameterized tests for invalid data scenarios
+
+Code Quality
+Enhanced error message clarity
+
+Improved test coverage for edge cases
+
+Standardized test constant values
+
+Better organization of test data providers
+
+These changes improve code maintainability, type safety, and test coverage while providing a more intuitive API for developers.

@@ -38,9 +38,7 @@ public class FullLabelTest
             .withSize(27.5, 10)
             .withThicknessMm(10.0)
             .withRoundness(0)
-            .build();
-
-        testLabel.validateAndAddElement(topBox);
+            .addToLabel(testLabel);
 
         GraphicField graphicField = GraphicField
             .createGraphicField()

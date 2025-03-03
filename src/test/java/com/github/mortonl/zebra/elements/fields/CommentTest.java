@@ -45,7 +45,7 @@ class CommentTest
     {
         Comment comment = Comment
             .createComment()
-            .withComment("Test Comment")
+            .withContent("Test Comment")
             .build();
         String expected = "^FX" + "Test Comment" + "^FS";
         assertEquals(expected, comment.toZplString(DEFAULT_DPI));
@@ -54,7 +54,7 @@ class CommentTest
     @Test
     void testToZplStringWithEmptyComment()
     {
-        Comment comment = new Comment("");
+        Comment comment = Comment.createComment().withContent("").build();
         String expected = "^FX" + "^FS";
         assertEquals(expected, comment.toZplString(DEFAULT_DPI));
     }
@@ -63,7 +63,7 @@ class CommentTest
     @MethodSource("validComments")
     void testValidateInContextWithValidComments(String testName, String commentText)
     {
-        Comment comment = new Comment(commentText);
+        Comment comment = Comment.createComment().withContent(commentText).build();
         assertDoesNotThrow(() -> comment.validateInContext(DEFAULT_SIZE, DEFAULT_DPI));
     }
 
@@ -71,7 +71,7 @@ class CommentTest
     @MethodSource("invalidComments")
     void testValidateInContextWithInvalidComments(String testName, String commentText)
     {
-        Comment comment = new Comment(commentText);
+        Comment comment = Comment.createComment().withContent(commentText).build();
         IllegalStateException exception = assertThrows(
             IllegalStateException.class,
             () -> comment.validateInContext(DEFAULT_SIZE, DEFAULT_DPI)

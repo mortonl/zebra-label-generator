@@ -12,50 +12,142 @@ import static com.github.mortonl.zebra.ZplCommand.GRAPHIC_BOX;
 import static com.github.mortonl.zebra.ZplCommand.generateZplIICommand;
 import static com.github.mortonl.zebra.validation.Validator.validateRange;
 
+/**
+ * Represents a graphic box or line element in ZPL format (^GB command).
+ * This class can be used to create boxes, rectangles, and lines with various attributes
+ * such as thickness, color, and corner roundness.
+ *
+ * <p>The graphic box can be configured with:
+ * <ul>
+ *     <li>Width and height (inherited from PositionedAndSizedElement)</li>
+ *     <li>Line thickness</li>
+ *     <li>Line color (black or white)</li>
+ *     <li>Corner roundness (for rounded rectangles)</li>
+ * </ul></p>
+ *
+ * <p>Example usage:
+ * <pre>{@code
+ * GraphicBox box = GraphicBox.createGraphicBox()
+ *     .withPosition(100, 100)
+ *     .withSize(200, 100)
+ *     .withThicknessMm(0.4)
+ *     .withColor(LineColor.BLACK)
+ *     .withRoundness(8)
+ *     .build();
+ *
+ * // Create a horizontal line
+ * GraphicBox line = GraphicBox.horizontalLine(100, 0.4)
+ *     .withPosition(50, 200)
+ *     .withColor(LineColor.BLACK)
+ *     .build();
+ * }</pre></p>
+ *
+ * <p><strong>Note:</strong> When values are not explicitly set, they will not be included
+ * in the ZPL command. This allows the printer to use its default values.</p>
+ *
+ * @see PositionedAndSizedElement For positioning and sizing capabilities
+ * @see LineColor For available line colors
+ */
+
 @Getter
 @SuperBuilder(builderMethodName = "createGraphicBox", setterPrefix = "with")
 public class GraphicBox extends PositionedAndSizedElement
 {
+    /** Maximum allowed dimension for width, height and thickness in millimeters */
     private static final double MAX_DIMENSION = 1333.33;
+
+    /** Minimum allowed thickness in millimeters */
     private static final double MIN_THICKNESS = 0.04;
 
+    /** Error message for dimension validation */
     private static final String DIMENSION_ERROR_MESSAGE =
         "Maximum value for width, height and thickness is " + MAX_DIMENSION;
 
+    /**
+     * The thickness of the box border or line in millimeters.
+     * Must be between {@value #MIN_THICKNESS} and {@value #MAX_DIMENSION} mm.
+     */
     private final Double thicknessMm;
 
+    /**
+     * The color of the box border or line.
+     * When not specified, the printer's default color (usually black) is used.
+     *
+     * @see LineColor
+     */
     private final LineColor color;
 
+    /**
+     * The degree of corner rounding for the box.
+     * <p>Values:
+     * <ul>
+     *     <li>0 = sharp corners</li>
+     *     <li>1-8 = degree of rounding (8 = most round)</li>
+     * </ul></p>
+     * <p>When not specified, the printer's default (usually 0) is used.</p>
+     */
     private final Integer roundness;
 
     /**
      * Creates a builder pre-configured for a horizontal line.
+     * The height of the line will be set equal to the thickness.
+     *
+     * <p>Example usage:
+     * <pre>{@code
+     * GraphicBox line = GraphicBox.horizontalLine(100, 0.4)
+     *     .withPosition(50, 200)
+     *     .withColor(LineColor.BLACK)
+     *     .build();
+     * }</pre></p>
      *
      * @param widthMm     Width in millimeters (thickness-32000)
      * @param thicknessMm Line thickness in millimeters (1-32000)
      * @return a builder instance configured for a horizontal line
+     * @throws IllegalArgumentException if width or thickness is outside valid range
      */
     public static GraphicBoxBuilder<?, ?> horizontalLine(double widthMm, double thicknessMm)
     {
         return createGraphicBox()
-            .withSize(widthMm, thicknessMm) // Height must equal thicknessMm for a horizontal line
+            .withSize(widthMm, thicknessMm)
             .withThicknessMm(thicknessMm);
     }
 
     /**
      * Creates a builder pre-configured for a vertical line.
+     * The height of the line will be set equal to the thickness.
+     *
+     * <p>Example usage:
+     * <pre>{@code
+     * GraphicBox line = GraphicBox.verticalLine(100, 0.4)
+     *     .withPosition(50, 200)
+     *     .withColor(LineColor.BLACK)
+     *     .build();
+     * }</pre></p>
      *
      * @param heightMm    Height in millimeters (thickness-32000)
      * @param thicknessMm Line thickness in millimeters (1-32000)
      * @return a builder instance configured for a vertical line
+     * @throws IllegalArgumentException if height or thickness is outside valid range
      */
     public static GraphicBoxBuilder<?, ?> verticalLine(double heightMm, double thicknessMm)
     {
         return createGraphicBox()
-            .withSize(thicknessMm, heightMm) // Width must equal thicknessMm for a vertical line
+            .withSize(thicknessMm, heightMm)
             .withThicknessMm(thicknessMm);
     }
 
+    /**
+     * {@inheritDoc}
+     *
+     * <p>The command format follows: ^GBw,h,t,c,r where:
+     * <ul>
+     *     <li>w = width</li>
+     *     <li>h = height</li>
+     *     <li>t = border thickness</li>
+     *     <li>c = line color</li>
+     *     <li>r = degree of corner rounding</li>
+     * </ul></p>
+     */
     @Override
     public String toZplString(PrintDensity dpi)
     {
@@ -68,6 +160,15 @@ public class GraphicBox extends PositionedAndSizedElement
         ) + FIELD_END;
     }
 
+    /**
+     * {@inheritDoc}
+     *
+     * <p>Additional validation for GraphicBox includes:
+     * <ul>
+     *     <li>Thickness range check ({@value #MIN_THICKNESS}-{@value #MAX_DIMENSION} mm)</li>
+     *     <li>Roundness range check (0-8)</li>
+     * </ul></p>
+     */
     @Override
     public void validateInContext(LabelSize size, PrintDensity dpi) throws IllegalStateException
     {

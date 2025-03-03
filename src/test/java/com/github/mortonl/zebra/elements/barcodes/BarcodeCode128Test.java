@@ -1,9 +1,11 @@
 package com.github.mortonl.zebra.elements.barcodes;
 
+import com.github.mortonl.zebra.elements.barcodes.code_128.Code128Mode;
 import com.github.mortonl.zebra.formatting.Orientation;
 import com.github.mortonl.zebra.label_settings.LabelSize;
 import com.github.mortonl.zebra.printer_configuration.PrintDensity;
 import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
@@ -15,119 +17,157 @@ import java.util.stream.Stream;
 import static org.junit.jupiter.api.Assertions.assertAll;
 import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 @DisplayName("Code 128 Barcode Tests")
 class BarcodeCode128Test
 {
     private static final LabelSize DEFAULT_SIZE = LabelSize.LABEL_4X6; // 101.6mm x 152.4mm
     private static final PrintDensity DEFAULT_DPI = PrintDensity.DPI_203; // 8 dots per mm
-    private static final float VALID_HEIGHT_MM = 10.0f;
+    private static final double VALID_HEIGHT_MM = 10.0;
 
-    private static Stream<Arguments> validBarcodeParameters()
+    @Nested
+    @DisplayName("Basic Barcode Creation Tests")
+    class BasicBarcodeCreationTests
     {
-        return Stream.of(
-            Arguments.of(10.0f, Orientation.NORMAL, true, false, false,
-                "^BCN,80,Y,N,N"),
-            Arguments.of(15.0f, Orientation.ROTATED, false, true, true,
-                "^BCR,120,N,Y,Y"),
-            Arguments.of(20.0f, Orientation.INVERTED, true, true, false,
-                "^BCI,160,Y,Y,N")
-        );
+        @Test
+        @DisplayName("Should create barcode with all values set")
+        void shouldCreateBarcodeWithAllValuesSet()
+        {
+            BarcodeCode128 barcode = BarcodeCode128
+                .createCode128Barcode()
+                .withHeightMm(VALID_HEIGHT_MM)
+                .withOrientation(Orientation.NORMAL)
+                .withUccCheckDigitEnabled(true)
+                .withPrintInterpretationLine(true)
+                .withPrintInterpretationLineAbove(true)
+                .withMode(Code128Mode.UCC_CASE)
+                .withPlainTextContent("123456")
+                .build();
+
+            assertAll(
+                () -> assertEquals(VALID_HEIGHT_MM, barcode.getHeightMm()),
+                () -> assertEquals(Orientation.NORMAL, barcode.getOrientation()),
+                () -> assertTrue(barcode.getUccCheckDigitEnabled()),
+                () -> assertTrue(barcode.getPrintInterpretationLine()),
+                () -> assertTrue(barcode.getPrintInterpretationLineAbove()),
+                () -> assertEquals(Code128Mode.UCC_CASE, barcode.getMode()),
+                () -> assertEquals("123456", barcode.getContent().getData())
+            );
+        }
     }
 
-    private static Stream<Arguments> validHeightRanges()
+    @Nested
+    @DisplayName("ZPL Command Generation Tests")
+    class ZplCommandGenerationTests
     {
-        return Stream.of(
-            Arguments.of(PrintDensity.DPI_203, 10.0f),
-            Arguments.of(PrintDensity.DPI_300, 15.0f),
-            Arguments.of(PrintDensity.DPI_600, 20.0f)
-        );
+        private static Stream<Arguments> validBarcodeParameters()
+        {
+            return Stream.of(
+                Arguments.of(10.0, Orientation.NORMAL, true, false, false,
+                    "^FO0,0^BCN,80,Y,N,N,A^FD123456789^FS"),
+                Arguments.of(15.0, Orientation.ROTATED, false, true, true,
+                    "^FO0,0^BCR,120,N,Y,Y,A^FD123456789^FS"),
+                Arguments.of(20.0, Orientation.INVERTED, true, true, false,
+                    "^FO0,0^BCI,160,Y,Y,N,A^FD123456789^FS")
+            );
+        }
+
+        @ParameterizedTest
+        @MethodSource("validBarcodeParameters")
+        @DisplayName("Should generate correct ZPL command for different configurations")
+        void shouldGenerateCorrectZplCommand(
+            double heightMm, Orientation orientation,
+            boolean interpretationLine, boolean interpretationLineAbove,
+            boolean uccCheckDigit, String expected
+        )
+        {
+            BarcodeCode128 barcode = BarcodeCode128
+                .createCode128Barcode()
+                .withHeightMm(heightMm)
+                .withOrientation(orientation)
+                .withPrintInterpretationLine(interpretationLine)
+                .withPrintInterpretationLineAbove(interpretationLineAbove)
+                .withUccCheckDigitEnabled(uccCheckDigit)
+                .withPlainTextContent("123456789")
+                .withMode(Code128Mode.AUTOMATIC)
+                .build();
+
+            String zplCommand = barcode.toZplString(DEFAULT_DPI);
+            assertEquals(expected, zplCommand);
+        }
     }
 
-    @Test
-    @DisplayName("Should create barcode with default values")
-    void shouldCreateBarcodeWithDefaultValues()
+    @Nested
+    @DisplayName("Validation Tests")
+    class ValidationTests
     {
-        BarcodeCode128 barcode = BarcodeCode128
-            .createCode128Barcode()
-            .withHeightMm(VALID_HEIGHT_MM)
-            .withOrientation(Orientation.NORMAL)
-            .build();
+        private static Stream<Arguments> validHeightRanges()
+        {
+            return Stream.of(
+                Arguments.of(PrintDensity.DPI_203, 10.0),
+                Arguments.of(PrintDensity.DPI_300, 15.0),
+                Arguments.of(PrintDensity.DPI_600, 20.0)
+            );
+        }
 
-        assertAll(
-            () -> assertEquals(VALID_HEIGHT_MM, barcode.getHeightMm()),
-            () -> assertEquals(Orientation.NORMAL, barcode.getOrientation()),
-            () -> assertFalse(barcode.isUccCheckDigitEnabled()),
-            () -> assertFalse(barcode.isPrintInterpretationLineDesired()),
-            () -> assertFalse(barcode.isPrintInterpretationLineAboveDesired())
-        );
-    }
+        private static Stream<Arguments> invalidUccCaseData()
+        {
+            return Stream.of(
+                Arguments.of("12345678901234567890", "UCC Case Mode cannot handle more than 19 digits"),
+                Arguments.of(null, "Data cannot be null when using UCC Case Mode")
+            );
+        }
 
-    @ParameterizedTest
-    @MethodSource("validBarcodeParameters")
-    @DisplayName("Should generate correct ZPL command for different configurations")
-    void shouldGenerateCorrectZplCommand(
-        float heightMm, Orientation orientation,
-        boolean interpretationLine, boolean interpretationLineAbove,
-        boolean uccCheckDigit, String expected
-    )
-    {
-        BarcodeCode128 barcode = BarcodeCode128
-            .createCode128Barcode()
-            .withHeightMm(heightMm)
-            .withOrientation(orientation)
-            .withPrintInterpretationLineDesired(interpretationLine)
-            .withPrintInterpretationLineAboveDesired(interpretationLineAbove)
-            .withUccCheckDigitEnabled(uccCheckDigit)
-            .build();
+        @ParameterizedTest
+        @ValueSource(doubles = {0.0, -1.0, 5334.0})
+        @DisplayName("Should throw exception for invalid heights")
+        void shouldThrowExceptionForInvalidHeights(double invalidHeight)
+        {
+            BarcodeCode128 barcode = BarcodeCode128
+                .createCode128Barcode()
+                .withHeightMm(invalidHeight)
+                .withOrientation(Orientation.NORMAL)
+                .withPlainTextContent("123456")
+                .build();
 
-        String zplCommand = barcode.toZplString(DEFAULT_DPI);
-        assertEquals(expected, zplCommand);
-    }
+            IllegalStateException exception = assertThrows(IllegalStateException.class,
+                () -> barcode.validateInContext(DEFAULT_SIZE, DEFAULT_DPI));
+            assertTrue(exception.getMessage().contains("height"));
+        }
 
-    @ParameterizedTest
-    @ValueSource(floats = {0.0f, -1.0f, 4500.0f})
-    @DisplayName("Should throw exception for invalid heights")
-    void shouldThrowExceptionForInvalidHeights(float invalidHeight)
-    {
-        BarcodeCode128 barcode = BarcodeCode128
-            .createCode128Barcode()
-            .withHeightMm(invalidHeight)
-            .withOrientation(Orientation.NORMAL)
-            .build();
+        @ParameterizedTest
+        @MethodSource("validHeightRanges")
+        @DisplayName("Should accept valid heights for different DPIs")
+        void shouldAcceptValidHeightsForDifferentDpis(PrintDensity dpi, double heightMm)
+        {
+            BarcodeCode128 barcode = BarcodeCode128
+                .createCode128Barcode()
+                .withHeightMm(heightMm)
+                .withOrientation(Orientation.NORMAL)
+                .withPlainTextContent("123456")
+                .build();
 
-        assertThrows(IllegalStateException.class,
-            () -> barcode.validateInContext(DEFAULT_SIZE, DEFAULT_DPI));
-    }
+            assertDoesNotThrow(() -> barcode.validateInContext(DEFAULT_SIZE, dpi));
+        }
 
-    @Test
-    @DisplayName("Should throw exception when orientation is null")
-    void shouldThrowExceptionWhenOrientationIsNull()
-    {
-        BarcodeCode128 barcode = BarcodeCode128
-            .createCode128Barcode()
-            .withHeightMm(VALID_HEIGHT_MM)
-            .withOrientation(null)
-            .build();
+        @ParameterizedTest
+        @MethodSource("invalidUccCaseData")
+        @DisplayName("Should throw exception for invalid UCC CASE mode data")
+        void shouldThrowExceptionForInvalidUccCaseData(String data, String expectedError)
+        {
+            BarcodeCode128 barcode = BarcodeCode128
+                .createCode128Barcode()
+                .withHeightMm(VALID_HEIGHT_MM)
+                .withOrientation(Orientation.NORMAL)
+                .withMode(Code128Mode.UCC_CASE)
+                .withPlainTextContent(data)
+                .build();
 
-        assertThrows(IllegalStateException.class,
-            () -> barcode.validateInContext(DEFAULT_SIZE, DEFAULT_DPI));
-    }
-
-    @ParameterizedTest
-    @MethodSource("validHeightRanges")
-    @DisplayName("Should accept valid heights for different DPIs")
-    void shouldAcceptValidHeightsForDifferentDpis(PrintDensity dpi, float heightMm)
-    {
-        BarcodeCode128 barcode = BarcodeCode128
-            .createCode128Barcode()
-            .withHeightMm(heightMm)
-            .withOrientation(Orientation.NORMAL)
-            .withPlainTextContent("123456")
-            .build();
-
-        assertDoesNotThrow(() -> barcode.validateInContext(DEFAULT_SIZE, dpi));
+            IllegalStateException exception = assertThrows(IllegalStateException.class,
+                () -> barcode.validateInContext(DEFAULT_SIZE, DEFAULT_DPI));
+            assertEquals(expectedError, exception.getMessage());
+        }
     }
 }

@@ -10,6 +10,26 @@ import lombok.experimental.SuperBuilder;
 import static com.github.mortonl.zebra.ZplCommand.FIELD_ORIGIN;
 import static com.github.mortonl.zebra.ZplCommand.generateZplIICommand;
 
+/**
+ * Base class for elements that can be positioned on a label.
+ * Provides x and y coordinate positioning functionality.
+ *
+ * <p>Coordinates are specified in millimeters from the label's origin point.
+ * The origin (0,0) is typically at the top-left corner of the label, with:
+ * <ul>
+ *     <li>X increasing from left to right</li>
+ *     <li>Y increasing from top to bottom</li>
+ * </ul></p>
+ *
+ * <p>Example usage:
+ * <pre>{@code
+ * PositionedElement element = SomePositionedElement.createPositionedElement()
+ *     .withPosition(10.0, 20.0)
+ *     .build();
+ * }</pre></p>
+ *
+ * @see LabelElement The parent class for all label elements
+ */
 @Getter
 @SuperBuilder(builderMethodName = "createPositionedElement", setterPrefix = "with")
 public abstract class PositionedElement extends LabelElement
@@ -17,12 +37,27 @@ public abstract class PositionedElement extends LabelElement
     public static final int MIN_AXIS_VALUE = 0;
     public static final int MAX_AXIS_VALUE = 32000;
 
+    /**
+     * The horizontal position in millimeters from the left edge of the label.
+     * When not specified, the printer's default position is used.
+     */
     private final double xAxisLocationMm;
 
+    /**
+     * The vertical position in millimeters from the top edge of the label.
+     * When not specified, the printer's default position is used.
+     */
     private final double yAxisLocationMm;
 
     private final OriginJustification zOriginJustification;
 
+    /**
+     * {@inheritDoc}
+     *
+     * <p>For positioned elements, this includes the field position (^FO) command
+     * if x or y positions are specified.</p>
+     */
+    @Override
     public String toZplString(PrintDensity dpi)
     {
         StringBuilder zplString = new StringBuilder();
@@ -42,6 +77,17 @@ public abstract class PositionedElement extends LabelElement
         return zplString.toString();
     }
 
+    /**
+     * {@inheritDoc}
+     *
+     * <p>For positioned elements, this includes validation of:
+     * <ul>
+     *     <li>X position within label width</li>
+     *     <li>Y position within label height</li>
+     * </ul></p>
+     *
+     * @throws IllegalStateException if the position is outside the label boundaries
+     */
     @Override
     public void validateInContext(LabelSize size, PrintDensity dpi) throws IllegalStateException
     {
@@ -93,6 +139,7 @@ public abstract class PositionedElement extends LabelElement
     }
 
     protected static abstract class PositionedElementBuilder<C extends PositionedElement, B extends PositionedElementBuilder<C, B>>
+        extends LabelElementBuilder<C, B>
     {
         public B withPosition(double xAxisLocationMm, double yAxisLocationMm)
         {

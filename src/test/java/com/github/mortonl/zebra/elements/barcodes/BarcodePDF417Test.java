@@ -51,12 +51,12 @@ public class BarcodePDF417Test
             Arguments.of(
                 "Normal Orientation",
                 Orientation.NORMAL,
+                0.625,
                 10,
-                5,
                 20,
                 30,
                 "Test123",
-                "^FO100,148^B7N,10,5,20,30^FDTest123^FS"
+                "^FO100,148^B7N,5,10,20,30,N^FDTest123^FS"
             )
         );
     }
@@ -86,7 +86,7 @@ public class BarcodePDF417Test
         BarcodePDF417 barcode = BarcodePDF417
             .createPDF417Barcode()
             .withOrientation(Orientation.NORMAL)
-            .withRowHeight(rowHeight)
+            .withRowHeightMm(rowHeight)
             .withSecurityLevel(securityLevel)
             .withDataColumns(dataColumns)
             .withRows(rows)
@@ -111,7 +111,7 @@ public class BarcodePDF417Test
         BarcodePDF417 barcode = BarcodePDF417
             .createPDF417Barcode()
             .withOrientation(Orientation.NORMAL)
-            .withRowHeight(rowHeight)
+            .withRowHeightMm(rowHeight)
             .withSecurityLevel(securityLevel)
             .withDataColumns(dataColumns)
             .withRows(rows)
@@ -127,7 +127,7 @@ public class BarcodePDF417Test
     void testToZplString(
         String testName,
         Orientation orientation,
-        int rowHeight,
+        double rowHeight,
         int securityLevel,
         int dataColumns,
         int rows,
@@ -139,10 +139,11 @@ public class BarcodePDF417Test
             .createPDF417Barcode()
             .withPosition(12.5, 18.5)
             .withOrientation(orientation)
-            .withRowHeight(rowHeight)
+            .withRowHeightMm(rowHeight)
             .withSecurityLevel(securityLevel)
             .withDataColumns(dataColumns)
             .withRows(rows)
+            .withEnableRightSideTruncation(false)
             .withPlainTextContent(data)
             .build();
 
@@ -160,7 +161,7 @@ public class BarcodePDF417Test
         BarcodePDF417 barcode = BarcodePDF417
             .createPDF417Barcode()
             .withOrientation(Orientation.NORMAL)
-            .withRowHeight(10)
+            .withRowHeightMm(10)
             .withSecurityLevel(5)
             .withDataColumns(15)
             .withRows(20)

@@ -23,10 +23,15 @@ public abstract class LabelElement
     protected final ValidationLevel validationLevel = ValidationLevel.NORMAL;
 
     /**
-     * Converts the label element to its ZPL (Zebra Programming Language) string representation.
+     * Generates the ZPL II commands for this label element.
      *
-     * @param dpi the print density configuration for the target printer
-     * @return a String containing the ZPL commands representing this element
+     * <p>The generated commands should include all necessary positioning and formatting
+     * instructions for the element. Only specified (non-null) parameters should be included
+     * in the generated command to allow printer defaults to take effect.</p>
+     *
+     * @param dpi The print density configuration for the target printer
+     * @return A String containing the ZPL commands representing this element
+     * @see PrintDensity
      */
     public abstract String toZplString(PrintDensity dpi);
 
@@ -39,8 +44,28 @@ public abstract class LabelElement
      */
     public abstract void validateInContext(LabelSize size, PrintDensity dpi) throws IllegalStateException;
 
-    protected static abstract class LabelElementBuilder<C extends LabelElement, B extends LabelElementBuilder<C, B>> {
-        public C addToLabel(ZebraLabel label) throws IllegalStateException {
+    protected static abstract class LabelElementBuilder<C extends LabelElement, B extends LabelElementBuilder<C, B>>
+    {
+        /**
+         * Validates and adds this element to the specified label in one step.
+         * This is the recommended way to add an element to a label as it ensures
+         * immediate validation against the label's constraints.
+         *
+         * <p>Example usage:</p>
+         * <pre>{@code
+         * BarcodeCode128.createCode128Barcode()
+         *     .withHeightMm(15.0)
+         *     .withContent(new BarcodeContent("12345"))
+         *     .addToLabel(label);
+         * }</pre>
+         *
+         * @param label The {@link ZebraLabel} to add this barcode to
+         * @throws IllegalStateException if the barcode configuration is invalid
+         *         for the given label's size and printer density settings
+         * @see ZebraLabel#validateAndAddElement(LabelElement)
+         */
+        public C addToLabel(ZebraLabel label) throws IllegalStateException
+        {
             C element = build();
 
             label.validateAndAddElement(element);

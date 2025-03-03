@@ -45,7 +45,7 @@ class PositionedElementTest
     void testToZplStringWithoutJustification()
     {
         TestPositionedElement element = TestPositionedElement
-            .builder()
+            .createTestElement()
             .withPosition(10.0, 20.0)
             .build();
 
@@ -57,7 +57,7 @@ class PositionedElementTest
     void testToZplStringWithJustification()
     {
         TestPositionedElement element = TestPositionedElement
-            .builder()
+            .createTestElement()
             .withPosition(10.0, 20.0)
             .withZOriginJustification(OriginJustification.LEFT)
             .build();
@@ -71,7 +71,7 @@ class PositionedElementTest
     void testValidateInContextWithValidPositions(double x, double y, String testName)
     {
         TestPositionedElement element = TestPositionedElement
-            .builder()
+            .createTestElement()
             .withPosition(x, y)
             .build();
 
@@ -83,7 +83,7 @@ class PositionedElementTest
     void testValidateInContextWithInvalidPositions(double x, double y, String testName, String expectedError)
     {
         TestPositionedElement element = TestPositionedElement
-            .builder()
+            .createTestElement()
             .withPosition(x, y)
             .build();
 
@@ -99,7 +99,7 @@ class PositionedElementTest
     void testValidateAxisValueExceedsMaximum()
     {
         TestPositionedElement element = TestPositionedElement
-            .builder()
+            .createTestElement()
             .withXAxisLocationMm(X8_DOTS_PER_MM.toMillimetres(MAX_AXIS_VALUE + 1))
             .withYAxisLocationMm(20.0)
             .build();
@@ -117,8 +117,9 @@ class PositionedElementTest
     @Test
     void testBuilderAtMethod()
     {
+
         TestPositionedElement element = TestPositionedElement
-            .builder()
+            .createTestElement()
             .withPosition(10.0, 20.0)
             .build();
 
@@ -128,15 +129,25 @@ class PositionedElementTest
 
     // Concrete implementation for testing abstract class
     @Getter
-    @SuperBuilder(setterPrefix = "with")
+    @SuperBuilder(builderMethodName = "createTestElement", setterPrefix = "with")
     private static class TestPositionedElement extends PositionedElement
     {
-        protected TestPositionedElement(
-            double xAxisLocationMm, double yAxisLocationMm,
-            OriginJustification zOriginJustification
-        )
+        @Override
+        public String toZplString(PrintDensity dpi)
         {
-            super(xAxisLocationMm, yAxisLocationMm, zOriginJustification);
+            return super.toZplString(dpi);
+        }
+
+        @Override
+        public void validateInContext(LabelSize size, PrintDensity dpi)
+        {
+            super.validateInContext(size, dpi);
+        }
+
+        protected static abstract class TestPositionedElementBuilder<C extends TestPositionedElement, B extends TestPositionedElementBuilder<C, B>>
+            extends PositionedElementBuilder<C, B>
+        {
         }
     }
+
 }
