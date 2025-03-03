@@ -12,8 +12,6 @@ import static com.github.mortonl.zebra.validation.Validator.validateNotNull;
 import static com.github.mortonl.zebra.validation.Validator.validateRange;
 
 /**
- * {@inheritDoc}
- *
  * <p>Implements an Interleaved 2 of 5 barcode, commonly used in industrial and distribution
  * applications for encoding pairs of digits.</p>
  *
@@ -55,6 +53,8 @@ public class BarcodeInterleaved2of5 extends Barcode
      * Controls how the barcode is rotated on the label.
      * If not specified, the printer's default orientation will be used.
      *
+     * @param orientation the orientation setting to control barcode rotation
+     * @return the current orientation setting of the barcode
      * @see Orientation
      */
     private final Orientation orientation;
@@ -63,6 +63,9 @@ public class BarcodeInterleaved2of5 extends Barcode
      * The height of the barcode in millimeters.
      * Must be between {1.0/DPI} and {32000.0/DPI} millimeters,
      * and must fit within the label height.
+     *
+     * @param heightMm the height of the barcode in millimeters, must be within DPI-dependent range
+     * @return the height of the barcode in millimeters
      */
     private final double heightMm;
 
@@ -70,6 +73,9 @@ public class BarcodeInterleaved2of5 extends Barcode
      * Controls whether to print the interpretation line (human-readable text)
      * below the barcode.
      * Default printer value is typically true.
+     *
+     * @param printInterpretationLine true to show interpretation line below barcode, false to hide it
+     * @return true if interpretation line is shown below barcode, false otherwise
      */
     private final boolean printInterpretationLine;
 
@@ -77,6 +83,9 @@ public class BarcodeInterleaved2of5 extends Barcode
      * Controls whether to print the interpretation line (human-readable text)
      * above the barcode instead of below.
      * Default printer value is typically false.
+     *
+     * @param printInterpretationLineAbove true to show interpretation line above barcode, false to show it below
+     * @return true if interpretation line is shown above barcode, false if shown below
      */
     private final boolean printInterpretationLineAbove;
 
@@ -88,6 +97,9 @@ public class BarcodeInterleaved2of5 extends Barcode
      *     <li>Check digit is calculated and appended</li>
      *     <li>Final barcode length will be even</li>
      * </ul>
+     *
+     * @param calculateAndPrintMod10CheckDigit true to enable MOD 10 check digit calculation and printing, false to disable it
+     * @return true if MOD 10 check digit calculation is enabled, false otherwise
      */
     private final boolean calculateAndPrintMod10CheckDigit;
 
@@ -152,7 +164,7 @@ public class BarcodeInterleaved2of5 extends Barcode
      * Performs detailed parameter validation for the Interleaved 2 of 5 barcode.
      *
      * @param size The label size constraints
-     * @param dpi The printer density configuration
+     * @param dpi  The printer density configuration
      * @throws IllegalStateException if any validation fails
      */
     private void validateParameters(LabelSize size, PrintDensity dpi)

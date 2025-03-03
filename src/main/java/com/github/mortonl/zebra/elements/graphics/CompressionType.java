@@ -10,13 +10,13 @@ import lombok.Getter;
  * its default value ('A' - ASCII_HEX) or maintain the last used compression type
  * from a previous default command.</p>
  *
- * <p>This enum is primarily used with {@link GraphicField} and {@link DownloadGraphic}
+ * <p>This enum is primarily used with {@link GraphicField}
  * commands to specify how the graphic data should be encoded when sent to the printer.</p>
  *
  * @see GraphicField
- * @see DownloadGraphic
  *
- * @example <pre>
+ * <p>Example usage:</p>
+ * <pre>{@code
  * // Using ASCII hexadecimal compression (default)
  * GraphicField.builder()
  *     .compressionType(CompressionType.ASCII_HEX)
@@ -28,7 +28,7 @@ import lombok.Getter;
  *     .compressionType(CompressionType.COMPRESSED_BINARY)
  *     .withBinaryContent(binaryData)
  *     .build();
- * </pre>
+ * }</pre>
  */
 @Getter
 @AllArgsConstructor
@@ -64,6 +64,10 @@ public enum CompressionType
 
     /**
      * The ZPL command value representing this compression type.
+     * This value is used directly in the ZPL command string when generating label formats.
+     *
+     * @param value the ZPL command character for this compression type
+     * @return the ZPL command character representing this compression type
      */
     private final String value;
 }

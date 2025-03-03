@@ -11,22 +11,22 @@ import lombok.Getter;
  * <p>When no text justification is specified, the printer will use LEFT alignment
  * or the last alignment set by a relevant command.</p>
  *
- * <p>Example usage:
+ * <p>Example usage:</p>
  * <pre>{@code
  * TextBlock block = TextBlock.createTextBlock()
  *     .withPosition(100, 100)
  *     .withTextJustification(TextJustification.CENTER)
  *     .withPlainTextContent("Sample text")
  *     .build();
- * }</pre></p>
+ * }</pre>
  *
- * <p>Justification modes:
+ * <p>Justification modes:</p>
  * <ul>
  *     <li>LEFT ("L") - Aligns text to the left edge of the block (default)</li>
  *     <li>CENTER ("C") - Centers text within the block</li>
  *     <li>RIGHT ("R") - Aligns text to the right edge of the block</li>
  *     <li>JUSTIFIED ("J") - Spreads text evenly across the block width</li>
- * </ul></p>
+ * </ul>
  *
  * @see TextBlock For creating text blocks with specified text justification
  */
@@ -60,7 +60,10 @@ public enum TextJustification
     JUSTIFIED("J");
 
     /**
-     * The ZPL II command value for this text justification mode.
+     * Single-character ZPL code for the justification mode.
+     *
+     * @param value the ZPL justification code
+     * @return the command parameter
      */
     private final String value;
 }

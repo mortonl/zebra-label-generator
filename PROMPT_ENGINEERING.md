@@ -25,6 +25,7 @@ Generate a class that fulfils the following requirements
 - fulfils this spec:
 
 Generate unit tests meeting these criteria:
+
 - use junit jupiter with the mockito runner (if mocks are required)
 - only mocks used in all tests should be created in the before each block
 - don't mock enums instead use constants for label size and dpi e.g.
@@ -38,14 +39,24 @@ Generate unit tests meeting these criteria:
   javac we cannot
 
 Generate Javadocs that:
+
 - include references to other classes
 - usage examples when relevant etc.
-- NOTE: when a value isn't provided the library will not include any value in the zpl command, this is because providing a value would prevent the effective use of default commands. so the default values aren't actually included in the output command but are important to note as the printer will use that value or the value from the last relevant default command.
-- insteadOf withContent users should make use of withPlainTextContent(String contents) or withHexadecimalContent(String contents) as these shortcut the construction the relevant Field instance with the correct data and settings
-- If the overriding method's behavior is identical to the base method (including parameter meanings, return values, and exceptions), then no additional JavaDoc is needed. The @Override annotation is sufficient, however document differences while avoiding redundant documentation by using inheritDoc if the overriding method:
-  - Has different/additional behavior
-  - Has stronger/weaker constraints
-  - Has covariant return types
-  - Has different exception conditions
-  - Has specific implementation details that are important for users
+- fields should have javadocs that include the param and the return type so that lombok auto generation will copy it to
+  the methods
+- NOTE: when a value isn't provided the library will not include any value in the zpl command, this is because providing
+  a value would prevent the effective use of default commands. so the default values aren't actually included in the
+  output command but are important to note as the printer will use that value or the value from the last relevant
+  default command.
+- insteadOf withContent users should make use of withPlainTextContent(String contents) or withHexadecimalContent(String
+  contents) as these shortcut the construction the relevant Field instance with the correct data and settings
+- If the overriding method's behavior is identical to the base method (including parameter meanings, return values, and
+  exceptions), then no additional JavaDoc is needed. The @Override annotation is sufficient, however document
+- inheritDoc can only be used on methods
+  differences while avoiding redundant documentation by using inheritDoc if the overriding method:
+    - Has different/additional behavior
+    - Has stronger/weaker constraints
+    - Has covariant return types
+    - Has different exception conditions
+    - Has specific implementation details that are important for users
 - fulfils this spec:

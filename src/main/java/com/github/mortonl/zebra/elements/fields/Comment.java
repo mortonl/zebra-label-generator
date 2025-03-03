@@ -13,8 +13,6 @@ import static com.github.mortonl.zebra.ZplCommand.FIELD_END;
 import static com.github.mortonl.zebra.ZplCommand.generateZplIICommand;
 
 /**
- * {@inheritDoc}
- *
  * <p>Implements a comment element in ZPL II, which allows adding non-printing
  * documentation within the label format. Comments are useful for:</p>
  * <ul>
@@ -54,6 +52,9 @@ public class Comment extends LabelElement
      *     <li>Cannot contain ZPL control characters (e.g., '~', '^')</li>
      *     <li>No length restrictions other than practical memory limits</li>
      * </ul>
+     *
+     * @param content the text content for the comment, must not contain ZPL control characters
+     * @return the text content of the comment
      */
     @NonNull
     private final String content;

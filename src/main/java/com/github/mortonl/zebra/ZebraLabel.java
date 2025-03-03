@@ -23,15 +23,15 @@ import static com.github.mortonl.zebra.ZplCommand.generateZplIICommand;
  * Represents a printable Zebra label with configurable size, printer settings, and content elements.
  * This class uses the Builder pattern for construction and validation of label configurations.
  *
- * <p>A label consists of:
+ * <p>A label consists of:</p>
  * <ul>
  *     <li>Physical dimensions (width and height)</li>
  *     <li>Printer configuration (DPI, media settings)</li>
  *     <li>Content elements (text, barcodes, etc.)</li>
  *     <li>Optional international character set support</li>
- * </ul></p>
+ * </ul>
  *
- * <p>Example usage:
+ * <p>Example usage:</p>
  * <pre>{@code
  * ZebraLabel label = ZebraLabel.createLabel()
  *     .withSize(new LabelSize(100, 50))           // 100x50mm label
@@ -43,7 +43,7 @@ import static com.github.mortonl.zebra.ZplCommand.generateZplIICommand;
  *      .validateAndAddElement(new BarcodeElement("12345"));
  *
  * String zplCode = label.toZplString();
- * }</pre></p>
+ * }</pre>
  */
 @Data
 @AllArgsConstructor(access = lombok.AccessLevel.PRIVATE)
@@ -51,22 +51,34 @@ import static com.github.mortonl.zebra.ZplCommand.generateZplIICommand;
 public class ZebraLabel
 {
     /**
-     * The physical dimensions of the label
+     * Physical width and height dimensions of the label media.
+     *
+     * @param size the label dimensions
+     * @return the current label size configuration
      */
     private final LabelSize size;
 
     /**
-     * The printer configuration including DPI and media settings
+     * Print density and media handling settings.
+     *
+     * @param printer the printer settings
+     * @return the current printer configuration
      */
     private final PrinterConfiguration printer;
 
     /**
-     * The list of content elements to be printed on the label
+     * Ordered collection of printable label components.
+     *
+     * @param elements the list of label elements
+     * @return the current list of elements
      */
     private final List<LabelElement> elements;
 
     /**
-     * Optional character set for international text support
+     * Character encoding for non-ASCII text content.
+     *
+     * @param internationalCharacterSet the character encoding
+     * @return the current font encoding
      */
     private final InternationalCharacterSet internationalCharacterSet;
 
@@ -117,7 +129,7 @@ public class ZebraLabel
      * <pre>{@code
      * label.validateAndAddElement(new TextElement("Hello"))
      *      .validateAndAddElement(new BarcodeElement("12345"));
-     * }</pre></p>
+     * }</pre>
      *
      * @param element The element to add to the label
      * @return This label instance for method chaining

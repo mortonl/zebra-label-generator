@@ -10,13 +10,13 @@ import lombok.experimental.SuperBuilder;
  * <p>Dimensions are specified in millimeters. Both position and size are validated
  * to ensure the element fits within the label boundaries.</p>
  *
- * <p>Example usage:
+ * <p>Example usage:</p>
  * <pre>{@code
  * PositionedAndSizedElement element = SomePositionedAndSizedElement.builder()
  *     .withPosition(10.0, 20.0)
  *     .withSize(50.0, 30.0)
  *     .build();
- * }</pre></p>
+ * }</pre>
  *
  * @see PositionedElement For positioning functionality
  */
@@ -26,13 +26,35 @@ public abstract class PositionedAndSizedElement extends PositionedElement
 {
     /**
      * The width of the element in millimeters.
-     * When not specified, the printer's default width is used.
+     * Specifies the horizontal dimension of the printed element.
+     *
+     * <p>Behavior:</p>
+     * <ul>
+     *     <li>When null: Uses printer's default width for the element type</li>
+     *     <li>When specified: Must be a positive value within printer limitations</li>
+     * </ul>
+     *
+     * <p>The final printed width in dots is calculated using the printer's DPI setting.</p>
+     *
+     * @param widthMm the desired width in millimeters, or null for printer default
+     * @return the element width in millimeters
      */
     protected Double widthMm;
 
     /**
      * The height of the element in millimeters.
-     * When not specified, the printer's default height is used.
+     * Specifies the vertical dimension of the printed element.
+     *
+     * <p>Behavior:</p>
+     * <ul>
+     *     <li>When null: Uses printer's default height for the element type</li>
+     *     <li>When specified: Must be a positive value within printer limitations</li>
+     * </ul>
+     *
+     * <p>The final printed height in dots is calculated using the printer's DPI setting.</p>
+     *
+     * @param heightMm the desired height in millimeters, or null for printer default
+     * @return the element height in millimeters
      */
     protected Double heightMm;
 
@@ -40,14 +62,14 @@ public abstract class PositionedAndSizedElement extends PositionedElement
      * Builder for creating elements that have both position and size.
      * Extends {@link PositionedElementBuilder} to add size configuration methods.
      *
-     * <p>This builder provides methods for setting:
+     * <p>This builder provides methods for setting:</p>
      * <ul>
      *     <li>Position (inherited from PositionedElementBuilder)</li>
      *     <li>Width</li>
      *     <li>Height</li>
-     * </ul></p>
+     * </ul>
      *
-     * <p>Example usage:
+     * <p>Example usage:</p>
      * <pre>{@code
      * SomeElement element = SomeElement.builder()
      *     .withPosition(10.0, 20.0)  // From PositionedElementBuilder
@@ -60,7 +82,7 @@ public abstract class PositionedAndSizedElement extends PositionedElement
      *     .withWidth(50.0)
      *     .withHeight(30.0)
      *     .build();
-     * }</pre></p>
+     * }</pre>
      *
      * @param <C> The type of the element being built
      * @param <B> The type of the builder itself (for method chaining)

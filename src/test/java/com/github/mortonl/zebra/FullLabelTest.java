@@ -58,7 +58,7 @@ public class FullLabelTest
 
         String DPI203Expected = """
             ^XA
-            ^PW813
+            ^PW812
             ^LL1219
             ^CI28
             ^FO300,0^GB220,80,80,,0^FS
@@ -72,7 +72,7 @@ public class FullLabelTest
         String DPI300Expected = """
             ^XA
             ^PW1219
-            ^LL1829
+            ^LL1828
             ^CI28
             ^FO450,0^GB330,120,120,,0^FS
             ^FO1200,1200^GFA,11,8000,80,ABCDEFabcdef0123456789^FS

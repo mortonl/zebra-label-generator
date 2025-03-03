@@ -12,7 +12,7 @@ import lombok.Getter;
  * or the last color set by a relevant command. This allows for effective use of printer
  * default settings.</p>
  *
- * <p>Example usage:
+ * <p>Example usage:</p>
  * <pre>{@code
  * GraphicBox box = GraphicBox.createGraphicBox()
  *     .withPosition(100.0, 100.0)
@@ -21,7 +21,7 @@ import lombok.Getter;
  *     .withColor(LineColor.BLACK)
  *     .withRoundness(8)
  *     .build();
- * }</pre></p>
+ * }</pre>
  *
  * @see GraphicBox For creating boxes with specified colors
  * // * @see GraphicCircle For creating circles with specified colors
@@ -45,6 +45,10 @@ public enum LineColor
 
     /**
      * The ZPL II command code for this color.
+     * Single character used in ZPL commands to specify the color.
+     *
+     * @param code the single character ZPL color code
+     * @return the ZPL command code for this color
      */
     private final char code;
 

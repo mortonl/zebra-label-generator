@@ -11,8 +11,6 @@ import lombok.experimental.SuperBuilder;
 import static com.github.mortonl.zebra.ZplCommand.SET_FONT;
 
 /**
- * {@inheritDoc}
- *
  * <p>Implements font configuration for ZPL II label elements. Fonts in ZPL are identified
  * by single-character designations and can be scaled and rotated. Supported fonts include
  * both bitmap and scalable varieties.</p>
@@ -50,44 +48,89 @@ import static com.github.mortonl.zebra.ZplCommand.SET_FONT;
 public class Font extends LabelElement
 {
     /**
-     * Minimum size in printer dots for font dimensions
+     * Minimum size in printer dots for font dimensions.
+     * Used to validate both height and width measurements after conversion from millimeters.
+     * This ensures fonts remain readable and within printer capabilities.
      */
     private static final int MIN_DOTS = 10;
 
     /**
-     * Maximum size in printer dots for font dimensions
+     * Maximum size in printer dots for font dimensions.
+     * Used to validate both height and width measurements after conversion from millimeters.
+     * This limit is based on printer hardware constraints.
      */
     private static final int MAX_DOTS = 32000;
 
     /**
      * Single character designation identifying the font.
      * Valid values are A-Z and 0-9.
-     * <p>Common built-in fonts:</p>
+     *
+     * <p>Built-in font types:</p>
      * <ul>
-     *     <li>A-H: Bitmap fonts</li>
-     *     <li>0: Default scalable font</li>
-     *     <li>Other values may represent downloaded fonts</li>
+     *     <li>A-H: Bitmap fonts (fixed-size, device-specific)</li>
+     *     <li>0: Default scalable font (vector-based, resolution independent)</li>
+     *     <li>1-9: Additional scalable fonts when available</li>
+     *     <li>I-Z: Reserved for downloaded fonts</li>
      * </ul>
+     *
+     * <p>Font characteristics:</p>
+     * <ul>
+     *     <li>Bitmap fonts (A-H) offer fastest printing but limited scaling</li>
+     *     <li>Scalable fonts (0-9) provide smooth scaling but slower printing</li>
+     *     <li>Downloaded fonts require prior installation on the printer</li>
+     * </ul>
+     *
+     * @param fontDesignation single character identifying the font
+     * @return the font designation character
      */
     private char fontDesignation;
 
     /**
-     * The orientation/rotation of the font.
-     * If null, uses printer default orientation.
+     * The orientation/rotation of the font relative to the label.
+     * Controls how text is rotated when printed.
      *
-     * @see Orientation
+     * <p>If null, the printer's default orientation is used (typically NORMAL).
+     * Rotation is applied clockwise from the normal position.</p>
+     *
+     * @param orientation the desired text rotation, or null for printer default
+     * @return the current font orientation
+     * @see Orientation for available rotation values
      */
     private Orientation orientation;
 
     /**
      * The height of the font in millimeters.
-     * Must be between {@code MIN_DOTS/DPI} and {@code MAX_DOTS/DPI} millimeters.
+     * Determines the vertical size of the printed characters.
+     *
+     * <p>Constraints:</p>
+     * <ul>
+     *     <li>Minimum: {@value MIN_DOTS}/{@code DPI} millimeters</li>
+     *     <li>Maximum: {@value MAX_DOTS}/{@code DPI} millimeters</li>
+     *     <li>For bitmap fonts (A-H): Some sizes may not scale smoothly</li>
+     *     <li>For scalable fonts: Any size within range is supported</li>
+     * </ul>
+     *
+     * @param heightMm the desired font height in millimeters
+     * @return the font height in millimeters
      */
     private double heightMm;
 
     /**
      * The width of the font in millimeters.
-     * Must be between {@code MIN_DOTS/DPI} and {@code MAX_DOTS/DPI} millimeters.
+     * Determines the horizontal size of the printed characters.
+     *
+     * <p>Constraints:</p>
+     * <ul>
+     *     <li>Minimum: {@value MIN_DOTS}/{@code DPI} millimeters</li>
+     *     <li>Maximum: {@value MAX_DOTS}/{@code DPI} millimeters</li>
+     *     <li>For bitmap fonts (A-H): Some sizes may not scale smoothly</li>
+     *     <li>For scalable fonts: Any size within range is supported</li>
+     * </ul>
+     *
+     * <p>Setting width to 0 enables automatic proportional spacing based on height.</p>
+     *
+     * @param widthMm the desired font width in millimeters, or 0 for proportional
+     * @return the font width in millimeters
      */
     private double widthMm;
 

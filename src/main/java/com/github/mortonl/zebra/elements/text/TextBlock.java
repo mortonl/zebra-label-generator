@@ -22,7 +22,7 @@ import static com.github.mortonl.zebra.validation.Validator.validateRange;
  * <p>When values are not explicitly set, they will not be included in the ZPL command,
  * allowing the printer to use its default values or values from previous default commands.</p>
  *
- * <p>Example usage:
+ * <p>Example usage:</p>
  * <pre>{@code
  * // Basic text block with width constraint
  * TextBlock block = TextBlock.createTextBlock()
@@ -46,7 +46,7 @@ import static com.github.mortonl.zebra.validation.Validator.validateRange;
  *     .withJustification(TextJustification.CENTER)
  *     .withHangingIndentMm(2.0)
  *     .build();
- * }</pre></p>
+ * }</pre>
  *
  * @see Text For basic text capabilities
  * @see TextJustification For available text alignment options
@@ -58,46 +58,118 @@ public class TextBlock extends Text
 {
     /**
      * The width of the text block in millimeters.
-     * Text will automatically wrap when it reaches this width.
-     * When not specified, text will not wrap automatically.
+     * Controls automatic text wrapping and block boundaries.
+     *
+     * <p>Behavior:</p>
+     * <ul>
+     *     <li>When specified: Text wraps automatically at this width</li>
+     *     <li>When null: No automatic wrapping occurs</li>
+     *     <li>Must be positive when specified</li>
+     *     <li>Affects text justification and margin calculations</li>
+     * </ul>
+     *
+     * <p>Note: The actual printed width may vary slightly based on font characteristics
+     * and printer resolution.</p>
+     *
+     * @param widthMm the desired block width in millimeters
+     * @return the block width in millimeters
      */
     private Double widthMm;
 
     /**
-     * The maximum number of lines to display.
-     * Additional text beyond this limit will be truncated.
-     * When not specified, all lines will be displayed.
+     * The maximum number of lines to display in the text block.
+     * Controls vertical content limits and truncation behavior.
+     *
+     * <p>Behavior:</p>
+     * <ul>
+     *     <li>When specified: Text beyond this number of lines is truncated</li>
+     *     <li>When null: All lines are printed</li>
+     *     <li>Must be positive when specified</li>
+     *     <li>Counts wrapped lines towards the total</li>
+     * </ul>
+     *
+     * <p>Truncation occurs without warning indicators. Consider available space
+     * when setting this limit.</p>
+     *
+     * @param maxLines the maximum number of lines to print
+     * @return the maximum line limit
      */
     private Integer maxLines;
 
     /**
      * The vertical spacing between lines in millimeters.
-     * When not specified, the printer's default line spacing is used.
+     * Controls the distance between consecutive lines of text.
+     *
+     * <p>Behavior:</p>
+     * <ul>
+     *     <li>When specified: Uses exact spacing in millimeters</li>
+     *     <li>When null: Uses printer's default (typically 120% of font height)</li>
+     *     <li>Must be positive when specified</li>
+     *     <li>Applies uniformly to all lines in the block</li>
+     * </ul>
+     *
+     * <p>Smaller values increase density but may reduce readability.
+     * Consider font size when setting spacing.</p>
+     *
+     * @param lineSpacingMm the desired line spacing in millimeters
+     * @return the line spacing in millimeters
      */
     private Double lineSpacingMm;
 
     /**
      * The text justification within the block.
-     * When not specified, the printer's default justification (usually left) is used.
+     * Controls horizontal alignment of text lines.
      *
-     * @see TextJustification For available justification options
+     * <p>Behavior:</p>
+     * <ul>
+     *     <li>When specified: Uses selected justification for all lines</li>
+     *     <li>When null: Uses printer default (typically LEFT)</li>
+     *     <li>Requires block width to be set for CENTER and RIGHT</li>
+     *     <li>JUSTIFY may affect word and character spacing</li>
+     * </ul>
+     *
+     * <p>Note: Short lines and trailing spaces may affect visual alignment.
+     * Consider text content when selecting justification.</p>
+     *
+     * @param justification the desired text alignment
+     * @return the text justification setting
+     * @see TextJustification for available justification options
      */
     private TextJustification justification;
 
     /**
      * The hanging indent in millimeters for the second and subsequent lines.
-     * When not specified, no hanging indent is applied.
+     * Controls the left margin offset for wrapped lines.
+     *
+     * <p>Behavior:</p>
+     * <ul>
+     *     <li>When specified: Indents all lines after the first</li>
+     *     <li>When null: No indentation is applied</li>
+     *     <li>Must be positive when specified</li>
+     *     <li>Applied in addition to block margins</li>
+     *     <li>Affects wrapped lines and multiple paragraphs</li>
+     * </ul>
+     *
+     * <p>Commonly used for:</p>
+     * <ul>
+     *     <li>Creating paragraph indents</li>
+     *     <li>Formatting lists or citations</li>
+     *     <li>Improving readability of multi-line text</li>
+     * </ul>
+     *
+     * @param hangingIndentMm the desired indent in millimeters
+     * @return the hanging indent in millimeters
      */
     private Double hangingIndentMm;
 
     /**
      * {@inheritDoc}
      *
-     * <p>Additional ZPL commands included for text blocks:
+     * <p>Additional ZPL commands included for text blocks:</p>
      * <ul>
      *     <li>Field block (^FB) with width, max lines, line spacing, justification,
      *         and hanging indent parameters</li>
-     * </ul></p>
+     * </ul>
      */
     @Override
     public String toZplString(PrintDensity dpi)
@@ -129,14 +201,14 @@ public class TextBlock extends Text
     /**
      * {@inheritDoc}
      *
-     * <p>Additional validation for text blocks:
+     * <p>Additional validation for text blocks:</p>
      * <ul>
      *     <li>Width must be positive if specified</li>
      *     <li>Line spacing must be positive if specified</li>
      *     <li>Max lines must be positive if specified</li>
      *     <li>Hanging indent must be positive if specified</li>
      *     <li>Width must fit within label boundaries</li>
-     * </ul></p>
+     * </ul>
      *
      * @throws IllegalStateException if any dimension is invalid or exceeds label boundaries
      */

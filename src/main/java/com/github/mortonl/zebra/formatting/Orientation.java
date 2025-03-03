@@ -15,7 +15,7 @@ import lombok.Getter;
  * <p>When no orientation is specified, the printer will use NORMAL orientation
  * or the last orientation set by a relevant command.</p>
  *
- * <p>Example usage:
+ * <p>Example usage:</p>
  * <pre>{@code
  * BarcodeCode128.createCode128Barcode()
  *     .withHeightMm(15.0)
@@ -24,15 +24,15 @@ import lombok.Getter;
  *     .withMode(Code128Mode.AUTO)
  *     .withPlainTextContent("12345")
  *     .addToLabel(label);
- * }</pre></p>
+ * }</pre>
  *
- * <p>Orientation angles:
+ * <p>Orientation angles:</p>
  * <ul>
  *     <li>NORMAL - 0 degrees (default)</li>
  *     <li>ROTATED - 90 degrees clockwise</li>
  *     <li>INVERTED - 180 degrees</li>
  *     <li>BOTTOM_UP - 270 degrees clockwise (90 degrees counterclockwise)</li>
- * </ul></p>
+ * </ul>
  *
  * @see BarcodeCode128 For creating Code 128 barcodes with specified orientation
  * @see BarcodeInterleaved2of5 For creating Interleaved 2 of 5 barcodes with specified orientation
@@ -66,6 +66,11 @@ public enum Orientation
 
     /**
      * The ZPL II command value for this orientation.
+     * Single-character code used in font and field rotation commands.
+     *
+     * @param value the orientation command code
+     * @return the ZPL command parameter
+     * @throws IllegalArgumentException if value is invalid
      */
     private final String value;
 }

@@ -57,6 +57,8 @@ public abstract class Barcode extends PositionedElement
      * <p>The content field supports both plain text and hexadecimal data formats,
      * depending on the specific requirements of the barcode type and data being encoded.</p>
      *
+     * @param content the field containing the barcode content and its formatting information
+     * @return the field containing the barcode content and its formatting information
      * @see Field
      */
     Field content;
@@ -77,7 +79,6 @@ public abstract class Barcode extends PositionedElement
         return super.toZplString(dpi);
     }
 
-
     /**
      * {@inheritDoc}
      *
@@ -92,10 +93,16 @@ public abstract class Barcode extends PositionedElement
     public void validateInContext(LabelSize size, PrintDensity dpi) throws IllegalStateException
     {
         super.validateInContext(size, dpi);
-        validateNotNull(content, "Data");
+        validateNotNull(content, "content");
         validateNotEmpty(content.getData(), "Data");
     }
 
+    /**
+     * Builder for creating Barcode instances with type-safe configuration.
+     *
+     * @param <C> the type of Barcode being built
+     * @param <B> the concrete builder type (self-referential for method chaining)
+     */
     public static abstract class BarcodeBuilder<C extends Barcode, B extends BarcodeBuilder<C, B>>
         extends PositionedElement.PositionedElementBuilder<C, B>
     {

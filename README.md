@@ -44,8 +44,8 @@ It's designed to make working with Zebra printers more straightforward and maint
         - Ellipses
         - Symbols
 - Graphic field validation
-    - I currently don't understand some of the examples i've seen of graphic fields being used where non-hex characters
-      were used in a hex command, when i can learn more about how this functionality is supposed to work i will add
+    - I currently don't understand some of the examples I've seen of graphic fields being used where non-hex characters
+      were used in a hex command, when I can learn more about how this functionality is supposed to work I will add
       better validation.
 - Setting defaults for the label
     - Warning when setting an item the same as a default setting?

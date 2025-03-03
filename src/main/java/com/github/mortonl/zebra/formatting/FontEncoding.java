@@ -109,7 +109,14 @@ public enum FontEncoding
 
     /**
      * The ZPL II command value for this encoding.
-     * Used as the parameter for the ^CI command.
+     * Used as the parameter for the ^CI command to set the international font encoding.
+     *
+     * <p>The selected encoding affects how text data is interpreted by the printer
+     * and must match the actual encoding of the text being sent.</p>
+     *
+     * @param value the encoding identifier for the ^CI command
+     * @return the ZPL command value for this encoding
+     * @see <a href="https://support.zebra.com/cpws/docs/zpl/ci.htm">^CI Command Reference</a>
      */
     private final String value;
 }

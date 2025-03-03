@@ -16,7 +16,7 @@ import java.util.stream.Stream;
  * Higher densities provide better print quality but require more printer memory and
  * processing time.</p>
  *
- * <p>Example usage:
+ * <p>Example usage:</p>
  * <pre>{@code
  * // Convert physical measurements
  * PrintDensity density = PrintDensity.DPI_203;
@@ -26,7 +26,7 @@ import java.util.stream.Stream;
  * // Find density from printer specifications
  * PrintDensity byDpi = PrintDensity.fromDotsPerInch(300);
  * PrintDensity byDpmm = PrintDensity.fromDotsPerMillimetre(12);
- * }</pre></p>
+ * }</pre>
  */
 @Getter
 @AllArgsConstructor(access = lombok.AccessLevel.PRIVATE)
@@ -53,12 +53,18 @@ public enum PrintDensity
     DPI_600(600, 24);
 
     /**
-     * The number of dots per inch
+     * The number of dots per inch (DPI) for this print density, usually derived from the DPMM value.
+     *
+     * @param dotsPerInch the printer's horizontal and vertical resolution
+     * @return the resolution in dots per inch
      */
     private final int dotsPerInch;
 
     /**
-     * The number of dots per millimeter
+     * The number of dots per millimeter (DPMM) for this print density.
+     *
+     * @param dotsPerMillimetre the printer's metric resolution
+     * @return the resolution in dots per millimeter
      */
     private final int dotsPerMillimetre;
 
@@ -128,14 +134,14 @@ public enum PrintDensity
      * Converts a measurement in millimeters to dots at this print density,
      * using standard arithmetic rounding (rounds to nearest integer, with ties rounding up).
      *
-     * <p>Examples at 203 DPI (8 dots/mm):
+     * <p>Examples at 203 DPI (8 dots/mm):</p>
      * <ul>
      *     <li>1.0 mm → 8 dots</li>
      *     <li>1.4 mm → 11 dots (1.4 * 8 = 11.2 rounds to 11)</li>
      *     <li>1.5 mm → 12 dots (1.5 * 8 = 12.0)</li>
      *     <li>1.6 mm → 13 dots (1.6 * 8 = 12.8 rounds to 13)</li>
      *     <li>2.0 mm → 16 dots</li>
-     * </ul></p>
+     * </ul>
      *
      * @param millimeters The measurement in millimeters
      * @return The equivalent number of dots, rounded to the nearest integer
@@ -149,7 +155,7 @@ public enum PrintDensity
      * Converts a measurement in millimeters to dots at this print density,
      * using the specified rounding mode.
      *
-     * <p>Examples at 203 DPI (8 dots/mm) with different rounding modes:
+     * <p>Examples at 203 DPI (8 dots/mm) with different rounding modes:</p>
      * <ul>
      *     <li>1.4 mm (11.2 dots):
      *         <ul>
@@ -176,7 +182,7 @@ public enum PrintDensity
      *             <li>DOWN: 12 dots</li>
      *         </ul>
      *     </li>
-     * </ul></p>
+     * </ul>
      *
      * @param millimeters  The measurement in millimeters
      * @param roundingMode The rounding mode to apply

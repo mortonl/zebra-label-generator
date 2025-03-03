@@ -117,7 +117,6 @@ class PositionedElementTest
     @Test
     void testBuilderAtMethod()
     {
-
         TestPositionedElement element = TestPositionedElement
             .createTestElement()
             .withPosition(10.0, 20.0)

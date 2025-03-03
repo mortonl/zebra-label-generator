@@ -6,12 +6,11 @@ import com.github.mortonl.zebra.label_settings.LabelSize;
 import com.github.mortonl.zebra.printer_configuration.PrintDensity;
 import lombok.Getter;
 import lombok.experimental.SuperBuilder;
+import org.jetbrains.annotations.Nullable;
 
 import static com.github.mortonl.zebra.ZplCommand.generateZplIICommand;
 
 /**
- * {@inheritDoc}
- *
  * <p>Implements a PDF417 (Portable Data File) 2D barcode, a stacked linear barcode format
  * consisting of multiple rows of linear barcodes. The name "PDF417" derives from its structure:
  * each pattern consists of 4 bars and spaces in a pattern that is 17 units long.</p>
@@ -79,50 +78,67 @@ public class BarcodePDF417 extends Barcode
     /**
      * The orientation of the barcode.
      * Controls how the barcode is rotated on the label.
-     * If null, the printer's default orientation will be used.
+     * If null, the printer's default orientation (current ^FW value) will be used.
      *
+     * @param orientation the orientation setting to control barcode rotation
+     * @return the current orientation setting of the barcode
      * @see Orientation
      */
-    private final Orientation orientation;
+    private final @Nullable Orientation orientation;
 
     /**
      * The height of each row in millimeters.
-     * Must be greater than 0 and fit within the label height.
-     * If null, the printer's default row height will be used.
+     * Must be greater than 0 and fit within the label height (1 is not recommended).
+     * If null, the value set by the last ^BY command or the printer's default row height will be used.
+     *
+     * @param rowHeightMm the height of each barcode row in millimeters
+     * @return the height of each barcode row in millimeters
      */
-    private final double rowHeightMm;
+    private final @Nullable Double rowHeightMm;
 
     /**
      * The error correction level (0-8).
      * Higher levels provide better error correction but require more space.
-     * If null, the printer's default security level will be used.
+     * If null, the printer will use level 0 (error detection only).
      * <ul>
-     *     <li>0 = No error correction</li>
-     *     <li>8 = Maximum error correction</li>
+     *     <li>0 = Error detection only</li>
+     *     <li>1-8 = Increasing levels of error correction</li>
      * </ul>
+     *
+     * @param securityLevel the error correction level between 0 (detection only) and 8 (maximum correction)
+     * @return the current error correction level
      */
-    private final int securityLevel;
+    private final @Nullable Integer securityLevel;
 
     /**
      * The number of data columns (1-30).
      * Controls the width of the barcode.
-     * If null, the printer will automatically optimize the number of columns.
+     * If null, the printer will use a 1:2 row-to-column aspect ratio.
+     *
+     * @param dataColumns the number of data columns between 1 and 30
+     * @return the number of data columns in the barcode
      */
-    private final int dataColumns;
+    private final @Nullable Integer dataColumns;
 
     /**
      * The number of rows (3-90).
      * Controls the height of the barcode.
-     * If null, the printer will automatically optimize the number of rows.
+     * If null, the printer will use a 1:2 row-to-column aspect ratio.
+     *
+     * @param rows the number of rows between 3 and 90
+     * @return the number of rows in the barcode
      */
-    private final int rows;
+    private final @Nullable Integer rows;
 
     /**
      * Controls whether to enable right-side truncation.
-     * When enabled, removes the right-side stop pattern to save space.
-     * If null, the printer's default truncation setting will be used.
+     * When enabled, removes the right row indicators and stop pattern to save space.
+     * If null, the printer will use N (no truncation).
+     *
+     * @param enableRightSideTruncation whether to enable right-side truncation
+     * @return the current truncation setting
      */
-    private final Boolean enableRightSideTruncation;
+    private final @Nullable Boolean enableRightSideTruncation;
 
     /**
      * {@inheritDoc}

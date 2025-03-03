@@ -19,7 +19,7 @@ import static com.github.mortonl.zebra.validation.Validator.validateNotEmpty;
  * <p>When values are not explicitly set, they will not be included in the ZPL command,
  * allowing the printer to use its default values or values from previous default commands.</p>
  *
- * <p>Example usage:
+ * <p>Example usage:</p>
  * <pre>{@code
  * // Basic text with defaults
  * Text text = Text.createText()
@@ -44,7 +44,7 @@ import static com.github.mortonl.zebra.validation.Validator.validateNotEmpty;
  *     .withPosition(100, 300)
  *     .withHexadecimalContent("48656C6C6F") // "Hello" in hex
  *     .build();
- * }</pre></p>
+ * }</pre>
  *
  * @see PositionedElement For positioning capabilities
  * @see Font For font configuration options
@@ -56,19 +56,20 @@ import static com.github.mortonl.zebra.validation.Validator.validateNotEmpty;
 public class Text extends PositionedElement
 {
     /**
-     * Indicates whether the text colors should be reversed.
-     * When true, text will be white on black background.
-     * When not specified, the printer's default color settings are used.
+     * Controls color inversion of the text field.
      *
+     * @param colorAndBackgroundReversed true for white on black, false for standard
+     * @return the current color reversal state
      * @see ZplCommand#FIELD_REVERSE_PRINT
      */
     Boolean colorAndBackgroundReversed;
 
     /**
-     * The font configuration for this text element.
-     * When not specified, the printer's default font settings are used.
+     * Defines the text appearance characteristics.
      *
-     * @see Font For available font options
+     * @param font the font configuration to use
+     * @return the current font configuration
+     * @see Font for configuration options
      */
     Font font;
 
@@ -77,6 +78,8 @@ public class Text extends PositionedElement
      * Should not be set directly - use {@link TextBuilder#withPlainTextContent(String)}
      * or {@link TextBuilder#withHexadecimalContent(String)} instead.
      *
+     * @param content the field data container
+     * @return the current field content
      * @see Field For field data configuration
      * @see TextBuilder#withPlainTextContent(String)
      * @see TextBuilder#withHexadecimalContent(String)
@@ -86,12 +89,12 @@ public class Text extends PositionedElement
     /**
      * {@inheritDoc}
      *
-     * <p>Additional ZPL commands included for text elements:
+     * <p>Additional ZPL commands included for text elements:</p>
      * <ul>
      *     <li>Field reversal (^FR) if color reversal is specified</li>
      *     <li>Font settings (^A) if font is specified</li>
      *     <li>Field data (^FD)</li>
-     * </ul></p>
+     * </ul>
      */
     @Override
     public String toZplString(PrintDensity dpi)
@@ -115,10 +118,10 @@ public class Text extends PositionedElement
     /**
      * {@inheritDoc}
      *
-     * <p>Additional validation for text elements:
+     * <p>Additional validation for text elements:</p>
      * <ul>
      *     <li>Content must not be empty</li>
-     * </ul></p>
+     * </ul>
      *
      * @throws IllegalStateException if the text content is empty
      */
@@ -132,8 +135,8 @@ public class Text extends PositionedElement
     /**
      * Builder for creating Text instances with type-safe configuration.
      *
-     * @param <C> {@inheritDoc}
-     * @param <B> {@inheritDoc}
+     * @param <C> the type of Text being built
+     * @param <B> the concrete builder type (self-referential for method chaining)
      */
     public static abstract class TextBuilder<C extends Text, B extends TextBuilder<C, B>>
         extends PositionedElement.PositionedElementBuilder<C, B>
@@ -143,15 +146,15 @@ public class Text extends PositionedElement
          * This method automatically configures the underlying {@link Field} with the
          * correct settings for plain text handling.
          *
-         * <p>Example usage:
+         * <p>Example usage:</p>
          * <pre>{@code
          * Text text = Text.createText()
          *     .withPlainTextContent("Hello World")
          *     .build();
-         * }</pre></p>
+         * }</pre>
          *
          * @param contents The text content to display
-         * @return {@inheritDoc}
+         * @return the builder instance for method chaining
          * @throws IllegalArgumentException if contents is null
          * @see Field.FieldBuilder#withData(String) (String)
          * @see #withHexadecimalContent(String)
@@ -170,15 +173,15 @@ public class Text extends PositionedElement
          * This method automatically configures the underlying {@link Field} with the
          * correct settings for hexadecimal character handling.
          *
-         * <p>Example usage:
+         * <p>Example usage:</p>
          * <pre>{@code
          * Text text = Text.createText()
          *     .withHexadecimalContent("48656C6C6F") // "Hello" in hex
          *     .build();
-         * }</pre></p>
+         * }</pre>
          *
          * @param contents The hexadecimal string representing the text content
-         * @return {@inheritDoc}
+         * @return the builder instance for method chaining
          * @throws IllegalArgumentException if contents is null or not valid hexadecimal
          * @see Field.FieldBuilder#withData(String) (String)
          * @see #withPlainTextContent(String)

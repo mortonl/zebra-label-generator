@@ -17,18 +17,18 @@ import static com.github.mortonl.zebra.validation.Validator.validateRange;
  * Represents a graphic field in ZPL format (^GF command).
  * This class handles the creation and validation of graphic data with various compression types.
  *
- * <p>The graphic field can be created using one of three formats:
+ * <p>The graphic field can be created using one of three formats:</p>
  * <ul>
  *     <li>ASCII hexadecimal (default)</li>
  *     <li>Binary</li>
  *     <li>Compressed binary</li>
  * </ul>
- * </p>
  *
  * <p><strong>Note:</strong> When values are not explicitly set, they will not be included in the ZPL command.
  * This allows the printer to use its default values or maintain values from previous default commands.</p>
  *
- * @example <pre>
+ * <p>Example usage:</p>
+ * <pre>{@code
  * // Creating a graphic field with ASCII hex data
  * GraphicField field = GraphicField.createGraphicField()
  *     .withPosition(100, 100)
@@ -40,7 +40,8 @@ import static com.github.mortonl.zebra.validation.Validator.validateRange;
  *     .withPosition(100, 100)
  *     .withBinaryContent(imageData, 100)  // 100 bytes per row
  *     .build();
- * </pre>
+ * }</pre>
+ *
  * @see CompressionType For supported compression formats
  * @see PositionedElement For positioning capabilities
  */
@@ -48,7 +49,14 @@ import static com.github.mortonl.zebra.validation.Validator.validateRange;
 @SuperBuilder(builderMethodName = "createGraphicField", setterPrefix = "with")
 public class GraphicField extends PositionedElement
 {
+    /**
+     * The minimum allowed value for byte-related fields.
+     */
     private static final int MIN_BYTE_VALUE = 1;
+
+    /**
+     * The maximum allowed value for byte-related fields.
+     */
     private static final int MAX_BYTE_VALUE = 99999;
 
     /**
@@ -58,32 +66,40 @@ public class GraphicField extends PositionedElement
      * When not specified, the printer will use its default value (ASCII_HEX)
      * or maintain the last used compression type from a previous default command.</p>
      *
+     * @param compressionType the compression type to use for encoding graphic data
+     * @return the compression type used for the graphic data
      * @see CompressionType#ASCII_HEX For standard hexadecimal format
      * @see CompressionType#BINARY For raw binary data (B64)
      * @see CompressionType#COMPRESSED_BINARY For Zebra's compressed format (Z64)
-     * @see GraphicFieldBuilder#withHexadecimalContent(String, int) For setting ASCII hex data
-     * @see GraphicFieldBuilder#withBinaryContent(String, int, int) For setting binary data
-     * @see GraphicFieldBuilder#withCompressedBinaryContent(String, int, int, int)  For setting compressed data
      */
     private final CompressionType compressionType;
 
     /**
      * The total number of bytes to be transmitted for the total image.
      * For ASCII download, this should match the graphic field count.
-     * Must be between 1 and 99999.
+     * Must be between {@value MIN_BYTE_VALUE} and {@value MAX_BYTE_VALUE}.
+     *
+     * @param binaryByteCount the total number of bytes in the image data
+     * @return the total number of bytes in the image data
      */
     private final int binaryByteCount;
 
     /**
      * The total number of bytes comprising the graphic format (width x height).
      * When divided by bytes per row, gives the number of lines in the image.
-     * Must be between 1 and 99999.
+     * Must be between {@value MIN_BYTE_VALUE} and {@value MAX_BYTE_VALUE}.
+     *
+     * @param graphicFieldCount the total byte count of the graphic format
+     * @return the total byte count of the graphic format
      */
     private final int graphicFieldCount;
 
     /**
      * The number of bytes in the downloaded data that comprise one row of the image.
-     * Must be between 1 and 99999.
+     * Must be between {@value MIN_BYTE_VALUE} and {@value MAX_BYTE_VALUE}.
+     *
+     * @param bytesPerRow the number of bytes per image row
+     * @return the number of bytes per image row
      */
     private final int bytesPerRow;
 
@@ -95,6 +111,9 @@ public class GraphicField extends PositionedElement
      *     <li>BINARY: B64 encoded format (:B64:encoded_data:crc)</li>
      *     <li>COMPRESSED_BINARY: Z64 encoded format (:Z64:encoded_data:crc)</li>
      * </ul>
+     *
+     * @param data the encoded graphic data string
+     * @return the encoded graphic data string
      */
     @NonNull
     private final String data;
@@ -102,14 +121,13 @@ public class GraphicField extends PositionedElement
     /**
      * Converts this graphic field to its ZPL representation.
      *
-     * <p>The command format follows: ^GFa,b,c,d,data where:
+     * <p>The command format follows: ^GFa,b,c,d,data where:</p>
      * <ul>
      *     <li>a = compression type (A/B/C)</li>
      *     <li>b = binary byte count</li>
      *     <li>c = graphic field count</li>
      *     <li>d = bytes per row</li>
      * </ul>
-     * </p>
      *
      * @param dpi the print density to use for converting measurements
      * @return the complete ZPL command string
@@ -138,14 +156,13 @@ public class GraphicField extends PositionedElement
      * Validates this graphic field in the context of a specific label size and print density.
      * Performs comprehensive validation of all field values and data format.
      *
-     * <p>Validation includes:
+     * <p>Validation includes:</p>
      * <ul>
      *     <li>Position validation (inherited from PositionedElement)</li>
      *     <li>Data presence and format</li>
      *     <li>Numeric range checks for byte counts and row size</li>
      *     <li>Hex data format validation when using ASCII_HEX compression</li>
      * </ul>
-     * </p>
      *
      * @param size the label size context for validation
      * @param dpi  the print density context for validation
@@ -171,13 +188,12 @@ public class GraphicField extends PositionedElement
     /**
      * Validates ASCII hexadecimal data format and length.
      *
-     * <p>Validation includes:
+     * <p>Validation includes:</p>
      * <ul>
      *     <li>Removing whitespace and commas from the data</li>
      *     <li>Checking for valid hexadecimal characters (0-9, A-F, a-f)</li>
      *     <li>Verifying the data length matches the specified binary byte count</li>
      * </ul>
-     * </p>
      *
      * @throws IllegalStateException if the hex data is invalid or length doesn't match
      */

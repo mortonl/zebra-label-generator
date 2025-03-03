@@ -2,12 +2,14 @@ package com.github.mortonl.zebra.elements.barcodes;
 
 import com.github.mortonl.zebra.ZebraLabel;
 import com.github.mortonl.zebra.elements.barcodes.code_128.Code128Mode;
+import com.github.mortonl.zebra.elements.fields.Field;
 import com.github.mortonl.zebra.formatting.Orientation;
 import com.github.mortonl.zebra.label_settings.LabelSize;
 import com.github.mortonl.zebra.printer_configuration.PrintDensity;
 import com.github.mortonl.zebra.validation.Validator;
 import lombok.Getter;
 import lombok.experimental.SuperBuilder;
+import org.jetbrains.annotations.Nullable;
 
 import static com.github.mortonl.zebra.ZplCommand.BARCODE_CODE_128;
 import static com.github.mortonl.zebra.ZplCommand.generateZplIICommand;
@@ -93,8 +95,11 @@ public class BarcodeCode128 extends Barcode {
      *     <li>Maximum: 32000.0 / minDotsPerMillimetre</li>
      * </ul>
      * <p>This parameter is required and must be specified.</p>
+     *
+     * @param heightMm the height of the barcode in millimeters, must be within valid DPI-dependent range
+     * @return the height of the barcode in millimeters
      */
-    private final Double heightMm;
+    private final @Nullable Double heightMm;
 
     /**
      * The orientation of the barcode.
@@ -112,9 +117,11 @@ public class BarcodeCode128 extends Barcode {
      *     <li>The printer's default orientation (normal) if no ^FW was specified</li>
      * </ul>
      *
+     * @param orientation the orientation setting for the barcode (N, R, I, or B)
+     * @return the current orientation setting of the barcode
      * @see Orientation
      */
-    private final Orientation orientation;
+    private final @Nullable Orientation orientation;
 
     /**
      * Controls the display of the interpretation line below the barcode.
@@ -124,8 +131,11 @@ public class BarcodeCode128 extends Barcode {
      * <p>If not specified (null), this parameter is omitted from the ZPL command.
      * The printer will use its default value (Y - enabled) unless modified by
      * previous commands.</p>
+     *
+     * @param printInterpretationLine true to show interpretation line below barcode, false to hide it
+     * @return true if the interpretation line below barcode is enabled, false otherwise
      */
-    private final Boolean printInterpretationLine;
+    private final @Nullable Boolean printInterpretationLine;
 
     /**
      * Controls the display of the interpretation line above the barcode.
@@ -135,8 +145,11 @@ public class BarcodeCode128 extends Barcode {
      * <p>If not specified (null), this parameter is omitted from the ZPL command.
      * The printer will use its default value (N - disabled) unless modified by
      * previous commands.</p>
+     *
+     * @param printInterpretationLineAbove true to show interpretation line above barcode, false to show it below
+     * @return true if the interpretation line is shown above the barcode, false if shown below
      */
-    private final Boolean printInterpretationLineAbove;
+    private final @Nullable Boolean printInterpretationLineAbove;
 
     /**
      * Enables or disables the UCC check digit calculation.
@@ -146,8 +159,11 @@ public class BarcodeCode128 extends Barcode {
      * <p>If not specified (null), this parameter is omitted from the ZPL command.
      * The printer will use its default value (N - disabled) unless modified by
      * previous commands.</p>
+     *
+     * @param uccCheckDigitEnabled true to enable automatic UCC check digit calculation, false to disable it
+     * @return true if UCC check digit calculation is enabled, false otherwise
      */
-    private final Boolean uccCheckDigitEnabled;
+    private final @Nullable Boolean uccCheckDigitEnabled;
 
     /**
      * Specifies the Code 128 encoding mode.
@@ -162,6 +178,8 @@ public class BarcodeCode128 extends Barcode {
      * The printer will use its default mode (AUTO) unless modified by
      * previous commands.</p>
      *
+     * @param mode the Code 128 encoding mode to set
+     * @return the current Code 128 encoding mode
      * @see Code128Mode
      */
     private final Code128Mode mode;

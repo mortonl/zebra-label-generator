@@ -11,8 +11,6 @@ import static com.github.mortonl.zebra.ZplCommand.FIELD_HEXADECIMAL_INDICATOR;
 import static com.github.mortonl.zebra.ZplCommand.FIELD_START;
 
 /**
- * {@inheritDoc}
- *
  * <p>Implements a basic field element in ZPL II, representing a fundamental data container
  * that can hold both plain text and hexadecimal data. Fields are the basic building blocks
  * for most label content including:</p>
@@ -58,11 +56,16 @@ public class Field extends LabelElement
      *     <li>Must contain valid hexadecimal characters (0-9, A-F)</li>
      *     <li>Each byte requires two hex characters</li>
      * </ul>
+     *
+     * @param data the content to be printed, either as plain text or hex values
+     * @return the field content as either plain text or hex values
+     * @see #enableHexCharacters for controlling the data interpretation mode
      */
     private final String data;
 
     /**
      * Controls whether the field data should be interpreted as hexadecimal values.
+     * This setting affects how the printer interprets the {@link #data} content.
      *
      * <p>When set to:</p>
      * <ul>
@@ -70,6 +73,10 @@ public class Field extends LabelElement
      *     <li>{@code false} - Data is treated as plain text</li>
      *     <li>{@code null} - Uses printer default (plain text)</li>
      * </ul>
+     *
+     * @param enableHexCharacters true for hex mode, false for text mode, null for printer default
+     * @return the current hex interpretation mode
+     * @see #data for the content affected by this setting
      */
     private Boolean enableHexCharacters;
 
