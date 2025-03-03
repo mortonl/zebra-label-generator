@@ -162,6 +162,9 @@ public abstract class Barcode extends PositionedElement
          * @return The builder instance for method chaining
          * @see Field
          */
-        public abstract B withContent(Field contents);
+        public B withContent(Field contents) {
+            this.content = contents;
+            return self();
+        }
     }
 }

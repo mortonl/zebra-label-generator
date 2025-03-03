@@ -161,7 +161,7 @@ public class BarcodePDF417Test
         BarcodePDF417 barcode = BarcodePDF417
             .createPDF417Barcode()
             .withOrientation(Orientation.NORMAL)
-            .withRowHeightMm(10)
+            .withRowHeightMm(10.0)
             .withSecurityLevel(5)
             .withDataColumns(15)
             .withRows(20)

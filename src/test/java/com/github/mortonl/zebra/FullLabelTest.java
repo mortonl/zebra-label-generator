@@ -4,6 +4,7 @@ import com.github.mortonl.zebra.elements.graphics.CompressionType;
 import com.github.mortonl.zebra.elements.graphics.GraphicBox;
 import com.github.mortonl.zebra.elements.graphics.GraphicField;
 import com.github.mortonl.zebra.formatting.FontEncoding;
+import com.github.mortonl.zebra.label_settings.InternationalCharacterSet;
 import com.github.mortonl.zebra.label_settings.LabelSize;
 import com.github.mortonl.zebra.printer_configuration.LoadedMedia;
 import com.github.mortonl.zebra.printer_configuration.PrinterConfiguration;
@@ -21,6 +22,9 @@ public class FullLabelTest
     {
         LabelSize labelSize = LABEL_4X6;
 
+        InternationalCharacterSet internationalCharacterSet = InternationalCharacterSet.createInternationalCharacterSet()
+                                                                   .withEncoding(FontEncoding.UTF_8).build();
+
         ZebraLabel testLabel = ZebraLabel
             .builder()
             .size(labelSize)
@@ -29,7 +33,7 @@ public class FullLabelTest
                 .dpi(DPI_203)
                 .loadedMedia(LoadedMedia.fromLabelSize(labelSize))
                 .build())
-            .internationalCharacterSet(FontEncoding.UTF_8)
+            .internationalCharacterSet(internationalCharacterSet)
             .build();
 
         GraphicBox topBox = GraphicBox
