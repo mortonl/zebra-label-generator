@@ -22,7 +22,7 @@ import lombok.experimental.SuperBuilder;
  */
 @Getter
 @SuperBuilder(setterPrefix = "with")
-public class PositionedAndSizedElement extends PositionedElement
+public abstract class PositionedAndSizedElement extends PositionedElement
 {
     /**
      * The width of the element in millimeters.

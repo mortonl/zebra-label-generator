@@ -131,12 +131,5 @@ class PositionedElementTest
     @SuperBuilder(setterPrefix = "with")
     private static class TestPositionedElement extends PositionedElement
     {
-        protected TestPositionedElement(
-            double xAxisLocationMm, double yAxisLocationMm,
-            OriginJustification zOriginJustification
-        )
-        {
-            super(xAxisLocationMm, yAxisLocationMm, zOriginJustification);
-        }
     }
 }

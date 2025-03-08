@@ -36,7 +36,7 @@ import static com.github.mortonl.zebra.ZplCommand.generateZplIICommand;
  *     .withPrintInterpretationLine(true)
  *     .withMode(Code128Mode.AUTO)
  *     .withPlainTextContent("12345")  // Automatically configures Field for plain text
- *     .build(); // Validates and adds to label automatically
+ *     .addToLabel(label); // Validates and adds to label automatically
  *
  * // Method 2: Build separately (when deferred addition is needed)
  * BarcodeCode128 barcode = BarcodeCode128.builder()
@@ -50,13 +50,13 @@ import static com.github.mortonl.zebra.ZplCommand.generateZplIICommand;
  *     .withHeightMm(15.0)
  *     .withOrientation(Orientation.NORMAL)
  *     .withHexadecimalContent("48656C6C6F")  // Automatically configures Field for hex data
- *     .build();
+ *     .addToLabel(label);
  *
  * // Minimal configuration with plain text
  * BarcodeCode128.builder()
  *     .withHeightMm(15.0)
  *     .withPlainTextContent("12345")
- *     .build();
+ *     .addToLabel(label);
  * }</pre>
  *
  * <p><strong>Content Setting:</strong></p>

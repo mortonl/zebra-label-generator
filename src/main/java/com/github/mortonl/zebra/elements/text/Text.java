@@ -156,15 +156,15 @@ public class Text extends PositionedElement
          * @param contents The text content to display
          * @return the builder instance for method chaining
          * @throws IllegalArgumentException if contents is null
-         * @see Field.FieldBuilder#data(String)
+         * @see Field.FieldBuilder#withData(String)
          * @see #withHexadecimalContent(String)
          */
         public B withPlainTextContent(String contents)
         {
             this.content = Field
                 .builder()
-                .data(contents)
-                .enableHexCharacters(false)
+                .withData(contents)
+                .withEnableHexCharacters(false)
                 .build();
             return self();
         }
@@ -184,15 +184,15 @@ public class Text extends PositionedElement
          * @param contents The hexadecimal string representing the text content
          * @return the builder instance for method chaining
          * @throws IllegalArgumentException if contents is null or not valid hexadecimal
-         * @see Field.FieldBuilder#data(String)
+         * @see Field.FieldBuilder#withData(String)
          * @see #withPlainTextContent(String)
          */
         public B withHexadecimalContent(String contents)
         {
             this.content = Field
                 .builder()
-                .data(contents)
-                .enableHexCharacters(true)
+                .withData(contents)
+                .withEnableHexCharacters(true)
                 .build();
             return self();
         }

@@ -3,8 +3,7 @@ package com.github.mortonl.zebra.elements;
 import com.github.mortonl.zebra.formatting.OriginJustification;
 import com.github.mortonl.zebra.label_settings.LabelSize;
 import com.github.mortonl.zebra.printer_configuration.PrintDensity;
-import lombok.AllArgsConstructor;
-import lombok.Data;
+import lombok.Getter;
 import lombok.experimental.SuperBuilder;
 
 import static com.github.mortonl.zebra.ZplCommand.FIELD_ORIGIN;
@@ -31,10 +30,9 @@ import static com.github.mortonl.zebra.ZplCommand.generateZplIICommand;
  *
  * @see LabelElement The parent class for all label elements
  */
-@Data
+@Getter
 @SuperBuilder(setterPrefix = "with")
-@AllArgsConstructor
-public abstract class PositionedElement implements LabelElement
+public abstract class PositionedElement extends LabelElement
 {
     /**
      * The minimum allowed value in dots for both X and Y axis positions.
@@ -161,6 +159,7 @@ public abstract class PositionedElement implements LabelElement
      * @param <B> the concrete builder type (self-referential for method chaining)
      */
     protected static abstract class PositionedElementBuilder<C extends PositionedElement, B extends PositionedElementBuilder<C, B>>
+        extends LabelElementBuilder<C, B>
     {
         /**
          * Sets the position of the element on the label.

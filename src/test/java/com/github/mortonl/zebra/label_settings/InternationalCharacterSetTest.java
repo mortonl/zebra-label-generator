@@ -21,7 +21,7 @@ class InternationalCharacterSetTest
     {
         InternationalCharacterSet charSet = InternationalCharacterSet
             .builder()
-            .encoding(FontEncoding.UTF_8)
+            .withEncoding(FontEncoding.UTF_8)
             .build();
 
         assertNotNull(charSet);
@@ -34,7 +34,7 @@ class InternationalCharacterSetTest
         // Arrange
         InternationalCharacterSet charSet = InternationalCharacterSet
             .builder()
-            .encoding(FontEncoding.UTF_8)
+            .withEncoding(FontEncoding.UTF_8)
             .build();
 
         // Act
@@ -50,7 +50,7 @@ class InternationalCharacterSetTest
         // Arrange
         InternationalCharacterSet charSet = InternationalCharacterSet
             .builder()
-            .encoding(FontEncoding.UTF_8)
+            .withEncoding(FontEncoding.UTF_8)
             .build();
 
         // Act & Assert
@@ -63,7 +63,7 @@ class InternationalCharacterSetTest
         // Arrange
         InternationalCharacterSet charSet = InternationalCharacterSet
             .builder()
-            .encoding(null)
+            .withEncoding(null)
             .build();
 
         // Act & Assert
@@ -81,7 +81,7 @@ class InternationalCharacterSetTest
         // Arrange
         InternationalCharacterSet charSet = InternationalCharacterSet
             .builder()
-            .encoding(FontEncoding.UTF_8)
+            .withEncoding(FontEncoding.UTF_8)
             .build();
 
         // Act & Assert

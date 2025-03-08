@@ -42,7 +42,7 @@ class CommentTest
     {
         Comment comment = Comment
             .builder()
-            .content("Test Comment")
+            .withContent("Test Comment")
             .build();
         String expected = "^FX" + "Test Comment" + "^FS";
         assertEquals(expected, comment.toZplString(PrintDensity.DPI_203));
@@ -51,7 +51,10 @@ class CommentTest
     @Test
     void testToZplStringWithEmptyComment()
     {
-        Comment comment = new Comment("");
+        Comment comment = Comment
+            .builder()
+            .withContent("")
+            .build();
         String expected = "^FX" + "^FS";
         assertEquals(expected, comment.toZplString(PrintDensity.DPI_203));
     }
@@ -60,7 +63,10 @@ class CommentTest
     @MethodSource("validComments")
     void testValidateInContextWithValidComments(String testName, String commentText)
     {
-        Comment comment = new Comment(commentText);
+        Comment comment = Comment
+            .builder()
+            .withContent(commentText)
+            .build();
         assertDoesNotThrow(() -> comment.validateInContext(LabelSize.LABEL_4X6, PrintDensity.DPI_203));
     }
 
@@ -68,7 +74,10 @@ class CommentTest
     @MethodSource("invalidComments")
     void testValidateInContextWithInvalidComments(String testName, String commentText)
     {
-        Comment comment = new Comment(commentText);
+        Comment comment = Comment
+            .builder()
+            .withContent(commentText)
+            .build();
         IllegalStateException exception = assertThrows(
             IllegalStateException.class,
             () -> comment.validateInContext(LabelSize.LABEL_4X6, PrintDensity.DPI_203)
@@ -82,6 +91,8 @@ class CommentTest
     @Test
     void testNullComment()
     {
-        assertThrows(NullPointerException.class, () -> new Comment(null));
+        assertThrows(NullPointerException.class, () ->
+            Comment.builder().withContent(null).build()
+        );
     }
 }

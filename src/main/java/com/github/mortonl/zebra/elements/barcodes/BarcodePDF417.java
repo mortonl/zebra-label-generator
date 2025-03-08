@@ -54,7 +54,7 @@ import static com.github.mortonl.zebra.ZplCommand.generateZplIICommand;
  *     .withRowHeightMm(0.5)
  *     .withSecurityLevel(2)
  *     .withPlainTextContent("Sample PDF417 Data")
- *     .build();
+ *     .addToLabel(label);
  *
  * // Advanced configuration with error correction
  * BarcodePDF417.builder()
@@ -64,7 +64,7 @@ import static com.github.mortonl.zebra.ZplCommand.generateZplIICommand;
  *     .withRows(30)
  *     .withEnableRightSideTruncation(true)
  *     .withPlainTextContent("Large amount of data...")
- *     .build();
+ *     .addToLabel(label);
  * }</pre>
  *
  * @see Barcode The parent class for all barcode implementations
@@ -139,7 +139,6 @@ public class BarcodePDF417 extends Barcode
      * @return the current truncation setting
      */
     private final @Nullable Boolean enableRightSideTruncation;
-
 
     /**
      * {@inheritDoc}

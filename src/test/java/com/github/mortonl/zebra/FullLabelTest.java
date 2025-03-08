@@ -30,7 +30,7 @@ public class FullLabelTest
                 .dpi(DPI_203)
                 .loadedMedia(LoadedMedia.fromLabelSize(labelSize))
                 .build())
-            .internationalCharacterSet(InternationalCharacterSet.builder().encoding(FontEncoding.UTF_8).build())
+            .internationalCharacterSet(InternationalCharacterSet.builder().withEncoding(FontEncoding.UTF_8).build())
             .build();
 
         GraphicBox topBox = GraphicBox

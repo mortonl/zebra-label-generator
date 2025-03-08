@@ -30,14 +30,14 @@ import static com.github.mortonl.zebra.ZplCommand.SET_FONT;
  *     .withFontDesignation('A')
  *     .withSize(2.0, 3.0)  // width and height in mm
  *     .withOrientation(Orientation.NORMAL)
- *     .build();
+ *     .addToLabel(label);
  *
  * // Rotated font with specific dimensions
  * Font.builder()
  *     .withFontDesignation('0')
  *     .withSize(4.0, 6.0)
  *     .withOrientation(Orientation.ROTATE_90)
- *     .build();
+ *     .addToLabel(label);
  * }</pre>
  *
  * @see LabelElement The parent class for all label elements
@@ -45,7 +45,7 @@ import static com.github.mortonl.zebra.ZplCommand.SET_FONT;
  */
 @Getter
 @SuperBuilder(setterPrefix = "with")
-public class Font implements LabelElement
+public class Font extends LabelElement
 {
     /**
      * Minimum size in printer dots for font dimensions.
@@ -233,6 +233,7 @@ public class Font implements LabelElement
      * @param <B> The type of the Builder
      */
     public static abstract class FontBuilder<C extends Font, B extends FontBuilder<C, B>>
+        extends LabelElementBuilder<C, B>
     {
         /**
          * Sets both width and height of the font in millimeters.

@@ -30,14 +30,14 @@ import static com.github.mortonl.zebra.validation.Validator.validateRange;
  *     .withHeightMm(15.0)
  *     .withOrientation(Orientation.NORMAL)
  *     .withPlainTextContent("1234")
- *     .build();
+ *     .addToLabel(label);
  *
  * // With check digit (odd number of digits required)
  * BarcodeInterleaved2of5.builder()
  *     .withHeightMm(15.0)
  *     .withCalculateAndPrintMod10CheckDigit(true)
  *     .withPlainTextContent("12345")
- *     .build();
+ *     .addToLabel(label);
  * }</pre>
  *
  * @see Barcode The parent class for all barcode implementations

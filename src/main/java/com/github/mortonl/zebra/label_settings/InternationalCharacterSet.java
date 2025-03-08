@@ -3,8 +3,8 @@ package com.github.mortonl.zebra.label_settings;
 import com.github.mortonl.zebra.elements.LabelElement;
 import com.github.mortonl.zebra.formatting.FontEncoding;
 import com.github.mortonl.zebra.printer_configuration.PrintDensity;
-import lombok.Builder;
 import lombok.Getter;
+import lombok.experimental.SuperBuilder;
 
 import static com.github.mortonl.zebra.ZplCommand.CHANGE_INTERNATIONAL_CHARACTER_SET;
 import static com.github.mortonl.zebra.ZplCommand.generateZplIICommand;
@@ -18,8 +18,8 @@ import static com.github.mortonl.zebra.ZplCommand.generateZplIICommand;
  * until changed by another ^CI command.</p>
  */
 @Getter
-@Builder
-public class InternationalCharacterSet implements LabelElement
+@SuperBuilder(setterPrefix = "with")
+public class InternationalCharacterSet extends LabelElement
 {
     /**
      * The font encoding to be used for text interpretation.

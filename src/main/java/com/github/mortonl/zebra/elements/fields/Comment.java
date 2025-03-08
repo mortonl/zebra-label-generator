@@ -3,9 +3,9 @@ package com.github.mortonl.zebra.elements.fields;
 import com.github.mortonl.zebra.elements.LabelElement;
 import com.github.mortonl.zebra.label_settings.LabelSize;
 import com.github.mortonl.zebra.printer_configuration.PrintDensity;
-import lombok.Builder;
-import lombok.Data;
+import lombok.Getter;
 import lombok.NonNull;
+import lombok.experimental.SuperBuilder;
 
 import static com.github.mortonl.zebra.ZplCommand.COMMENT;
 import static com.github.mortonl.zebra.ZplCommand.CONTROL_CHARACTERS;
@@ -29,18 +29,18 @@ import static com.github.mortonl.zebra.ZplCommand.generateZplIICommand;
  * <pre>{@code
  * Comment.builder()
  *     .withContent("Label template v1.2 - Created by Luke Morton")
- *     .build();
+ *     .addToLabel(label);
  *
  * Comment.builder()
  *     .withContent("Configuration: High-resolution shipping label")
- *     .build();
+ *     .addToLabel(label);
  * }</pre>
  *
  * @see LabelElement The parent class for all label elements
  */
-@Data
-@Builder
-public class Comment implements LabelElement
+@Getter
+@SuperBuilder(setterPrefix = "with")
+public class Comment extends LabelElement
 {
     /**
      * The text content of the comment.

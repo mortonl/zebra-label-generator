@@ -20,7 +20,7 @@ class FieldTest
     {
         Field field = Field
             .builder()
-            .data("Test Data")
+            .withData("Test Data")
             .build();
         String expected = FIELD_START + "Test Data" + FIELD_END;
         assertEquals(expected, field.toZplString(PrintDensity.DPI_203));
@@ -37,7 +37,7 @@ class FieldTest
     {
         Field field = Field
             .builder()
-            .data(validData)
+            .withData(validData)
             .build();
         assertDoesNotThrow(() -> field.validateInContext(LabelSize.LABEL_4X6, PrintDensity.DPI_203));
     }
@@ -48,7 +48,7 @@ class FieldTest
     {
         Field field = Field
             .builder()
-            .data(invalidData)
+            .withData(invalidData)
             .build();
         IllegalStateException exception = assertThrows(
             IllegalStateException.class,
@@ -62,8 +62,8 @@ class FieldTest
     {
         Field field = Field
             .builder()
-            .data("test")
-            .enableHexCharacters(true)
+            .withData("test")
+            .withEnableHexCharacters(true)
             .build();
 
         assertEquals("^FH^FDtest^FS", field.toZplString(PrintDensity.DPI_203));
@@ -74,8 +74,8 @@ class FieldTest
     {
         Field field = Field
             .builder()
-            .data("test")
-            .enableHexCharacters(false)
+            .withData("test")
+            .withEnableHexCharacters(false)
             .build();
 
         assertEquals("^FDtest^FS", field.toZplString(PrintDensity.DPI_203));
@@ -86,8 +86,8 @@ class FieldTest
     {
         Field field = Field
             .builder()
-            .data("test")
-            .enableHexCharacters(null)
+            .withData("test")
+            .withEnableHexCharacters(null)
             .build();
 
         assertEquals("^FDtest^FS", field.toZplString(PrintDensity.DPI_203));

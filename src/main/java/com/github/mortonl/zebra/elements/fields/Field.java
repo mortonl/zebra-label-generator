@@ -3,8 +3,8 @@ package com.github.mortonl.zebra.elements.fields;
 import com.github.mortonl.zebra.elements.LabelElement;
 import com.github.mortonl.zebra.label_settings.LabelSize;
 import com.github.mortonl.zebra.printer_configuration.PrintDensity;
-import lombok.Builder;
-import lombok.Data;
+import lombok.Getter;
+import lombok.experimental.SuperBuilder;
 
 import static com.github.mortonl.zebra.ZplCommand.FIELD_END;
 import static com.github.mortonl.zebra.ZplCommand.FIELD_HEXADECIMAL_INDICATOR;
@@ -26,20 +26,20 @@ import static com.github.mortonl.zebra.ZplCommand.FIELD_START;
  * // Basic text field
  * Field.builder()
  *     .withData("Sample Text")
- *     .build();
+ *     .addToLabel(label);
  *
  * // Hexadecimal field for special characters or binary data
  * Field.builder()
  *     .withData("A5B2C3")
  *     .withEnableHexCharacters(true)
- *     .build();
+ *     .addToLabel(label);
  * }</pre>
  *
  * @see LabelElement The parent class for all label elements
  */
-@Data
-@Builder
-public class Field implements LabelElement
+@Getter
+@SuperBuilder(setterPrefix = "with")
+public class Field extends LabelElement
 {
     /**
      * The content data for this field.

@@ -124,8 +124,8 @@ public abstract class Barcode extends PositionedElement
         {
             this.content = Field
                 .builder()
-                .data(contents)
-                .enableHexCharacters(false)
+                .withData(contents)
+                .withEnableHexCharacters(false)
                 .build();
             return self();
         }
@@ -149,8 +149,8 @@ public abstract class Barcode extends PositionedElement
         {
             this.content = Field
                 .builder()
-                .data(contents)
-                .enableHexCharacters(true)
+                .withData(contents)
+                .withEnableHexCharacters(true)
                 .build();
             return self();
         }
