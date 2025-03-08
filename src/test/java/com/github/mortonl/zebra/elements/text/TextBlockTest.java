@@ -21,9 +21,6 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 @DisplayName("TextBlock Tests")
 class TextBlockTest
 {
-    private static final LabelSize DEFAULT_SIZE = LabelSize.LABEL_4X6; // 101.6mm x 152.4mm
-    private static final PrintDensity DEFAULT_DPI = PrintDensity.DPI_203; // 8 dots per mm
-
     private static Stream<Arguments> validTextBlockParameters()
     {
         return Stream.of(
@@ -53,7 +50,7 @@ class TextBlockTest
         TextBlock block = TextBlock.builder()
                                    .withPlainTextContent("test")
                                    .build();
-        assertDoesNotThrow(() -> block.validateInContext(DEFAULT_SIZE, DEFAULT_DPI));
+        assertDoesNotThrow(() -> block.validateInContext(LabelSize.LABEL_4X6, PrintDensity.DPI_203));
     }
 
     @ParameterizedTest(name = "Should accept valid parameters: {5}")
@@ -73,7 +70,7 @@ class TextBlockTest
             .withHexadecimalContent("48656C6C6F") // "Hello" in hex
             .build();
 
-        assertDoesNotThrow(() -> block.validateInContext(DEFAULT_SIZE, DEFAULT_DPI));
+        assertDoesNotThrow(() -> block.validateInContext(LabelSize.LABEL_4X6, PrintDensity.DPI_203));
     }
 
     @ParameterizedTest(name = "Should reject invalid parameters: {4}")
@@ -94,7 +91,7 @@ class TextBlockTest
             .build();
 
         IllegalStateException exception = assertThrows(IllegalStateException.class,
-            () -> block.validateInContext(DEFAULT_SIZE, DEFAULT_DPI),
+            () -> block.validateInContext(LabelSize.LABEL_4X6, PrintDensity.DPI_203),
             "Failed scenario: " + scenario);
     }
 
@@ -112,7 +109,7 @@ class TextBlockTest
             .withPlainTextContent("test")
             .build();
 
-        String zplString = block.toZplString(DEFAULT_DPI);
+        String zplString = block.toZplString(PrintDensity.DPI_203);
 
         // Extract the FB command parameters
         String fbCommand = zplString.substring(
@@ -142,7 +139,7 @@ class TextBlockTest
             .withHexadecimalContent("48656C6C6F") // "Hello" in hex
             .build();
 
-        String zplString = block.toZplString(DEFAULT_DPI);
+        String zplString = block.toZplString(PrintDensity.DPI_203);
 
         // Extract the FB command parameters
         String fbCommand = zplString.substring(
@@ -176,7 +173,7 @@ class TextBlockTest
             .withPlainTextContent("test")
             .build();
 
-        String zplString = block.toZplString(DEFAULT_DPI);
+        String zplString = block.toZplString(PrintDensity.DPI_203);
 
         // Extract the FB command parameters
         String fbCommand = zplString.substring(
@@ -206,7 +203,7 @@ class TextBlockTest
             .withHexadecimalContent("48656C6C6F")
             .build();
 
-        String zplString = block.toZplString(DEFAULT_DPI);
+        String zplString = block.toZplString(PrintDensity.DPI_203);
         String[] commands = Arrays.stream(zplString.split("\\^"))
                                   .filter(cmd -> !cmd.isEmpty())
                                   .toArray(String[]::new);
@@ -231,7 +228,7 @@ class TextBlockTest
             .withHexadecimalContent("48656C6C6F")
             .build();
 
-        String zplString = block.toZplString(DEFAULT_DPI);
+        String zplString = block.toZplString(PrintDensity.DPI_203);
         String[] commands = Arrays
             .stream(zplString.split("\\^"))
             .filter(cmd -> !cmd.isEmpty())

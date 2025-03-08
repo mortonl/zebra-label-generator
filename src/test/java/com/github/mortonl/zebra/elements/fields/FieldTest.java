@@ -15,9 +15,6 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 
 class FieldTest
 {
-    private final PrintDensity testDpi = PrintDensity.DPI_203;
-    private final LabelSize testSize = LabelSize.LABEL_4X6;
-
     @Test
     void testToZplString()
     {
@@ -26,7 +23,7 @@ class FieldTest
             .data("Test Data")
             .build();
         String expected = FIELD_START + "Test Data" + FIELD_END;
-        assertEquals(expected, field.toZplString(testDpi));
+        assertEquals(expected, field.toZplString(PrintDensity.DPI_203));
     }
 
     @ParameterizedTest(name = "Field with data \"{0}\" should be valid")
@@ -42,7 +39,7 @@ class FieldTest
             .builder()
             .data(validData)
             .build();
-        assertDoesNotThrow(() -> field.validateInContext(testSize, testDpi));
+        assertDoesNotThrow(() -> field.validateInContext(LabelSize.LABEL_4X6, PrintDensity.DPI_203));
     }
 
     @ParameterizedTest(name = "Field with {0} data should be rejected")
@@ -55,7 +52,7 @@ class FieldTest
             .build();
         IllegalStateException exception = assertThrows(
             IllegalStateException.class,
-            () -> field.validateInContext(testSize, testDpi)
+            () -> field.validateInContext(LabelSize.LABEL_4X6, PrintDensity.DPI_203)
         );
         assertEquals("Field Data cannot be null", exception.getMessage());
     }
@@ -69,7 +66,7 @@ class FieldTest
             .enableHexCharacters(true)
             .build();
 
-        assertEquals("^FH^FDtest^FS", field.toZplString(testDpi));
+        assertEquals("^FH^FDtest^FS", field.toZplString(PrintDensity.DPI_203));
     }
 
     @Test
@@ -81,7 +78,7 @@ class FieldTest
             .enableHexCharacters(false)
             .build();
 
-        assertEquals("^FDtest^FS", field.toZplString(testDpi));
+        assertEquals("^FDtest^FS", field.toZplString(PrintDensity.DPI_203));
     }
 
     @Test
@@ -93,6 +90,6 @@ class FieldTest
             .enableHexCharacters(null)
             .build();
 
-        assertEquals("^FDtest^FS", field.toZplString(testDpi));
+        assertEquals("^FDtest^FS", field.toZplString(PrintDensity.DPI_203));
     }
 }

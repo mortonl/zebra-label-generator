@@ -23,8 +23,6 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 @DisplayName("Code 128 Barcode Tests")
 class BarcodeCode128Test
 {
-    private static final LabelSize DEFAULT_SIZE = LabelSize.LABEL_4X6; // 101.6mm x 152.4mm
-    private static final PrintDensity DEFAULT_DPI = PrintDensity.DPI_203; // 8 dots per mm
     private static final double VALID_HEIGHT_MM = 10.0;
 
     @Nested
@@ -94,7 +92,7 @@ class BarcodeCode128Test
                 .withMode(Code128Mode.AUTOMATIC)
                 .build();
 
-            String zplCommand = barcode.toZplString(DEFAULT_DPI);
+            String zplCommand = barcode.toZplString(PrintDensity.DPI_203);
             assertEquals(expected, zplCommand);
         }
     }
@@ -133,7 +131,7 @@ class BarcodeCode128Test
                 .build();
 
             IllegalStateException exception = assertThrows(IllegalStateException.class,
-                () -> barcode.validateInContext(DEFAULT_SIZE, DEFAULT_DPI));
+                () -> barcode.validateInContext(LabelSize.LABEL_4X6, PrintDensity.DPI_203));
             assertTrue(exception.getMessage().contains("height"));
         }
 
@@ -149,7 +147,7 @@ class BarcodeCode128Test
                 .withPlainTextContent("123456")
                 .build();
 
-            assertDoesNotThrow(() -> barcode.validateInContext(DEFAULT_SIZE, dpi));
+            assertDoesNotThrow(() -> barcode.validateInContext(LabelSize.LABEL_4X6, dpi));
         }
 
         @ParameterizedTest
@@ -166,7 +164,7 @@ class BarcodeCode128Test
                 .build();
 
             IllegalStateException exception = assertThrows(IllegalStateException.class,
-                () -> barcode.validateInContext(DEFAULT_SIZE, DEFAULT_DPI));
+                () -> barcode.validateInContext(LabelSize.LABEL_4X6, PrintDensity.DPI_203));
             assertEquals(expectedError, exception.getMessage());
         }
     }

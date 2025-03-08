@@ -16,20 +16,16 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 @ExtendWith(MockitoExtension.class)
 class InternationalCharacterSetTest
 {
-    private final FontEncoding testEncoding = FontEncoding.UTF_8;
-    private final PrintDensity testDpi = PrintDensity.DPI_203;
-    private final LabelSize testSize = LabelSize.LABEL_4X6;
-
     @Test
     void testBuilder_ValidEncoding()
     {
         InternationalCharacterSet charSet = InternationalCharacterSet
             .builder()
-            .encoding(testEncoding)
+            .encoding(FontEncoding.UTF_8)
             .build();
 
         assertNotNull(charSet);
-        assertEquals(testEncoding, charSet.getEncoding());
+        assertEquals(FontEncoding.UTF_8, charSet.getEncoding());
     }
 
     @Test
@@ -38,14 +34,14 @@ class InternationalCharacterSetTest
         // Arrange
         InternationalCharacterSet charSet = InternationalCharacterSet
             .builder()
-            .encoding(testEncoding)
+            .encoding(FontEncoding.UTF_8)
             .build();
 
         // Act
-        String result = charSet.toZplString(testDpi);
+        String result = charSet.toZplString(PrintDensity.DPI_203);
 
         // Assert
-        assertTrue(result.contains(testEncoding.getValue()));
+        assertTrue(result.contains(FontEncoding.UTF_8.getValue()));
     }
 
     @Test
@@ -54,11 +50,11 @@ class InternationalCharacterSetTest
         // Arrange
         InternationalCharacterSet charSet = InternationalCharacterSet
             .builder()
-            .encoding(testEncoding)
+            .encoding(FontEncoding.UTF_8)
             .build();
 
         // Act & Assert
-        assertDoesNotThrow(() -> charSet.validateInContext(testSize, testDpi));
+        assertDoesNotThrow(() -> charSet.validateInContext(LabelSize.LABEL_4X6, PrintDensity.DPI_203));
     }
 
     @Test
@@ -73,7 +69,7 @@ class InternationalCharacterSetTest
         // Act & Assert
         IllegalArgumentException exception = assertThrows(
             IllegalArgumentException.class,
-            () -> charSet.validateInContext(testSize, testDpi)
+            () -> charSet.validateInContext(LabelSize.LABEL_4X6, PrintDensity.DPI_203)
         );
 
         assertEquals("Encoding cannot be null", exception.getMessage());
@@ -85,11 +81,11 @@ class InternationalCharacterSetTest
         // Arrange
         InternationalCharacterSet charSet = InternationalCharacterSet
             .builder()
-            .encoding(testEncoding)
+            .encoding(FontEncoding.UTF_8)
             .build();
 
         // Act & Assert
-        assertEquals(testEncoding, charSet.getEncoding());
+        assertEquals(FontEncoding.UTF_8, charSet.getEncoding());
     }
 
     @Test

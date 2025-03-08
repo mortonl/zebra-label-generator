@@ -19,8 +19,6 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 @DisplayName("GraphicField Tests")
 class GraphicFieldTest
 {
-    private static final LabelSize DEFAULT_SIZE = LabelSize.LABEL_4X6; // 101.6mm x 152.4mm
-    private static final PrintDensity DEFAULT_DPI = PrintDensity.DPI_203; // 8 dots/mm
     private static final String SAMPLE_DATA = "A5A5"; // Example graphic data
     private static final int BINARY_BYTE_COUNT = 2;
     private static final int GRAPHIC_FIELD_COUNT = 1;
@@ -74,7 +72,7 @@ class GraphicFieldTest
             .withBytesPerRow(BYTES_PER_ROW)
             .build();
 
-        assertDoesNotThrow(() -> field.validateInContext(DEFAULT_SIZE, DEFAULT_DPI));
+        assertDoesNotThrow(() -> field.validateInContext(LabelSize.LABEL_4X6, PrintDensity.DPI_203));
     }
 
     @ParameterizedTest(name = "Should reject invalid parameters: {2}")
@@ -91,7 +89,7 @@ class GraphicFieldTest
             .build();
 
         assertThrows(IllegalStateException.class,
-            () -> field.validateInContext(DEFAULT_SIZE, DEFAULT_DPI),
+            () -> field.validateInContext(LabelSize.LABEL_4X6, PrintDensity.DPI_203),
             "Failed scenario: " + scenario);
     }
 
@@ -109,7 +107,7 @@ class GraphicFieldTest
             .withCompressionType(CompressionType.ASCII_HEX)
             .build();
 
-        String zplString = field.toZplString(DEFAULT_DPI);
+        String zplString = field.toZplString(PrintDensity.DPI_203);
 
         // Extract the FO command parameters
         String foCommand = zplString.substring(
@@ -152,7 +150,7 @@ class GraphicFieldTest
             .withBytesPerRow(BYTES_PER_ROW)
             .build();
 
-        String completeZpl = field.toZplString(DEFAULT_DPI);
+        String completeZpl = field.toZplString(PrintDensity.DPI_203);
 
         // Extract the FO command parameters
         String foCommand = completeZpl.substring(

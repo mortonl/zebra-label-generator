@@ -14,9 +14,6 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 
 class FontTest
 {
-    private final PrintDensity testDpi = PrintDensity.DPI_203;
-    private final LabelSize testSize = LabelSize.LABEL_4X6;
-
     @Test
     void testToZplString()
     {
@@ -27,7 +24,7 @@ class FontTest
             .withSize(4.0, 3.0)
             .build();
 
-        String zplString = font.toZplString(testDpi);
+        String zplString = font.toZplString(PrintDensity.DPI_203);
 
         assertEquals("^AAN,24,32", zplString);
     }
@@ -41,7 +38,7 @@ class FontTest
             .withSize(4.0, 3.0)
             .build();
 
-        assertDoesNotThrow(() -> font.validateInContext(testSize, testDpi));
+        assertDoesNotThrow(() -> font.validateInContext(LabelSize.LABEL_4X6, PrintDensity.DPI_203));
     }
 
     @ParameterizedTest(name = "Font designation {0} should be rejected")
@@ -56,7 +53,7 @@ class FontTest
 
         IllegalStateException exception = assertThrows(
             IllegalStateException.class,
-            () -> font.validateInContext(testSize, testDpi)
+            () -> font.validateInContext(LabelSize.LABEL_4X6, PrintDensity.DPI_203)
         );
         assertEquals("Font name must be A-Z or 0-9", exception.getMessage());
     }
@@ -71,7 +68,7 @@ class FontTest
             .withSize(4.0, 3.0)
             .build();
 
-        assertDoesNotThrow(() -> font.validateInContext(testSize, testDpi));
+        assertDoesNotThrow(() -> font.validateInContext(LabelSize.LABEL_4X6, PrintDensity.DPI_203));
     }
 
     @ParameterizedTest(name = "{2}")
@@ -96,7 +93,7 @@ class FontTest
 
         IllegalStateException exception = assertThrows(
             IllegalStateException.class,
-            () -> font.validateInContext(testSize, testDpi),
+            () -> font.validateInContext(LabelSize.LABEL_4X6, PrintDensity.DPI_203),
             testDescription
         );
 
@@ -123,7 +120,7 @@ class FontTest
             .build();
 
         assertDoesNotThrow(
-            () -> font.validateInContext(testSize, testDpi),
+            () -> font.validateInContext(LabelSize.LABEL_4X6, PrintDensity.DPI_203),
             testDescription
         );
     }

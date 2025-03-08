@@ -20,8 +20,6 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 @DisplayName("Interleaved 2 of 5 Barcode Tests")
 class BarcodeInterleaved2of5Test
 {
-    private static final LabelSize DEFAULT_SIZE = LabelSize.LABEL_4X6; // 101.6mm x 152.4mm
-    private static final PrintDensity DEFAULT_DPI = PrintDensity.DPI_203; // 8 dots per mm
     private static final double MIN_HEIGHT_MM = 1.0 / PrintDensity.getMaxDotsPerMillimetre();
     private static final double MAX_HEIGHT_MM = 32000.0 / PrintDensity.getMinDotsPerMillimetre();
 
@@ -48,7 +46,7 @@ class BarcodeInterleaved2of5Test
                 .build();
 
             IllegalStateException exception = assertThrows(IllegalStateException.class,
-                () -> barcode.validateInContext(DEFAULT_SIZE, DEFAULT_DPI));
+                () -> barcode.validateInContext(LabelSize.LABEL_4X6, PrintDensity.DPI_203));
             assertEquals("Orientation cannot be null", exception.getMessage());
         }
 
@@ -65,7 +63,7 @@ class BarcodeInterleaved2of5Test
                 .build();
 
             assertThrows(IllegalStateException.class,
-                () -> barcode.validateInContext(DEFAULT_SIZE, DEFAULT_DPI));
+                () -> barcode.validateInContext(LabelSize.LABEL_4X6, PrintDensity.DPI_203));
         }
 
         @ParameterizedTest(name = "Data '{0}' should throw exception")
@@ -81,7 +79,7 @@ class BarcodeInterleaved2of5Test
                 .build();
 
             assertThrows(IllegalStateException.class,
-                () -> barcode.validateInContext(DEFAULT_SIZE, DEFAULT_DPI));
+                () -> barcode.validateInContext(LabelSize.LABEL_4X6, PrintDensity.DPI_203));
         }
 
         @ParameterizedTest(name = "Data length {0} with checkDigit={1}")
@@ -97,7 +95,7 @@ class BarcodeInterleaved2of5Test
                 .withCalculateAndPrintMod10CheckDigit(useCheckDigit)
                 .build();
 
-            assertDoesNotThrow(() -> barcode.validateInContext(DEFAULT_SIZE, DEFAULT_DPI));
+            assertDoesNotThrow(() -> barcode.validateInContext(LabelSize.LABEL_4X6, PrintDensity.DPI_203));
         }
     }
 
@@ -121,7 +119,7 @@ class BarcodeInterleaved2of5Test
 
             String expected = "^FO0,0^B2N,80,Y,N,N^FD1234^FS";
 
-            assertEquals(expected, barcode.toZplString(DEFAULT_DPI));
+            assertEquals(expected, barcode.toZplString(PrintDensity.DPI_203));
         }
     }
 }

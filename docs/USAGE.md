@@ -32,14 +32,10 @@ This guide provides detailed instructions and examples on how to use the Zebra L
 - **DPI Handling:** The library automatically converts mm to dots based on the printer's DPI/DPMM.
 - **Helper Methods:** Utilize provided methods for positioning and sizing:
 
-```java
-import com.github.mortonl.zebra.elements.text.TextBlock;
-
-TextBlock.builder()
-.withSize(27.5, 10.0)      // Width and height
-.withPosition(37.5, 0)     // X and Y coordinates
-.build();
-```
+  ```java
+  .withSize(27.5, 10.0)      // Width and height
+  .withPosition(37.5, 0)     // X and Y coordinates
+  ```
 
 ### Builder Pattern Usage
 

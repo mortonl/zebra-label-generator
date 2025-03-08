@@ -16,9 +16,6 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 
 public class BarcodePDF417Test
 {
-    private static final LabelSize DEFAULT_SIZE = LabelSize.LABEL_4X6;
-    private static final PrintDensity DEFAULT_DPI = PrintDensity.DPI_203;
-
     private static Stream<Arguments> invalidBarcodeParameters()
     {
         return Stream.of(
@@ -94,7 +91,7 @@ public class BarcodePDF417Test
             .build();
 
         assertThrows(IllegalStateException.class,
-            () -> barcode.validateInContext(DEFAULT_SIZE, DEFAULT_DPI));
+            () -> barcode.validateInContext(LabelSize.LABEL_4X6, PrintDensity.DPI_203));
     }
 
     @ParameterizedTest(name = "{0}")
@@ -119,7 +116,7 @@ public class BarcodePDF417Test
             .build();
 
         assertDoesNotThrow(() ->
-            barcode.validateInContext(DEFAULT_SIZE, DEFAULT_DPI));
+            barcode.validateInContext(LabelSize.LABEL_4X6, PrintDensity.DPI_203));
     }
 
     @ParameterizedTest(name = "{0}")
@@ -170,6 +167,6 @@ public class BarcodePDF417Test
 
         PrintDensity dpi = PrintDensity.DPI_203;
 
-        assertDoesNotThrow(() -> barcode.validateInContext(DEFAULT_SIZE, dpi));
+        assertDoesNotThrow(() -> barcode.validateInContext(LabelSize.LABEL_4X6, dpi));
     }
 }

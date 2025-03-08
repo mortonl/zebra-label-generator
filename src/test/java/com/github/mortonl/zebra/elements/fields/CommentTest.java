@@ -16,9 +16,6 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 
 class CommentTest
 {
-    private static final LabelSize DEFAULT_SIZE = LabelSize.LABEL_4X6;
-    private static final PrintDensity DEFAULT_DPI = PrintDensity.DPI_203;
-
     private static Stream<Arguments> validComments()
     {
         return Stream.of(
@@ -48,7 +45,7 @@ class CommentTest
             .content("Test Comment")
             .build();
         String expected = "^FX" + "Test Comment" + "^FS";
-        assertEquals(expected, comment.toZplString(DEFAULT_DPI));
+        assertEquals(expected, comment.toZplString(PrintDensity.DPI_203));
     }
 
     @Test
@@ -56,7 +53,7 @@ class CommentTest
     {
         Comment comment = new Comment("");
         String expected = "^FX" + "^FS";
-        assertEquals(expected, comment.toZplString(DEFAULT_DPI));
+        assertEquals(expected, comment.toZplString(PrintDensity.DPI_203));
     }
 
     @ParameterizedTest(name = "{0}")
@@ -64,7 +61,7 @@ class CommentTest
     void testValidateInContextWithValidComments(String testName, String commentText)
     {
         Comment comment = new Comment(commentText);
-        assertDoesNotThrow(() -> comment.validateInContext(DEFAULT_SIZE, DEFAULT_DPI));
+        assertDoesNotThrow(() -> comment.validateInContext(LabelSize.LABEL_4X6, PrintDensity.DPI_203));
     }
 
     @ParameterizedTest(name = "{0}")
@@ -74,7 +71,7 @@ class CommentTest
         Comment comment = new Comment(commentText);
         IllegalStateException exception = assertThrows(
             IllegalStateException.class,
-            () -> comment.validateInContext(DEFAULT_SIZE, DEFAULT_DPI)
+            () -> comment.validateInContext(LabelSize.LABEL_4X6, PrintDensity.DPI_203)
         );
 
         assertTrue(exception

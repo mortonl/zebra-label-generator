@@ -14,9 +14,6 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 
 class GraphicBoxTest
 {
-    private static final LabelSize DEFAULT_SIZE = LabelSize.LABEL_4X6; // 101.6mm x 152.4mm
-    private static final PrintDensity DEFAULT_DPI = PrintDensity.DPI_203; // 8 dots per mm
-
     @Test
     void shouldValidateCompleteGraphicBox()
     {
@@ -28,7 +25,7 @@ class GraphicBoxTest
             .withRoundness(4)
             .build();
 
-        assertDoesNotThrow(() -> box.validateInContext(DEFAULT_SIZE, DEFAULT_DPI));
+        assertDoesNotThrow(() -> box.validateInContext(LabelSize.LABEL_4X6, PrintDensity.DPI_203));
     }
 
     @Test
@@ -37,7 +34,7 @@ class GraphicBoxTest
         GraphicBox box = GraphicBox
             .builder()
             .build();
-        assertDoesNotThrow(() -> box.validateInContext(DEFAULT_SIZE, DEFAULT_DPI));
+        assertDoesNotThrow(() -> box.validateInContext(LabelSize.LABEL_4X6, PrintDensity.DPI_203));
     }
 
     @ParameterizedTest
@@ -50,7 +47,7 @@ class GraphicBoxTest
             .build();
 
         IllegalStateException exception = assertThrows(IllegalStateException.class,
-            () -> box.validateInContext(DEFAULT_SIZE, DEFAULT_DPI));
+            () -> box.validateInContext(LabelSize.LABEL_4X6, PrintDensity.DPI_203));
         assertTrue(exception
             .getMessage()
             .contains("Roundness"));
@@ -65,7 +62,7 @@ class GraphicBoxTest
             .build();
 
         IllegalStateException exception = assertThrows(IllegalStateException.class,
-            () -> box.validateInContext(DEFAULT_SIZE, DEFAULT_DPI));
+            () -> box.validateInContext(LabelSize.LABEL_4X6, PrintDensity.DPI_203));
         assertTrue(exception
             .getMessage()
             .contains("Thickness"));
@@ -80,7 +77,7 @@ class GraphicBoxTest
             .build();
 
         IllegalStateException exception = assertThrows(IllegalStateException.class,
-            () -> box.validateInContext(DEFAULT_SIZE, DEFAULT_DPI));
+            () -> box.validateInContext(LabelSize.LABEL_4X6, PrintDensity.DPI_203));
         assertTrue(exception
             .getMessage()
             .contains("Thickness"));
@@ -95,7 +92,7 @@ class GraphicBoxTest
             .build();
 
         IllegalStateException exception = assertThrows(IllegalStateException.class,
-            () -> box.validateInContext(DEFAULT_SIZE, DEFAULT_DPI));
+            () -> box.validateInContext(LabelSize.LABEL_4X6, PrintDensity.DPI_203));
         assertTrue(exception
             .getMessage()
             .contains("Width"));
@@ -110,7 +107,7 @@ class GraphicBoxTest
             .build();
 
         IllegalStateException exception = assertThrows(IllegalStateException.class,
-            () -> box.validateInContext(DEFAULT_SIZE, DEFAULT_DPI));
+            () -> box.validateInContext(LabelSize.LABEL_4X6, PrintDensity.DPI_203));
         assertTrue(exception
             .getMessage()
             .contains("Height"));
@@ -126,7 +123,7 @@ class GraphicBoxTest
             .build();
 
         IllegalStateException exception = assertThrows(IllegalStateException.class,
-            () -> box.validateInContext(DEFAULT_SIZE, DEFAULT_DPI));
+            () -> box.validateInContext(LabelSize.LABEL_4X6, PrintDensity.DPI_203));
         assertTrue(exception
             .getMessage()
             .contains("Width"));
@@ -142,7 +139,7 @@ class GraphicBoxTest
             .build();
 
         IllegalStateException exception = assertThrows(IllegalStateException.class,
-            () -> box.validateInContext(DEFAULT_SIZE, DEFAULT_DPI));
+            () -> box.validateInContext(LabelSize.LABEL_4X6, PrintDensity.DPI_203));
         assertTrue(exception
             .getMessage()
             .contains("Height"));
@@ -184,7 +181,7 @@ class GraphicBoxTest
             .withRoundness(4)
             .build();
 
-        String zplString = box.toZplString(DEFAULT_DPI);
+        String zplString = box.toZplString(PrintDensity.DPI_203);
 
         assertTrue(zplString.contains("^GB"));
         assertTrue(zplString.contains("400"));  // 50mm * 8 dots/mm = 400 dots
@@ -203,7 +200,7 @@ class GraphicBoxTest
             .withHeightMm(75.0)
             .build();
 
-        String zplString = box.toZplString(DEFAULT_DPI);
+        String zplString = box.toZplString(PrintDensity.DPI_203);
 
         // Check the complete command structure
         assertTrue(zplString.startsWith("^FO"));
