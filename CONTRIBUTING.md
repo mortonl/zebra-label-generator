@@ -1,7 +1,10 @@
 # Contributing to zebra-label-generator
 
-Thank you for your interest in contributing to zebra-label-generator! This document provides guidelines and requirements
-for contributing to the project.
+Thank you for your interest in contributing to zebra-label-generator! For now, I'm wanting to develop the core of this library by myself and make it a bit more feature complete, and then I'll open it up to the community and start accepting contributions when I feel I've reached a place where I'm happy to do so. When that time comes however this document provides guidelines and requirements for contributing to the project.
+
+## Pull Request General Notes
+
+If you can split a pull-request please do so, I much prefer to review many small PRs rather than fewer larger ones. It also helps if there could be any differences of opinion as some of the stuff can be happily merged while we're bike-shedding.
 
 ## Code Style and Standards
 
