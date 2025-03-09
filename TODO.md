@@ -13,3 +13,5 @@
 - Singletons?
 - Readme
 - Contributing guide
+
+- Add a GPG signing key to GitHub in the Actions Secrets section. See https://github.com/crazy-max/ghaction-import-gpg?tab=readme-ov-file#workflow
