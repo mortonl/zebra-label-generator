@@ -16,13 +16,13 @@ import lombok.Getter;
  *
  * <p>Example usage:</p>
  * <pre>{@code
- * BarcodeCode128.builder()
+ * BarcodeCode128.createCode128Barcode()
  *     .withHeightMm(15.0)
  *     .withOrientation(Orientation.NORMAL)
  *     .withPrintInterpretationLine(true)
  *     .withMode(Code128Mode.AUTO)
  *     .withPlainTextContent("12345")
- *     .build();
+ *     .addToLabel(label);
  * }</pre>
  *
  * <p>Orientation angles:</p>

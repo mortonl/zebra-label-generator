@@ -23,7 +23,7 @@ import static com.github.mortonl.zebra.ZplCommand.generateZplIICommand;
  *
  * <p>Example usage:</p>
  * <pre>{@code
- * PositionedElement element = SomePositionedElement.builder()
+ * PositionedElement element = SomePositionedElement.createPositionedElement()
  *     .withPosition(10.0, 20.0)
  *     .build();
  * }</pre>
@@ -31,7 +31,7 @@ import static com.github.mortonl.zebra.ZplCommand.generateZplIICommand;
  * @see LabelElement The parent class for all label elements
  */
 @Getter
-@SuperBuilder(setterPrefix = "with")
+@SuperBuilder(builderMethodName = "createPositionedElement", setterPrefix = "with")
 public abstract class PositionedElement extends LabelElement
 {
     /**

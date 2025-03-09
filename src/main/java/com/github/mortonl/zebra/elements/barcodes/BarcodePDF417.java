@@ -50,14 +50,14 @@ import static com.github.mortonl.zebra.ZplCommand.generateZplIICommand;
  * <p><strong>Usage example:</strong></p>
  * <pre>{@code
  * // Basic usage with default settings
- * BarcodePDF417.builder()
+ * BarcodePDF417.createPDF417Barcode()
  *     .withRowHeightMm(0.5)
  *     .withSecurityLevel(2)
  *     .withPlainTextContent("Sample PDF417 Data")
  *     .addToLabel(label);
  *
  * // Advanced configuration with error correction
- * BarcodePDF417.builder()
+ * BarcodePDF417.createPDF417Barcode()
  *     .withRowHeightMm(0.5)
  *     .withSecurityLevel(5)      // Higher level for better error correction
  *     .withDataColumns(8)
@@ -72,7 +72,7 @@ import static com.github.mortonl.zebra.ZplCommand.generateZplIICommand;
  * @see <a href="https://support.zebra.com/cpws/docs/zpl/pdf417.htm">Zebra ZPL II Manual - PDF417</a>
  */
 @Getter
-@SuperBuilder(setterPrefix = "with")
+@SuperBuilder(builderMethodName = "createPDF417Barcode", setterPrefix = "with")
 public class BarcodePDF417 extends Barcode
 {
     /**

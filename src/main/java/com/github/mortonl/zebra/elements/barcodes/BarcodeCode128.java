@@ -30,7 +30,7 @@ import static com.github.mortonl.zebra.ZplCommand.generateZplIICommand;
  * // Method 1: Create and add to label in one step (recommended)
  * ZebraLabel label = new ZebraLabel(labelSize, printDensity);
  * // Using plain text content (recommended for most cases)
- * BarcodeCode128.builder()
+ * BarcodeCode128.createCode128Barcode()
  *     .withHeightMm(15.0)
  *     .withOrientation(Orientation.NORMAL)
  *     .withPrintInterpretationLine(true)
@@ -39,21 +39,21 @@ import static com.github.mortonl.zebra.ZplCommand.generateZplIICommand;
  *     .addToLabel(label); // Validates and adds to label automatically
  *
  * // Method 2: Build separately (when deferred addition is needed)
- * BarcodeCode128 barcode = BarcodeCode128.builder()
+ * BarcodeCode128 barcode = BarcodeCode128.createCode128Barcode()
  *     .withHeightMm(15.0)
  *     .withPlainTextContent("12345")
  *     .build();  // Note: No validation occurs until added to label
  * label.addElement(barcode);  // Validation occurs here
  *
  * // Using hexadecimal content (for special characters or binary data)
- * BarcodeCode128.builder()
+ * BarcodeCode128.createCode128Barcode()
  *     .withHeightMm(15.0)
  *     .withOrientation(Orientation.NORMAL)
  *     .withHexadecimalContent("48656C6C6F")  // Automatically configures Field for hex data
  *     .addToLabel(label);
  *
  * // Minimal configuration with plain text
- * BarcodeCode128.builder()
+ * BarcodeCode128.createCode128Barcode()
  *     .withHeightMm(15.0)
  *     .withPlainTextContent("12345")
  *     .addToLabel(label);
@@ -85,7 +85,7 @@ import static com.github.mortonl.zebra.ZplCommand.generateZplIICommand;
  * @see Field The class representing field content and formatting
  */
 @Getter
-@SuperBuilder(setterPrefix = "with")
+@SuperBuilder(builderMethodName = "createCode128Barcode", setterPrefix = "with")
 public class BarcodeCode128 extends Barcode
 {
     /**

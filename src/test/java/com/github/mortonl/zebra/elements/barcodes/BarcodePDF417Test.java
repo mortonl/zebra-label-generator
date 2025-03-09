@@ -81,7 +81,7 @@ public class BarcodePDF417Test
     )
     {
         BarcodePDF417 barcode = BarcodePDF417
-            .builder()
+            .createPDF417Barcode()
             .withOrientation(Orientation.NORMAL)
             .withRowHeightMm(rowHeight)
             .withSecurityLevel(securityLevel)
@@ -106,7 +106,7 @@ public class BarcodePDF417Test
     )
     {
         BarcodePDF417 barcode = BarcodePDF417
-            .builder()
+            .createPDF417Barcode()
             .withOrientation(Orientation.NORMAL)
             .withRowHeightMm(rowHeightMm)
             .withSecurityLevel(securityLevel)
@@ -133,7 +133,7 @@ public class BarcodePDF417Test
     )
     {
         BarcodePDF417 barcode = BarcodePDF417
-            .builder()
+            .createPDF417Barcode()
             .withPosition(12.5, 18.5)
             .withOrientation(orientation)
             .withRowHeightMm(rowHeight)
@@ -156,7 +156,7 @@ public class BarcodePDF417Test
     public void test_validateInContext_withValidParameters()
     {
         BarcodePDF417 barcode = BarcodePDF417
-            .builder()
+            .createPDF417Barcode()
             .withOrientation(Orientation.NORMAL)
             .withRowHeightMm(10.0)
             .withSecurityLevel(5)

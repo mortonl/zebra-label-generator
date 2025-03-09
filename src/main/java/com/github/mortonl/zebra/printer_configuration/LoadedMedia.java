@@ -75,7 +75,7 @@ public class LoadedMedia
      * @param maxDynamicLengthMm Maximum length for dynamic labels in millimeters (null for fixed length)
      * @throws IllegalArgumentException if dimensions are invalid or both lengths are specified/omitted
      */
-    @Builder
+    @Builder(builderMethodName = "createLoadedMedia", setterPrefix = "with")
     private LoadedMedia(double widthMm, Double fixedLengthMm, Double maxDynamicLengthMm)
     {
         validateDimensions(widthMm, fixedLengthMm, maxDynamicLengthMm);
@@ -95,9 +95,9 @@ public class LoadedMedia
     public static LoadedMedia fromLabelSize(LabelSize labelSize)
     {
         return LoadedMedia
-            .builder()
-            .widthMm(labelSize.getWidthMm())
-            .fixedLengthMm(labelSize.getHeightMm())
+            .createLoadedMedia()
+            .withWidthMm(labelSize.getWidthMm())
+            .withFixedLengthMm(labelSize.getHeightMm())
             .build();
     }
 
@@ -113,9 +113,9 @@ public class LoadedMedia
     public static LoadedMedia fromLabelSizeDynamic(LabelSize labelSize, double maxLengthMm)
     {
         return LoadedMedia
-            .builder()
-            .widthMm(labelSize.getWidthMm())
-            .maxDynamicLengthMm(maxLengthMm)
+            .createLoadedMedia()
+            .withWidthMm(labelSize.getWidthMm())
+            .withMaxDynamicLengthMm(maxLengthMm)
             .build();
     }
 

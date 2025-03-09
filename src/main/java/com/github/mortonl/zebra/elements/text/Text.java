@@ -22,15 +22,15 @@ import static com.github.mortonl.zebra.validation.Validator.validateNotEmpty;
  * <p>Example usage:</p>
  * <pre>{@code
  * // Basic text with defaults
- * Text text = Text.builder()
+ * Text text = Text.createText()
  *     .withPosition(100, 100)
  *     .withPlainTextContent("Hello World")
  *     .build();
  *
  * // Formatted text with specific font
- * Text formattedText = Text.builder()
+ * Text formattedText = Text.createText()
  *     .withPosition(100, 200)
- *     .withFont(Font.builder()
+ *     .withFont(Font.createFont()
  *         .withFontDesignation('A')
  *         .withSize(2.0, 3.0)  // width and height in mm
  *         .withOrientation(Orientation.NORMAL)
@@ -40,7 +40,7 @@ import static com.github.mortonl.zebra.validation.Validator.validateNotEmpty;
  *     .build();
  *
  * // Text with hexadecimal content
- * Text hexText = Text.builder()
+ * Text hexText = Text.createText()
  *     .withPosition(100, 300)
  *     .withHexadecimalContent("48656C6C6F") // "Hello" in hex
  *     .build();
@@ -52,7 +52,7 @@ import static com.github.mortonl.zebra.validation.Validator.validateNotEmpty;
  * @see Orientation For text orientation options
  */
 @Getter
-@SuperBuilder(setterPrefix = "with")
+@SuperBuilder(builderMethodName = "createText", setterPrefix = "with")
 public class Text extends PositionedElement
 {
     /**
@@ -148,7 +148,7 @@ public class Text extends PositionedElement
          *
          * <p>Example usage:</p>
          * <pre>{@code
-         * Text text = Text.builder()
+         * Text text = Text.createText()
          *     .withPlainTextContent("Hello World")
          *     .build();
          * }</pre>
@@ -161,11 +161,10 @@ public class Text extends PositionedElement
          */
         public B withPlainTextContent(String contents)
         {
-            this.content = Field
-                .builder()
-                .withData(contents)
-                .withEnableHexCharacters(false)
-                .build();
+            this.content = Field.createField()
+                                .withData(contents)
+                                .withEnableHexCharacters(false)
+                                .build();
             return self();
         }
 
@@ -176,7 +175,7 @@ public class Text extends PositionedElement
          *
          * <p>Example usage:</p>
          * <pre>{@code
-         * Text text = Text.builder()
+         * Text text = Text.createText()
          *     .withHexadecimalContent("48656C6C6F") // "Hello" in hex
          *     .build();
          * }</pre>
@@ -189,11 +188,10 @@ public class Text extends PositionedElement
          */
         public B withHexadecimalContent(String contents)
         {
-            this.content = Field
-                .builder()
-                .withData(contents)
-                .withEnableHexCharacters(true)
-                .build();
+            this.content = Field.createField()
+                                .withData(contents)
+                                .withEnableHexCharacters(true)
+                                .build();
             return self();
         }
     }

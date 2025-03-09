@@ -14,7 +14,7 @@ import lombok.Getter;
  *
  * <p>Example usage:</p>
  * <pre>{@code
- * GraphicBox box = GraphicBox.builder()
+ * GraphicBox box = GraphicBox.createGraphicBox()
  *     .withPosition(100.0, 100.0)
  *     .withSize(200.0, 100.0)
  *     .withThicknessMm(0.4)

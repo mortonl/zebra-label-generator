@@ -21,7 +21,7 @@ import lombok.experimental.SuperBuilder;
  * @see PositionedElement For positioning functionality
  */
 @Getter
-@SuperBuilder(setterPrefix = "with")
+@SuperBuilder(builderMethodName = "createPositionedAndSizedElement", setterPrefix = "with")
 public abstract class PositionedAndSizedElement extends PositionedElement
 {
     /**

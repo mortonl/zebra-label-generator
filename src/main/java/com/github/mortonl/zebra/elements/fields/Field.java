@@ -24,12 +24,12 @@ import static com.github.mortonl.zebra.ZplCommand.FIELD_START;
  * <p><strong>Usage examples:</strong></p>
  * <pre>{@code
  * // Basic text field
- * Field.builder()
+ * Field.createField()
  *     .withData("Sample Text")
  *     .addToLabel(label);
  *
  * // Hexadecimal field for special characters or binary data
- * Field.builder()
+ * Field.createField()
  *     .withData("A5B2C3")
  *     .withEnableHexCharacters(true)
  *     .addToLabel(label);
@@ -38,7 +38,7 @@ import static com.github.mortonl.zebra.ZplCommand.FIELD_START;
  * @see LabelElement The parent class for all label elements
  */
 @Getter
-@SuperBuilder(setterPrefix = "with")
+@SuperBuilder(builderMethodName = "createField", setterPrefix = "with")
 public class Field extends LabelElement
 {
     /**

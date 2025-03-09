@@ -20,31 +20,31 @@ public class FullLabelTest
     @Test
     void testGeneratingAFullyConfiguredLabelWithManyElements()
     {
-        LabelSize labelSize = LABEL_4X6;
+        InternationalCharacterSet characterSet = InternationalCharacterSet.createInternationalCharacterSet()
+                                                                          .withEncoding(FontEncoding.UTF_8).build();
+        PrinterConfiguration printerConfiguration = PrinterConfiguration
+            .createPrinterConfiguration()
+            .forDpi(DPI_203)
+            .forLoadedMedia(LoadedMedia.fromLabelSize(LABEL_4X6))
+            .build();
 
         ZebraLabel testLabel = ZebraLabel
-            .builder()
-            .size(labelSize)
-            .printer(PrinterConfiguration
-                .builder()
-                .dpi(DPI_203)
-                .loadedMedia(LoadedMedia.fromLabelSize(labelSize))
-                .build())
-            .internationalCharacterSet(InternationalCharacterSet.builder().withEncoding(FontEncoding.UTF_8).build())
+            .createLabel()
+            .forSize(LABEL_4X6)
+            .forPrinter(printerConfiguration)
+            .forInternationalCharacterSet(characterSet)
             .build();
 
         GraphicBox topBox = GraphicBox
-            .builder()
+            .createGraphicBox()
             .withPosition(37.5, 0)
             .withSize(27.5, 10)
             .withThicknessMm(10.0)
             .withRoundness(0)
-            .build();
-
-        testLabel.validateAndAddElement(topBox);
+            .addToLabel(testLabel);
 
         GraphicField graphicField = GraphicField
-            .builder()
+            .createGraphicField()
             .withPosition(100.0, 100.0)
             .withCompressionType(CompressionType.ASCII_HEX)
             .withBinaryByteCount(11)
@@ -53,9 +53,7 @@ public class FullLabelTest
 //            .withData("::::::::::::K03RFC1IFCN0FC1QF8N07C,K03RFC1IFEN0FC1RFEL01FF,,:::::::::")  // Hex data here
             //TODO: the validation login may be wrong here because i have seen working examples of the GFA command that have no hex chars like above
             .withData("ABCDEFabcdef0123456789")
-            .build();
-
-        testLabel.validateAndAddElement(graphicField);
+            .addToLabel(testLabel);
 
         String DPI203Actual = testLabel.toZplString(DPI_203);
 

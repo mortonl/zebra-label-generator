@@ -33,7 +33,7 @@ import static com.github.mortonl.zebra.ZplCommand.generateZplIICommand;
  *
  * <p>Example usage:</p>
  * <pre>{@code
- * ZebraLabel label = ZebraLabel.builder()
+ * ZebraLabel label = ZebraLabel.createLabel()
  *     .withSize(new LabelSize(100, 50))           // 100x50mm label
  *     .withPrinter(printerConfig)
  *     .withInternationalCharacterSet(CharSet.UTF8)
@@ -90,11 +90,11 @@ public class ZebraLabel
      * @return A new ZebraLabel instance
      * @throws IllegalArgumentException if size or printer is null, or if label size exceeds printer capabilities
      */
-    @Builder
-    private static ZebraLabel createWithValidation(LabelSize size, PrinterConfiguration printer, InternationalCharacterSet internationalCharacterSet)
+    @Builder(builderMethodName = "createLabel", setterPrefix = "for")
+    private static ZebraLabel createWithValidation(LabelSize size, PrinterConfiguration printer, List<LabelElement> elements, InternationalCharacterSet internationalCharacterSet)
     {
         validateConfiguration(size, printer);
-        return new ZebraLabel(size, printer, new ArrayList<>(), internationalCharacterSet);
+        return new ZebraLabel(size, printer, elements == null ? new ArrayList<>() : elements, internationalCharacterSet);
     }
 
     /**
@@ -131,18 +131,16 @@ public class ZebraLabel
      * }</pre>
      *
      * @param element The element to add to the label
-     * @return This label instance for method chaining
      * @throws IllegalArgumentException if element is null or invalid for the label's constraints
      * @throws IllegalStateException if invalid for the label's constraints
      */
-    public ZebraLabel validateAndAddElement(LabelElement element)
+    public void validateAndAddElement(LabelElement element)
     {
         if (element == null) {
             throw new IllegalArgumentException("Cannot add null elements to Label");
         }
         element.validateInContext(size, printer.getDpi());
         elements.add(element);
-        return this;
     }
 
     /**

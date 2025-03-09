@@ -54,7 +54,7 @@ public enum Code128Mode
      *     <li>FNC1 is automatically inserted at the start</li>
      * </ul>
      *
-     * @see BarcodeCode128#validateInContext(LabelSize, PrintDensity) 
+     * @see BarcodeCode128#validateInContext(LabelSize, PrintDensity)
      */
     UCC_CASE("U"),
 

@@ -13,7 +13,7 @@ import lombok.Getter;
  *
  * <p>Example usage:</p>
  * <pre>{@code
- * TextBlock block = TextBlock.builder()
+ * TextBlock block = TextBlock.createTextBlock()
  *     .withPosition(100, 100)
  *     .withTextJustification(TextJustification.CENTER)
  *     .withPlainTextContent("Sample text")

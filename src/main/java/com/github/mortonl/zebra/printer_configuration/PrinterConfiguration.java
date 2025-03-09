@@ -1,17 +1,15 @@
 package com.github.mortonl.zebra.printer_configuration;
 
-import com.github.mortonl.zebra.label_settings.InternationalCharacterSet;
 import com.github.mortonl.zebra.label_settings.LabelSize;
 import lombok.Builder;
 import lombok.Data;
 
 @Data
-@Builder
+@Builder(builderMethodName = "createPrinterConfiguration", setterPrefix = "for")
 public class PrinterConfiguration
 {
     private final PrintDensity dpi;
     private final LoadedMedia loadedMedia;
-    private final InternationalCharacterSet internationalCharacterSet;
 
     public boolean canPrintLabel(LabelSize labelSize)
     {

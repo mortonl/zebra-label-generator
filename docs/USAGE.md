@@ -181,11 +181,11 @@ import com.github.mortonl.zebra.elements.text.Text;
 ```
 
 ```java
-Text.builder()
+Text.createText()
     .withPosition(10, 50)
     .withFont(customFont)
     .withPlainTextContent("Hello, Zebra!")
-    .build();
+    .addToLabel(label);
 ```
 
 #### Text Block with Formatting
@@ -204,7 +204,7 @@ TextBlock.createTextBlock()
          .withWidthMm(27.5)
          .withMaxLines(1)
          .withJustification(CENTER)
-         .build();
+         .addToLabel(label);
 ```
 
 ---
@@ -220,13 +220,13 @@ import com.github.mortonl.zebra.elements.barcode.BarcodeCode128;
 ```
 
 ```java
-BarcodeCode128.builder()
-    .withPosition(20.0, 70.0)
-    .withData("ABC123")
-    .withHeightInMillimetres(15.0)
-    .withPrintInterpretationLine(true)
-    .withValidationLevel(ValidationLevel.STRICT)
-    .build();
+BarcodeCode128.createBarcodeCode128()
+              .withPosition(20.0, 70.0)
+              .withData("ABC123")
+              .withHeightInMillimetres(15.0)
+              .withPrintInterpretationLine(true)
+              .withValidationLevel(ValidationLevel.STRICT)
+              .addToLabel(label);
 ```
 
 #### Interleaved 2 of 5 Barcode
@@ -238,13 +238,13 @@ import com.github.mortonl.zebra.elements.barcode.BarcodeInterleaved2of5;
 ```
 
 ```java
-BarcodeInterleaved2of5.builder()
-    .withPosition(30.0, 90.0)
-    .withData("12345678") // Must be even length
-    .withHeightInMillimetres(15.0)
-    .withPrintInterpretationLine(true)
-    .withValidationLevel(ValidationLevel.NORMAL)
-    .build();
+BarcodeInterleaved2of5.createBarcodeInterleaved2of5()
+                      .withPosition(30.0, 90.0)
+                      .withData("12345678") // Must be even length
+                      .withHeightInMillimetres(15.0)
+                      .withPrintInterpretationLine(true)
+                      .withValidationLevel(ValidationLevel.NORMAL)
+                      .addToLabel(label);
 ```
 
 ---
@@ -261,14 +261,14 @@ import com.github.mortonl.zebra.elements.graphics.CompressionType;
 ```
 
 ```java
-GraphicField.builder()
-    .withPosition(100.0, 100.0)
-    .withCompressionType(CompressionType.ASCII_HEX)
-    .withBinaryByteCount(11)
-    .withGraphicFieldCount(8000)
-    .withBytesPerRow(80)
-    .withData("ABCDEFabcdef0123456789")
-    .build();
+GraphicField.createGraphicField()
+            .withPosition(100.0, 100.0)
+            .withCompressionType(CompressionType.ASCII_HEX)
+            .withBinaryByteCount(11)
+            .withGraphicFieldCount(8000)
+            .withBytesPerRow(80)
+            .withData("ABCDEFabcdef0123456789")
+            .addToLabel(label);
 ```
 
 ---
@@ -282,9 +282,9 @@ import com.github.mortonl.zebra.elements.miscellaneous.Comment;
 ```
 
 ```java
-Comment.builder()
-    .withComment("THIS IS A COMMENT")
-    .build();
+Comment.createComment()
+       .withContent("THIS IS A COMMENT")
+       .addToLabel(label);
 ```
 
 ---
@@ -321,14 +321,14 @@ import com.github.mortonl.zebra.elements.text.TextJustification;
 ```
 
 ```java
-TextBlock.builder()
-    .withPosition(37.5,2.5)
-    .withHexadecimalContent("ABABABAB")
-    .withFont(customFont)
-    .withWidthMm(27.5)
-    .withMaxLines(1)
-    .withJustification(TextJustification.CENTER)
-    .build();
+TextBlock.createTextBlock()
+         .withPosition(37.5,2.5)
+         .withHexadecimalContent("ABABABAB")
+         .withFont(customFont)
+         .withWidthMm(27.5)
+         .withMaxLines(1)
+         .withJustification(TextJustification.CENTER)
+         .addToLabel(label);
 ```
 
 ### Horizontal and Vertical Lines
@@ -337,15 +337,14 @@ Add horizontal and vertical lines using pre-configured builders:
 
 ```java
 // Horizontal line
-GraphicBox.horizontalLine(80.0, 2.0)
-    .withPosition(10.0, 30.0)
-    .build();
+GraphicBox.horizontalLine(80.0,2.0)
+          .withPosition(10.0,30.0)
+          .addToLabel(label);
 
 // Vertical line
-GraphicBox.verticalLine(50.0, 2.0)
-    .withPosition(20.0, 40.0)
-    .build();
-
+GraphicBox.verticalLine(50.0,2.0)
+          .withPosition(20.0,40.0)
+          .addToLabel(label);
 ```
 
 ---

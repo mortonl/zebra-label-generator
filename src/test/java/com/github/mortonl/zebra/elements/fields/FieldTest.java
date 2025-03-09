@@ -18,8 +18,7 @@ class FieldTest
     @Test
     void testToZplString()
     {
-        Field field = Field
-            .builder()
+        Field field = Field.createField()
             .withData("Test Data")
             .build();
         String expected = FIELD_START + "Test Data" + FIELD_END;
@@ -35,8 +34,7 @@ class FieldTest
     })
     void testValidateInContext_ValidData(String validData)
     {
-        Field field = Field
-            .builder()
+        Field field = Field.createField()
             .withData(validData)
             .build();
         assertDoesNotThrow(() -> field.validateInContext(LabelSize.LABEL_4X6, PrintDensity.DPI_203));
@@ -46,8 +44,7 @@ class FieldTest
     @NullSource
     void testValidateInContext_InvalidData(String invalidData)
     {
-        Field field = Field
-            .builder()
+        Field field = Field.createField()
             .withData(invalidData)
             .build();
         IllegalStateException exception = assertThrows(
@@ -60,8 +57,7 @@ class FieldTest
     @Test
     void testHexadecimalCharactersEnabled()
     {
-        Field field = Field
-            .builder()
+        Field field = Field.createField()
             .withData("test")
             .withEnableHexCharacters(true)
             .build();
@@ -72,8 +68,7 @@ class FieldTest
     @Test
     void testHexadecimalCharactersDisabled()
     {
-        Field field = Field
-            .builder()
+        Field field = Field.createField()
             .withData("test")
             .withEnableHexCharacters(false)
             .build();
@@ -84,8 +79,7 @@ class FieldTest
     @Test
     void testHexadecimalCharactersNull()
     {
-        Field field = Field
-            .builder()
+        Field field = Field.createField()
             .withData("test")
             .withEnableHexCharacters(null)
             .build();

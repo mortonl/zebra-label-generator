@@ -25,16 +25,16 @@ import static com.github.mortonl.zebra.validation.Validator.validateRange;
  * <p>Example usage:</p>
  * <pre>{@code
  * // Basic text block with width constraint
- * TextBlock block = TextBlock.builder()
+ * TextBlock block = TextBlock.createTextBlock()
  *     .withPosition(100, 100)
  *     .withPlainTextContent("This is a long text that will automatically wrap based on the width")
  *     .withWidthMm(50.0)  // Text will wrap at 50mm
  *     .build();
  *
  * // Formatted text block with full configuration
- * TextBlock formattedBlock = TextBlock.builder()
+ * TextBlock formattedBlock = TextBlock.createTextBlock()
  *     .withPosition(100, 200)
- *     .withFont(Font.builder()
+ *     .withFont(Font.createFont()
  *         .withFontDesignation('A')
  *         .withSize(2.0, 3.0)
  *         .withOrientation(Orientation.NORMAL)
@@ -53,7 +53,7 @@ import static com.github.mortonl.zebra.validation.Validator.validateRange;
  * @see Font For font configuration options
  */
 @Getter
-@SuperBuilder(setterPrefix = "with")
+@SuperBuilder(builderMethodName = "createTextBlock", setterPrefix = "with")
 public class TextBlock extends Text
 {
     /**

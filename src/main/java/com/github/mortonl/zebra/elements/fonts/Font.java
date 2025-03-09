@@ -26,14 +26,14 @@ import static com.github.mortonl.zebra.ZplCommand.SET_FONT;
  * <p><strong>Usage example:</strong></p>
  * <pre>{@code
  * // Basic font configuration
- * Font.builder()
+ * Font.createFont()
  *     .withFontDesignation('A')
  *     .withSize(2.0, 3.0)  // width and height in mm
  *     .withOrientation(Orientation.NORMAL)
  *     .addToLabel(label);
  *
  * // Rotated font with specific dimensions
- * Font.builder()
+ * Font.createFont()
  *     .withFontDesignation('0')
  *     .withSize(4.0, 6.0)
  *     .withOrientation(Orientation.ROTATE_90)
@@ -44,7 +44,7 @@ import static com.github.mortonl.zebra.ZplCommand.SET_FONT;
  * @see Orientation Available orientation options
  */
 @Getter
-@SuperBuilder(setterPrefix = "with")
+@SuperBuilder(builderMethodName = "createFont", setterPrefix = "with")
 public class Font extends LabelElement
 {
     /**

@@ -27,11 +27,11 @@ import static com.github.mortonl.zebra.ZplCommand.generateZplIICommand;
  *
  * <p><strong>Usage example:</strong></p>
  * <pre>{@code
- * Comment.builder()
+ * Comment.createComment()
  *     .withContent("Label template v1.2 - Created by Luke Morton")
  *     .addToLabel(label);
  *
- * Comment.builder()
+ * Comment.createComment()
  *     .withContent("Configuration: High-resolution shipping label")
  *     .addToLabel(label);
  * }</pre>
@@ -39,7 +39,7 @@ import static com.github.mortonl.zebra.ZplCommand.generateZplIICommand;
  * @see LabelElement The parent class for all label elements
  */
 @Getter
-@SuperBuilder(setterPrefix = "with")
+@SuperBuilder(builderMethodName = "createComment", setterPrefix = "with")
 public class Comment extends LabelElement
 {
     /**

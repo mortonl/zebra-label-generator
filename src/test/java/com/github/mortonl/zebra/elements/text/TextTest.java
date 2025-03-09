@@ -40,13 +40,12 @@ class TextTest
         when(mockFont.toZplString(TEST_DPI)).thenReturn(MOCK_FONT_COMMAND);
         when(mockField.toZplString(TEST_DPI)).thenReturn(MOCK_FIELD_COMMAND);
 
-        Text text = Text
-            .builder()
-            .withPosition(10, 20)
-            .withColorAndBackgroundReversed(true)
-            .withFont(mockFont)
-            .withContent(mockField)
-            .build();
+        Text text = Text.createText()
+                        .withPosition(10, 20)
+                        .withColorAndBackgroundReversed(true)
+                        .withFont(mockFont)
+                        .withContent(mockField)
+                        .build();
 
         // Act
         String result = text.toZplString(TEST_DPI);
@@ -70,13 +69,12 @@ class TextTest
         when(mockFont.toZplString(TEST_DPI)).thenReturn(MOCK_FONT_COMMAND);
         when(mockField.toZplString(TEST_DPI)).thenReturn(MOCK_FIELD_COMMAND);
 
-        Text text = Text
-            .builder()
-            .withPosition(10, 20)
-            .withColorAndBackgroundReversed(false)
-            .withFont(mockFont)
-            .withContent(mockField)
-            .build();
+        Text text = Text.createText()
+                        .withPosition(10, 20)
+                        .withColorAndBackgroundReversed(false)
+                        .withFont(mockFont)
+                        .withContent(mockField)
+                        .build();
 
         // Act
         String result = text.toZplString(TEST_DPI);
@@ -99,13 +97,12 @@ class TextTest
         when(mockFont.toZplString(TEST_DPI)).thenReturn(MOCK_FONT_COMMAND);
         when(mockField.toZplString(TEST_DPI)).thenReturn(MOCK_FIELD_COMMAND);
 
-        Text text = Text
-            .builder()
-            .withPosition(10, 20)
-            .withColorAndBackgroundReversed(null)
-            .withFont(mockFont)
-            .withContent(mockField)
-            .build();
+        Text text = Text.createText()
+                        .withPosition(10, 20)
+                        .withColorAndBackgroundReversed(null)
+                        .withFont(mockFont)
+                        .withContent(mockField)
+                        .build();
 
         // Act
         String result = text.toZplString(TEST_DPI);
@@ -125,10 +122,9 @@ class TextTest
         Field mockField = mock(Field.class);
         when(mockField.getData()).thenReturn(TEST_CONTENT);
 
-        Text text = Text
-            .builder()
-            .withContent(mockField)
-            .build();
+        Text text = Text.createText()
+                        .withContent(mockField)
+                        .build();
 
         assertDoesNotThrow(() -> text.validateInContext(TEST_SIZE, TEST_DPI));
     }
@@ -139,10 +135,9 @@ class TextTest
         Field mockField = mock(Field.class);
         when(mockField.getData()).thenReturn(null);
 
-        Text text = Text
-            .builder()
-            .withContent(mockField)
-            .build();
+        Text text = Text.createText()
+                        .withContent(mockField)
+                        .build();
 
         IllegalStateException exception = assertThrows(
             IllegalStateException.class,
@@ -159,10 +154,9 @@ class TextTest
         Field mockField = mock(Field.class);
         when(mockField.getData()).thenReturn(invalidContent);
 
-        Text text = Text
-            .builder()
-            .withContent(mockField)
-            .build();
+        Text text = Text.createText()
+                        .withContent(mockField)
+                        .build();
 
         IllegalStateException exception = assertThrows(
             IllegalStateException.class,
@@ -175,10 +169,9 @@ class TextTest
     void testWithHexadecimalContent()
     {
         String testContent = "test";
-        Text text = Text
-            .builder()
-            .withHexadecimalContent(testContent)
-            .build();
+        Text text = Text.createText()
+                        .withHexadecimalContent(testContent)
+                        .build();
 
         assertNotNull(text.getContent());
     }

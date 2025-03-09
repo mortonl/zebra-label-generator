@@ -18,7 +18,7 @@ import static com.github.mortonl.zebra.ZplCommand.generateZplIICommand;
  * until changed by another ^CI command.</p>
  */
 @Getter
-@SuperBuilder(setterPrefix = "with")
+@SuperBuilder(builderMethodName = "createInternationalCharacterSet", setterPrefix = "with")
 public class InternationalCharacterSet extends LabelElement
 {
     /**

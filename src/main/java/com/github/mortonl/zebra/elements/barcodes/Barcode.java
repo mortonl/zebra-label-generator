@@ -26,10 +26,10 @@ import static com.github.mortonl.zebra.validation.Validator.validateNotNull;
  * <p><strong>Usage example:</strong></p>
  * <pre>{@code
  * // Creating a specific barcode type (e.g., Code128)
- * BarcodeCode128 barcode = BarcodeCode128.builder()
+ * BarcodeCode128 barcode = BarcodeCode128.createCode128Barcode()
  *     .withPlainTextContent("12345")
  *     .withPositionMm(10.0, 20.0)  // inherited from PositionedElement
- *     .build();
+ *     .addToLabel(label);
  * }</pre>
  *
  * <p><strong>Content Setting:</strong></p>
@@ -42,7 +42,7 @@ import static com.github.mortonl.zebra.validation.Validator.validateNotNull;
  * @see ZebraLabel The label class that barcodes can be added to
  */
 @Getter
-@SuperBuilder(setterPrefix = "with")
+@SuperBuilder(builderMethodName = "createBarcode", setterPrefix = "with")
 public abstract class Barcode extends PositionedElement
 {
     /**
@@ -122,11 +122,10 @@ public abstract class Barcode extends PositionedElement
          */
         public B withPlainTextContent(String contents)
         {
-            this.content = Field
-                .builder()
-                .withData(contents)
-                .withEnableHexCharacters(false)
-                .build();
+            this.content = Field.createField()
+                                .withData(contents)
+                                .withEnableHexCharacters(false)
+                                .build();
             return self();
         }
 
@@ -147,11 +146,25 @@ public abstract class Barcode extends PositionedElement
          */
         public B withHexadecimalContent(String contents)
         {
-            this.content = Field
-                .builder()
-                .withData(contents)
-                .withEnableHexCharacters(true)
-                .build();
+            this.content = Field.createField()
+                                .withData(contents)
+                                .withEnableHexCharacters(true)
+                                .build();
+            return self();
+        }
+
+        /**
+         * Sets the barcode contents using a custom {@link Field} instance.
+         * This is for advanced usage only, when direct control over field configuration is needed.
+         * For most cases, use {@link #withPlainTextContent(String)} or {@link #withHexadecimalContent(String)} instead.
+         *
+         * @param contents The custom Field instance
+         * @return The builder instance for method chaining
+         * @see Field
+         */
+        public B withContent(Field contents)
+        {
+            this.content = contents;
             return self();
         }
     }

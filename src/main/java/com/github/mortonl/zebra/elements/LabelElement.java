@@ -13,7 +13,7 @@ import lombok.experimental.SuperBuilder;
  * and validated within the context of a label's specifications.
  */
 @Getter
-@SuperBuilder(setterPrefix = "with")
+@SuperBuilder(builderMethodName = "createLabelElement", setterPrefix = "with")
 @AllArgsConstructor
 public abstract class LabelElement
 {

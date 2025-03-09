@@ -47,7 +47,7 @@ class TextBlockTest
     @DisplayName("Should allow all null parameters")
     void shouldAllowAllNullParameters()
     {
-        TextBlock block = TextBlock.builder()
+        TextBlock block = TextBlock.createTextBlock()
                                    .withPlainTextContent("test")
                                    .build();
         assertDoesNotThrow(() -> block.validateInContext(LabelSize.LABEL_4X6, PrintDensity.DPI_203));
@@ -61,7 +61,7 @@ class TextBlockTest
     )
     {
         TextBlock block = TextBlock
-            .builder()
+            .createTextBlock()
             .withWidthMm(width)
             .withMaxLines(maxLines)
             .withLineSpacingMm(lineSpacing)
@@ -81,7 +81,7 @@ class TextBlockTest
     )
     {
         TextBlock block = TextBlock
-            .builder()
+            .createTextBlock()
             .withWidthMm(width)
             .withMaxLines(maxLines)
             .withLineSpacingMm(lineSpacing)
@@ -100,7 +100,7 @@ class TextBlockTest
     void shouldGenerateCompleteZplString()
     {
         TextBlock block = TextBlock
-            .builder()
+            .createTextBlock()
             .withWidthMm(50.0)
             .withMaxLines(5)
             .withLineSpacingMm(1.0)
@@ -134,7 +134,7 @@ class TextBlockTest
     void shouldGenerateZplStringWithNullValues()
     {
         TextBlock block = TextBlock
-            .builder()
+            .createTextBlock()
             .withWidthMm(50.0) // Only setting width
             .withHexadecimalContent("48656C6C6F") // "Hello" in hex
             .build();
@@ -164,7 +164,7 @@ class TextBlockTest
     void shouldAllowPartialParameters()
     {
         TextBlock block = TextBlock
-            .builder()
+            .createTextBlock()
             .withWidthMm(50.0)
             .withMaxLines(5)
             // Omitting lineSpacing
@@ -198,7 +198,7 @@ class TextBlockTest
     void shouldMaintainCorrectCommandOrder()
     {
         TextBlock block = TextBlock
-            .builder()
+            .createTextBlock()
             .withWidthMm(50.0)
             .withHexadecimalContent("48656C6C6F")
             .build();
@@ -223,7 +223,7 @@ class TextBlockTest
     void shouldFormatHexadecimalContent()
     {
         TextBlock block = TextBlock
-            .builder()
+            .createTextBlock()
             .withWidthMm(50.0)
             .withHexadecimalContent("48656C6C6F")
             .build();

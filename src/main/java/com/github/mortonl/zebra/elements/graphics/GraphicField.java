@@ -30,13 +30,13 @@ import static com.github.mortonl.zebra.validation.Validator.validateRange;
  * <p>Example usage:</p>
  * <pre>{@code
  * // Creating a graphic field with ASCII hex data
- * GraphicField field = GraphicField.builder()
+ * GraphicField field = GraphicField.createGraphicField()
  *     .withPosition(100, 100)
  *     .withHexadecimalContent("48656C6C6F", 5)  // "Hello" in hex, 5 bytes per row
  *     .build();
  *
  * // Creating a graphic field with binary data
- * GraphicField field = GraphicField.builder()
+ * GraphicField field = GraphicField.createGraphicField()
  *     .withPosition(100, 100)
  *     .withBinaryContent(imageData, 100)  // 100 bytes per row
  *     .build();
@@ -46,7 +46,7 @@ import static com.github.mortonl.zebra.validation.Validator.validateRange;
  * @see PositionedElement For positioning capabilities
  */
 @Getter
-@SuperBuilder(setterPrefix = "with")
+@SuperBuilder(builderMethodName = "createGraphicField", setterPrefix = "with")
 public class GraphicField extends PositionedElement
 {
     /**

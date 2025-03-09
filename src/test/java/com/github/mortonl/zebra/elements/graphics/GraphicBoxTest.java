@@ -18,7 +18,7 @@ class GraphicBoxTest
     void shouldValidateCompleteGraphicBox()
     {
         GraphicBox box = GraphicBox
-            .builder()
+            .createGraphicBox()
             .withWidthMm(50.0)
             .withHeightMm(75.0)
             .withThicknessMm(1.0)
@@ -32,7 +32,7 @@ class GraphicBoxTest
     void shouldAllowAllNullParameters()
     {
         GraphicBox box = GraphicBox
-            .builder()
+            .createGraphicBox()
             .build();
         assertDoesNotThrow(() -> box.validateInContext(LabelSize.LABEL_4X6, PrintDensity.DPI_203));
     }
@@ -42,7 +42,7 @@ class GraphicBoxTest
     void shouldRejectInvalidRoundness(int invalidRoundness)
     {
         GraphicBox box = GraphicBox
-            .builder()
+            .createGraphicBox()
             .withRoundness(invalidRoundness)
             .build();
 
@@ -57,7 +57,7 @@ class GraphicBoxTest
     void shouldRejectThicknessBelowMinimum()
     {
         GraphicBox box = GraphicBox
-            .builder()
+            .createGraphicBox()
             .withThicknessMm(0.03)
             .build();
 
@@ -72,7 +72,7 @@ class GraphicBoxTest
     void shouldRejectThicknessAboveMaximum()
     {
         GraphicBox box = GraphicBox
-            .builder()
+            .createGraphicBox()
             .withThicknessMm(1400.0)
             .build();
 
@@ -87,7 +87,7 @@ class GraphicBoxTest
     void shouldRejectWidthExceedingLabelWidth()
     {
         GraphicBox box = GraphicBox
-            .builder()
+            .createGraphicBox()
             .withWidthMm(102.0) // Exceeds LABEL_4X6 width (101.6mm)
             .build();
 
@@ -102,7 +102,7 @@ class GraphicBoxTest
     void shouldRejectHeightExceedingLabelHeight()
     {
         GraphicBox box = GraphicBox
-            .builder()
+            .createGraphicBox()
             .withHeightMm(153.0) // Exceeds LABEL_4X6 height (152.4mm)
             .build();
 
@@ -117,7 +117,7 @@ class GraphicBoxTest
     void shouldRejectWidthLessThanThickness()
     {
         GraphicBox box = GraphicBox
-            .builder()
+            .createGraphicBox()
             .withWidthMm(1.0)
             .withThicknessMm(2.0)
             .build();
@@ -133,7 +133,7 @@ class GraphicBoxTest
     void shouldRejectHeightLessThanThickness()
     {
         GraphicBox box = GraphicBox
-            .builder()
+            .createGraphicBox()
             .withHeightMm(1.0)
             .withThicknessMm(2.0)
             .build();
@@ -173,7 +173,7 @@ class GraphicBoxTest
     void shouldGenerateCompleteZplString()
     {
         GraphicBox box = GraphicBox
-            .builder()
+            .createGraphicBox()
             .withWidthMm(50.0)
             .withHeightMm(75.0)
             .withThicknessMm(1.0)
@@ -195,7 +195,7 @@ class GraphicBoxTest
     void shouldGenerateZplStringWithNullValues()
     {
         GraphicBox box = GraphicBox
-            .builder()
+            .createGraphicBox()
             .withWidthMm(50.0)
             .withHeightMm(75.0)
             .build();

@@ -26,14 +26,14 @@ import static com.github.mortonl.zebra.validation.Validator.validateRange;
  * <p><strong>Usage example:</strong></p>
  * <pre>{@code
  * // Basic usage without check digit (even number of digits required)
- * BarcodeInterleaved2of5.builder()
+ * BarcodeInterleaved2of5.createInterleaved2of5Barcode()
  *     .withHeightMm(15.0)
  *     .withOrientation(Orientation.NORMAL)
  *     .withPlainTextContent("1234")
  *     .addToLabel(label);
  *
  * // With check digit (odd number of digits required)
- * BarcodeInterleaved2of5.builder()
+ * BarcodeInterleaved2of5.createInterleaved2of5Barcode()
  *     .withHeightMm(15.0)
  *     .withCalculateAndPrintMod10CheckDigit(true)
  *     .withPlainTextContent("12345")
@@ -45,7 +45,7 @@ import static com.github.mortonl.zebra.validation.Validator.validateRange;
  * @see <a href="https://support.zebra.com/cpws/docs/zpl/2i.htm">Zebra ZPL II Manual - Interleaved 2 of 5</a>
  */
 @Getter
-@SuperBuilder(setterPrefix = "with")
+@SuperBuilder(builderMethodName = "createInterleaved2of5Barcode", setterPrefix = "with")
 public class BarcodeInterleaved2of5 extends Barcode
 {
     /**

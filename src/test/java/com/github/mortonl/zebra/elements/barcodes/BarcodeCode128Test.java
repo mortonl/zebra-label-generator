@@ -34,7 +34,7 @@ class BarcodeCode128Test
         void shouldCreateBarcodeWithAllValuesSet()
         {
             BarcodeCode128 barcode = BarcodeCode128
-                .builder()
+                .createCode128Barcode()
                 .withHeightMm(VALID_HEIGHT_MM)
                 .withOrientation(Orientation.NORMAL)
                 .withUccCheckDigitEnabled(true)
@@ -82,7 +82,7 @@ class BarcodeCode128Test
         )
         {
             BarcodeCode128 barcode = BarcodeCode128
-                .builder()
+                .createCode128Barcode()
                 .withHeightMm(heightMm)
                 .withOrientation(orientation)
                 .withPrintInterpretationLine(interpretationLine)
@@ -124,7 +124,7 @@ class BarcodeCode128Test
         void shouldThrowExceptionForInvalidHeights(double invalidHeight)
         {
             BarcodeCode128 barcode = BarcodeCode128
-                .builder()
+                .createCode128Barcode()
                 .withHeightMm(invalidHeight)
                 .withOrientation(Orientation.NORMAL)
                 .withPlainTextContent("123456")
@@ -141,7 +141,7 @@ class BarcodeCode128Test
         void shouldAcceptValidHeightsForDifferentDpis(PrintDensity dpi, double heightMm)
         {
             BarcodeCode128 barcode = BarcodeCode128
-                .builder()
+                .createCode128Barcode()
                 .withHeightMm(heightMm)
                 .withOrientation(Orientation.NORMAL)
                 .withPlainTextContent("123456")
@@ -156,7 +156,7 @@ class BarcodeCode128Test
         void shouldThrowExceptionForInvalidUccCaseData(String data, String expectedError)
         {
             BarcodeCode128 barcode = BarcodeCode128
-                .builder()
+                .createCode128Barcode()
                 .withHeightMm(VALID_HEIGHT_MM)
                 .withOrientation(Orientation.NORMAL)
                 .withMode(Code128Mode.UCC_CASE)

@@ -20,7 +20,7 @@ class InternationalCharacterSetTest
     void testBuilder_ValidEncoding()
     {
         InternationalCharacterSet charSet = InternationalCharacterSet
-            .builder()
+            .createInternationalCharacterSet()
             .withEncoding(FontEncoding.UTF_8)
             .build();
 
@@ -33,7 +33,7 @@ class InternationalCharacterSetTest
     {
         // Arrange
         InternationalCharacterSet charSet = InternationalCharacterSet
-            .builder()
+            .createInternationalCharacterSet()
             .withEncoding(FontEncoding.UTF_8)
             .build();
 
@@ -49,7 +49,7 @@ class InternationalCharacterSetTest
     {
         // Arrange
         InternationalCharacterSet charSet = InternationalCharacterSet
-            .builder()
+            .createInternationalCharacterSet()
             .withEncoding(FontEncoding.UTF_8)
             .build();
 
@@ -62,7 +62,7 @@ class InternationalCharacterSetTest
     {
         // Arrange
         InternationalCharacterSet charSet = InternationalCharacterSet
-            .builder()
+            .createInternationalCharacterSet()
             .withEncoding(null)
             .build();
 
@@ -80,7 +80,7 @@ class InternationalCharacterSetTest
     {
         // Arrange
         InternationalCharacterSet charSet = InternationalCharacterSet
-            .builder()
+            .createInternationalCharacterSet()
             .withEncoding(FontEncoding.UTF_8)
             .build();
 
@@ -93,7 +93,7 @@ class InternationalCharacterSetTest
     {
         // Act
         InternationalCharacterSet charSet = InternationalCharacterSet
-            .builder()
+            .createInternationalCharacterSet()
             .build();
 
         // Assert
