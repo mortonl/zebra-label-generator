@@ -28,11 +28,7 @@ Generate unit tests meeting these criteria:
 
 - use junit jupiter with the mockito runner (if mocks are required)
 - only mocks used in all tests should be created in the before each block
-- don't mock enums instead use constants for label size and dpi e.g.
-  private static final com.github.mortonl.zebra.label_settings.LabelSize DEFAULT_SIZE = LabelSize.LABEL_4X6; // 101.6mm
-  x 152.4mm
-  private static final com.github.mortonl.zebra.printer_configuration.PrintDensity DEFAULT_DPI =
-  PrintDensity.DPI_203; // 8 dots per mm
+- don't mock enums instead use them directly LabelSize.LABEL_4X6; // 101.6mm x 152.4mm and PrintDensity.DPI_203; // 8 dots per mm
 - Parameterized tests are preferred and DisplayNames are required on classes, scenarios and tests
 - group multiple assertions in tests with assertAll to get all the failures in the result
 - ideally builder methods would be static imported but due to a compilation and annotation processing order issue with

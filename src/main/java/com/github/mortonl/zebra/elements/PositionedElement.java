@@ -118,14 +118,22 @@ public abstract class PositionedElement extends LabelElement
     @Override
     public void validateInContext(LabelSize size, PrintDensity dpi) throws IllegalStateException
     {
-        validateAxisValue(dpi.toDots(xAxisLocationMm), "X-axis");
-        validateAxisValue(dpi.toDots(yAxisLocationMm), "Y-axis");
+        validateAxisValue(xAxisLocationMm, "X-axis", dpi);
+        validateAxisValue(yAxisLocationMm, "Y-axis", dpi);
         validatePositionedOnLabel(size, dpi);
     }
 
-    private void validateAxisValue(double value, String axis)
+    private void validateAxisValue(double value, String axis, PrintDensity dpi)
     {
-        if (value < MIN_AXIS_VALUE || value > MAX_AXIS_VALUE) {
+        if (value < 0) {
+            throw new IllegalStateException(
+                String.format("%s position cannot be negative: %.2f",
+                    axis, value)
+            );
+        }
+
+        double dotsValue = dpi.toDots(value);
+        if (dotsValue < MIN_AXIS_VALUE || dotsValue > MAX_AXIS_VALUE) {
             throw new IllegalStateException(
                 String.format("%s location must be between %d and %d dots",
                     axis, MIN_AXIS_VALUE, MAX_AXIS_VALUE)

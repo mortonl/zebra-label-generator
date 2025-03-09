@@ -5,6 +5,7 @@ import com.github.mortonl.zebra.label_settings.LabelSize;
 import com.github.mortonl.zebra.printer_configuration.PrintDensity;
 import lombok.Getter;
 import lombok.experimental.SuperBuilder;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
@@ -96,6 +97,7 @@ class PositionedElementTest
     }
 
     @Test
+    @DisplayName("Validate error message when X-axis value exceeds maximum")
     void testValidateAxisValueExceedsMaximum()
     {
         TestPositionedElement element = TestPositionedElement
