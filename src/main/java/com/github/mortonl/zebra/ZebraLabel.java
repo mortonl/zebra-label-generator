@@ -133,6 +133,7 @@ public class ZebraLabel
      * @param element The element to add to the label
      * @return This label instance for method chaining
      * @throws IllegalArgumentException if element is null or invalid for the label's constraints
+     * @throws IllegalStateException if invalid for the label's constraints
      */
     public ZebraLabel validateAndAddElement(LabelElement element)
     {
@@ -165,9 +166,9 @@ public class ZebraLabel
     {
         StringBuilder builder = new StringBuilder()
             .append(START_FORMAT)
-            .append(LINE_SEPERATOR);
+            .append(LINE_SEPERATOR)
+            .append(size.toZplString(dpi));
 
-        addLabelSize(builder, dpi);
         addInternationalCharacterSet(builder, dpi);
 
         elements.forEach(element -> builder
@@ -177,18 +178,6 @@ public class ZebraLabel
         builder.append(END_FORMAT);
 
         return builder.toString();
-    }
-
-    /**
-     * Adds the label size commands to the ZPL II output.
-     */
-    private void addLabelSize(StringBuilder builder, PrintDensity dpi)
-    {
-        builder
-            .append(generateZplIICommand(PRINT_WIDTH, size.getWidthInDots(dpi)))
-            .append(LINE_SEPERATOR)
-            .append(generateZplIICommand(LABEL_LENGTH, size.getHeightInDots(dpi)))
-            .append(LINE_SEPERATOR);
     }
 
     /**

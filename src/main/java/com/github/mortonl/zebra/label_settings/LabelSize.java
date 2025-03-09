@@ -8,6 +8,11 @@ import java.math.RoundingMode;
 import java.util.Arrays;
 import java.util.Optional;
 
+import static com.github.mortonl.zebra.ZplCommand.LABEL_LENGTH;
+import static com.github.mortonl.zebra.ZplCommand.LINE_SEPERATOR;
+import static com.github.mortonl.zebra.ZplCommand.PRINT_WIDTH;
+import static com.github.mortonl.zebra.ZplCommand.generateZplIICommand;
+
 /**
  * Represents standard label sizes for Zebra printers with dimensions in millimeters.
  * Provides predefined sizes for common shipping labels, product labels, and international paper formats.
@@ -234,5 +239,27 @@ public enum LabelSize
     public int getWidthInDots(PrintDensity density)
     {
         return density.toDots(widthMm, RoundingMode.DOWN);
+    }
+
+    /**
+     * Generates the ZPL II commands for setting the label dimensions.
+     *
+     * <p>Generates the ^PW (Print Width) and ^LL (Label Length) commands based on
+     * the label's physical dimensions converted to dots for the specified print density.
+     * For example, with 203 DPI and a 4x6 inch label, this would generate:
+     * {@code ^PW812^LL1218}</p>
+     *
+     * <p>The width and length values are automatically converted from millimeters
+     * to the appropriate number of dots based on the printer's DPI setting.</p>
+     *
+     * @param dpi The print density of the target printer (e.g., 203, 300, or 600 DPI)
+     * @return A String containing the ^PW and ^LL commands with appropriate values
+     * @see PrintDensity
+     * @see <a href="https://www.zebra.com/content/dam/zebra/manuals/printers/common/programming/zpl-zbi2-pm-en.pdf">ZPL Manual</a>
+     */
+    public String toZplString(PrintDensity dpi)
+    {
+        return generateZplIICommand(PRINT_WIDTH, getWidthInDots(dpi)) + LINE_SEPERATOR +
+            generateZplIICommand(LABEL_LENGTH, getHeightInDots(dpi)) + LINE_SEPERATOR;
     }
 }
