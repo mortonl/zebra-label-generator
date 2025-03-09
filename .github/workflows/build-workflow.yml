@@ -1,0 +1,23 @@
+name: Build Workflow
+
+on:
+    workflow_call:
+
+permissions:
+    id-token: write
+    contents: read
+
+jobs:
+    build:
+        runs-on: ubuntu-latest
+        environment: ${{ inputs.environment }}
+        steps:
+            - uses: actions/checkout@v4
+            - uses: actions/setup-java@v4
+              with:
+                  java-version: '21'
+                  distribution: 'corretto'
+                  cache: maven
+
+            - name: Maven build
+              run: ./mvnw install
