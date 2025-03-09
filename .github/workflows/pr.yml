@@ -1,0 +1,21 @@
+name: PR
+
+run-name: ${{ github.actor }} is running a PR against ${{ github.head_ref || github.ref_name }} 🚀
+
+on:
+    pull_request:
+        types:
+            - opened
+            - reopened
+            - synchronize
+
+permissions:
+    id-token: write
+    contents: read
+
+jobs:
+    build:
+        uses: ./.github/workflows/build-workflow.yml
+        secrets:
+            gpg_private_key: ${{ secrets.GPG_PRIVATE_KEY }}
+            passphrase: ${{ secrets.GPG_PASSPHRASE }}

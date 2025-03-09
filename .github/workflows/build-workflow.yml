@@ -1,0 +1,32 @@
+name: Build Workflow
+
+on:
+    workflow_call:
+        secrets:
+            gpg_private_key:
+                required: true
+            passphrase:
+                required: true
+
+permissions:
+    id-token: write
+    contents: read
+
+jobs:
+    build:
+        runs-on: ubuntu-latest
+        environment: ${{ inputs.environment }}
+        steps:
+            -   uses: actions/checkout@v4
+            -   uses: actions/setup-java@v4
+                with:
+                    java-version: '21'
+                    distribution: 'corretto'
+                    cache: maven
+            -   name: Import GPG Key
+                uses: crazy-max/ghaction-import-gpg@v6
+                with:
+                    gpg_private_key: ${{ secrets.gpg_private_key }}
+                    passphrase: ${{ secrets.passphrase }}
+            -   name: Maven build
+                run: ./mvnw install
