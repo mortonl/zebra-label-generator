@@ -138,6 +138,46 @@ feedback are welcome.
 
 Contributions are welcome! Please read the [Contributing Guide](CONTRIBUTING.md) for guidelines.
 
+## Commit Convention
+
+This project follows [Conventional Commits](https://www.conventionalcommits.org/) specification for commit messages. This leads to more readable messages that are easy to follow when looking through the project history and enables automatic version increments.
+
+### Commit Message Format
+Each commit message consists of a **header**, an optional **body** and an optional **footer**. The header has a special format that includes a **type**, an optional **scope** and a **description**:
+```
+<type>(<scope>): <description>
+<body>
+<footer>
+```
+
+### Types
+- `feat`: A new feature
+- `fix`: A bug fix
+- `docs`: Documentation only changes
+- `style`: Changes that do not affect the meaning of the code (white-space, formatting, etc)
+- `refactor`: A code change that neither fixes a bug nor adds a feature
+- `perf`: A code change that improves performance
+- `test`: Adding missing tests or correcting existing tests
+- `build`: Changes that affect the build system or external dependencies
+- `ci`: Changes to our CI configuration files and scripts
+
+### Examples
+- `feat(barcode): add support for new barcode types`
+- `fix(font): correct TextOrientation handling in Font class`
+- `refactor(label): move ZPL command generation to LabelSize class`
+- `ci(gha): configure GPG signing key for releases`
+- `docs(javadoc): add documentation to all public APIs`
+- `build(deps): bump junit-jupiter from 5.10.1 to 5.12.0`
+- `feat(builder): standardize builder pattern across all components`
+- `feat(builder)!: builder() methods renamed to createXXX() for consistency`
+
+### Version Increments
+Commit messages are used to automatically determine the next version number:
+- `fix:` patch version bump (1.0.0 -> 1.0.1)
+- `feat:` minor version bump (1.0.0 -> 1.1.0)
+- `feat!:` or `BREAKING CHANGE:` major version bump (1.0.0 -> 2.0.0)
+
+
 ## License
 
 This project is licensed under the Apache License 2.0 - see the LICENSE file for details.

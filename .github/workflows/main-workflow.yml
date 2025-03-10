@@ -5,12 +5,16 @@ on:
         secrets:
             gpg_private_key:
                 required: true
-            passphrase:
+            gpg_passphrase:
+                required: true
+            central_username:
+                required: true
+            central_password:
                 required: true
 
 permissions:
     id-token: write
-    contents: read
+    contents: write  # Needed for creating tags
 
 jobs:
     build:
@@ -23,12 +27,27 @@ jobs:
                     java-version: '21'
                     distribution: 'corretto'
                     cache: maven
+                    server-id: central  # Matches publishingServerId
+                    server-username: MAVEN_USERNAME
+                    server-password: MAVEN_PASSWORD
             -   name: Import GPG Key
                 uses: crazy-max/ghaction-import-gpg@v6
                 with:
                     gpg_private_key: ${{ secrets.gpg_private_key }}
-                    passphrase: ${{ secrets.passphrase }}
+                    passphrase: ${{ secrets.gpg_passphrase }}
+            -   name: Increment version
+                id: increment-version
+                uses: RichardInnocent/semantic-versioning-maven@v0.1.0
+            -   name: Print if version changed
+                if: steps.increment-version.outputs.previous-version != steps.increment-version.outputs.new-version
+                run: echo "The new version is now $new_version"
+                env:
+                    new_version: ${{ steps.increment-version.outputs.new-version }}
             -   name: Maven deploy
+                env:
+                    MAVEN_USERNAME: ${{ secrets.central_username }}
+                    MAVEN_PASSWORD: ${{ secrets.central_password }}
+                    MAVEN_GPG_PASSPHRASE: ${{ secrets.gpg_passphrase }}
                 run: ./mvnw deploy
             -   name: Upload coverage report
                 uses: actions/upload-artifact@v4
