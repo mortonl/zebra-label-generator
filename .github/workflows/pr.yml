@@ -10,12 +10,8 @@ on:
             - synchronize
 
 permissions:
-    id-token: write
     contents: read
 
 jobs:
     build:
-        uses: ./.github/workflows/build-workflow.yml
-        secrets:
-            gpg_private_key: ${{ secrets.GPG_PRIVATE_KEY }}
-            passphrase: ${{ secrets.GPG_PASSPHRASE }}
+        uses: ./.github/workflows/pr-build-workflow.yml

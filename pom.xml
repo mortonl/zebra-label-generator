@@ -60,7 +60,6 @@
         <lombok-maven-plugin.version>1.18.20.0</lombok-maven-plugin.version>
 
         <junit.jupiter.version>5.12.0</junit.jupiter.version>
-
     </properties>
 
     <dependencies>

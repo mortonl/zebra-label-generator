@@ -1,4 +1,4 @@
-name: Build Workflow
+name: Main Workflow
 
 on:
     workflow_call:
@@ -28,5 +28,12 @@ jobs:
                 with:
                     gpg_private_key: ${{ secrets.gpg_private_key }}
                     passphrase: ${{ secrets.passphrase }}
-            -   name: Maven build
-                run: ./mvnw install
+            -   name: Maven deploy
+                run: ./mvnw deploy
+            -   name: Upload coverage report
+                uses: actions/upload-artifact@v4
+                with:
+                    name: coverage-report
+                    path: target/site/jacoco/
+            -   name: Generate JaCoCo Badge
+                uses: cicirello/jacoco-badge-generator@v2

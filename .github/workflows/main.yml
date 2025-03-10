@@ -1,0 +1,19 @@
+name: Main Branch Deploy
+
+run-name: ${{ github.actor }} is deploying to main branch 🚀
+
+on:
+    push:
+        branches:
+            - main
+
+permissions:
+    id-token: write
+    contents: read
+
+jobs:
+    deploy:
+        uses: ./.github/workflows/main-workflow.yml
+        secrets:
+            gpg_private_key: ${{ secrets.GPG_PRIVATE_KEY }}
+            passphrase: ${{ secrets.GPG_PASSPHRASE }}
