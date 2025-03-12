@@ -22,6 +22,22 @@ jobs:
         environment: ${{ inputs.environment }}
         steps:
             -   uses: actions/checkout@v4
+            -   name: Import GPG Key
+                uses: crazy-max/ghaction-import-gpg@v6
+                with:
+                    gpg_private_key: ${{ secrets.gpg_private_key }}
+                    passphrase: ${{ secrets.gpg_passphrase }}
+                    git_user_signingkey: true
+                    git_commit_gpgsign: true
+                    git_tag_gpgsign: true
+                    git_push_gpgsign: true
+            -   name: Cache local Maven repository
+                uses: actions/cache@v3
+                with:
+                    path: ~/.m2/repository
+                    key: ${{ runner.os }}-maven-${{ hashFiles('**/pom.xml') }}
+                    restore-keys: |
+                        ${{ runner.os }}-maven-
             -   uses: actions/setup-java@v4
                 with:
                     java-version: '21'
@@ -30,11 +46,6 @@ jobs:
                     server-id: central  # Matches publishingServerId
                     server-username: MAVEN_USERNAME
                     server-password: MAVEN_PASSWORD
-            -   name: Import GPG Key
-                uses: crazy-max/ghaction-import-gpg@v6
-                with:
-                    gpg_private_key: ${{ secrets.gpg_private_key }}
-                    passphrase: ${{ secrets.gpg_passphrase }}
             -   name: Increment version
                 id: increment-version
                 uses: RichardInnocent/semantic-versioning-maven@v0.1.0
@@ -56,3 +67,11 @@ jobs:
                     path: target/site/jacoco/
             -   name: Generate JaCoCo Badge
                 uses: cicirello/jacoco-badge-generator@v2
+            -   name: Commit and push the badge
+                uses: EndBug/add-and-commit@v9
+                with:
+                    message: 'docs(badges): update code coverage badge [skip ci]'
+                    add: '*.svg'
+                    default_author: github_actions
+                    signoff: true
+                    push: true
