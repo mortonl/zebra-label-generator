@@ -17,5 +17,6 @@ jobs:
         secrets:
             gpg_private_key: ${{ secrets.GPG_PRIVATE_KEY }}
             gpg_passphrase: ${{ secrets.GPG_PASSPHRASE }}
+            gpg_email: ${{ secrets.GPG_EMAIL }}
             central_username: ${{ secrets.CENTRAL_USERNAME }}
             central_password: ${{ secrets.CENTRAL_PASSWORD }}

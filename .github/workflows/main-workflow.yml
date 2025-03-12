@@ -7,6 +7,8 @@ on:
                 required: true
             gpg_passphrase:
                 required: true
+            gpg_email:
+                required: true
             central_username:
                 required: true
             central_password:
@@ -23,7 +25,7 @@ jobs:
         steps:
             -   name: Add mask for GPG email
                 run: |
-                    echo "::add-mask::${{ secrets.GPG_EMAIL }}"
+                    echo "::add-mask::${{ secrets.gpg_email }}"
             -   uses: actions/checkout@v4
             -   name: Import GPG Key
                 uses: crazy-max/ghaction-import-gpg@v6
