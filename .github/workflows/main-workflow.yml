@@ -65,6 +65,8 @@ jobs:
                     path: target/site/jacoco/
             -   name: Generate JaCoCo Badge
                 uses: cicirello/jacoco-badge-generator@v2
+                with:
+                    generate-branches-badge: true
             -   name: Commit and push the badge
                 run: |
                     git add *.svg

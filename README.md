@@ -8,6 +8,14 @@ elements, and printer settings with a fluid and intuitive interface.
 This library provides a programmatic way to create ZPL label format commands, focusing on DPI-agnostic label generation.
 It's designed to make working with Zebra printers more straightforward and maintainable in Java applications.
 
+## Project Status
+
+This project is currently under active development. While the core functionality is being implemented, contributions and feedback are welcome.
+
+### Status Badges
+![Coverage](.github/badges/jacoco.svg)
+![Branches](.github/badges/branches.svg)
+
 ## Features
 
 ### Current Features
@@ -128,11 +136,6 @@ The Labelary Viewer allows you to:
 
 This is particularly useful during development to ensure your labels are formatted correctly without
 needing physical access to a Zebra printer.
-
-## Project Status
-
-This project is currently under active development. While the core functionality is being implemented, contributions and
-feedback are welcome.
 
 ## Contributing
 
