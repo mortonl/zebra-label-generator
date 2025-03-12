@@ -35,19 +35,12 @@ jobs:
                     git_user_signingkey: true
                     git_commit_gpgsign: true
                     git_tag_gpgsign: true
-            -   name: Cache local Maven repository
-                uses: actions/cache@v3
-                with:
-                    path: ~/.m2/repository
-                    key: ${{ runner.os }}-maven-${{ hashFiles('**/pom.xml') }}
-                    restore-keys: |
-                        ${{ runner.os }}-maven-
             -   uses: actions/setup-java@v4
                 with:
                     java-version: '21'
                     distribution: 'corretto'
                     cache: maven
-                    post-cache-save: always # This ensures cache is saved even on failure
+                    cache-dependency-path: 'pom.xml' # optional If this option is omitted, the action searches for the dependency file in the entire repository.
                     server-id: central  # Matches publishingServerId
                     server-username: MAVEN_USERNAME
                     server-password: MAVEN_PASSWORD
@@ -75,5 +68,5 @@ jobs:
             -   name: Commit and push the badge
                 run: |
                     git add *.svg
-                    git commit -m "docs(badges): update code coverage badge [skip ci]"
+                    git commit -S -m "docs(badges): update code coverage badge [skip ci]"
                     git push
