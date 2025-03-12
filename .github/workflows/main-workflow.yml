@@ -21,6 +21,9 @@ jobs:
         runs-on: ubuntu-latest
         environment: ${{ inputs.environment }}
         steps:
+            -   name: Add mask for GPG email
+                run: |
+                    echo "::add-mask::${{ secrets.GPG_EMAIL }}"
             -   uses: actions/checkout@v4
             -   name: Import GPG Key
                 uses: crazy-max/ghaction-import-gpg@v6
@@ -42,6 +45,7 @@ jobs:
                     java-version: '21'
                     distribution: 'corretto'
                     cache: maven
+                    post-cache-save: always # This ensures cache is saved even on failure
                     server-id: central  # Matches publishingServerId
                     server-username: MAVEN_USERNAME
                     server-password: MAVEN_PASSWORD
