@@ -67,11 +67,7 @@ jobs:
             -   name: Generate JaCoCo Badge
                 uses: cicirello/jacoco-badge-generator@v2
             -   name: Commit and push the badge
-                uses: EndBug/add-and-commit@v9
-                with:
-                    message: 'docs(badges): update code coverage badge [skip ci]'
-                    add: '*.svg'
-                    default_author: github_actions
-                    commit: --signoff
-                    push: true
-                    github_token: ${{ secrets.GITHUB_TOKEN }}
+                run: |
+                    git add *.svg
+                    git commit -m "docs(badges): update code coverage badge [skip ci]"
+                    git push
