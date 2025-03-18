@@ -1,3 +1,4 @@
+# .github/workflows/main.yml
 name: Main Branch Deploy
 
 run-name: ${{ github.actor }} is deploying to main branch 🚀
@@ -12,11 +13,70 @@ permissions:
     contents: write
 
 jobs:
-    deploy:
-        uses: ./.github/workflows/main-workflow.yml
-        secrets:
-            gpg_private_key: ${{ secrets.GPG_PRIVATE_KEY }}
-            gpg_passphrase: ${{ secrets.GPG_PASSPHRASE }}
-            gpg_email: ${{ secrets.GPG_EMAIL }}
-            central_username: ${{ secrets.CENTRAL_USERNAME }}
-            central_password: ${{ secrets.CENTRAL_PASSWORD }}
+    build:
+        uses: ./.github/workflows/build.yml
+
+    version:
+        needs: build
+        runs-on: ubuntu-latest
+        outputs:
+            new-version: ${{ steps.increment-version.outputs.new-version }}
+        steps:
+            - uses: actions/checkout@v4
+            - name: Increment version
+              id: increment-version
+              uses: RichardInnocent/semantic-versioning-maven@v0.1.0
+            - name: Print if version changed
+              if: steps.increment-version.outputs.previous-version != steps.increment-version.outputs.new-version
+              run: echo "The new version is now ${{ steps.increment-version.outputs.new-version }}"
+
+    sign-and-deploy:
+        needs: [build, version]
+        runs-on: ubuntu-latest
+        environment: production
+        steps:
+            - uses: actions/checkout@v4
+
+            - name: Add mask for GPG email
+              run: echo "::add-mask::${{ secrets.GPG_EMAIL }}"
+
+            - name: Import GPG Key
+              uses: crazy-max/ghaction-import-gpg@v6
+              with:
+                  gpg_private_key: ${{ secrets.gpg_private_key }}
+                  passphrase: ${{ secrets.gpg_passphrase }}
+                  git_user_signingkey: true
+                  git_commit_gpgsign: true
+                  git_tag_gpgsign: true
+            - name: Download build artifacts
+              uses: actions/download-artifact@v4
+              with:
+                  name: build-artifacts
+                  path: target
+
+            - name: Sign and deploy
+              env:
+                  MAVEN_USERNAME: ${{ secrets.CENTRAL_USERNAME }}
+                  MAVEN_PASSWORD: ${{ secrets.CENTRAL_PASSWORD }}
+                  MAVEN_GPG_PASSPHRASE: ${{ secrets.GPG_PASSPHRASE }}
+              run: ./mvnw gpg:sign deploy -Dgpg.passphrase=$MAVEN_GPG_PASSPHRASE
+
+    update-badges:
+        needs: sign-and-deploy
+        runs-on: ubuntu-latest
+        steps:
+            - uses: actions/checkout@v4
+            - uses: actions/download-artifact@v4
+              with:
+                  name: coverage-report
+            - name: Generate JaCoCo Badge
+              uses: cicirello/jacoco-badge-generator@v2
+              with:
+                  generate-branches-badge: true
+                  coverage-label: Coverage (Overall)
+                  branches-label: Coverage (Branches)
+            - name: Commit and push the badge
+              run: |
+                  git add *.svg
+                  git commit -S -m "docs(badges): update code coverage badge [skip ci]"
+                  git push

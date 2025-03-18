@@ -1,3 +1,4 @@
+# .github/workflows/pr.yml
 name: PR
 
 run-name: ${{ github.actor }} is running a PR against ${{ github.head_ref || github.ref_name }} 🚀
@@ -15,4 +16,23 @@ permissions:
 
 jobs:
     build:
-        uses: ./.github/workflows/pr-build-workflow.yml
+        uses: ./.github/workflows/build.yml
+
+    coverage-report:
+        needs: build
+        runs-on: ubuntu-latest
+        steps:
+            - uses: actions/download-artifact@v4
+              with:
+                  name: coverage-report
+            - name: Add Coverage PR Comment
+              uses: madrapps/jacoco-report@v1.6.1
+              with:
+                  paths: jacoco.xml
+                  token: ${{ secrets.GITHUB_TOKEN }}
+                  min-coverage-overall: 80
+                  min-coverage-changed-files: 80
+                  title: '# :lobster: Coverage Report'
+                  pass-emoji: ':green_circle:'
+                  fail-emoji: ':red_circle:'
+                  update-comment: true
