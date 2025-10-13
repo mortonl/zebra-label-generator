@@ -13,6 +13,7 @@ It's designed to make working with Zebra printers more straightforward and maint
 This project is currently under active development. While the core functionality is being implemented, contributions and feedback are welcome.
 
 ### Status Badges
+
 ![Coverage](.github/badges/jacoco.svg)
 ![Branches](.github/badges/branches.svg)
 
@@ -143,10 +144,14 @@ Contributions are welcome! Please read the [Contributing Guide](CONTRIBUTING.md)
 
 ## Commit Convention
 
-This project follows [Conventional Commits](https://www.conventionalcommits.org/) specification for commit messages. This leads to more readable messages that are easy to follow when looking through the project history and enables automatic version increments.
+This project follows [Conventional Commits](https://www.conventionalcommits.org/) specification for commit messages. This leads to more readable messages that are easy to follow
+when looking through the project history and enables automatic version increments.
 
 ### Commit Message Format
-Each commit message consists of a **header**, an optional **body** and an optional **footer**. The header has a special format that includes a **type**, an optional **scope** and a **description**:
+
+Each commit message consists of a **header**, an optional **body** and an optional **footer**. The header has a special format that includes a **type**, an optional **scope** and a
+**description**:
+
 ```
 <type>(<scope>): <description>
 <body>
@@ -154,6 +159,7 @@ Each commit message consists of a **header**, an optional **body** and an option
 ```
 
 ### Types
+
 - `feat`: A new feature
 - `fix`: A bug fix
 - `docs`: Documentation only changes
@@ -165,6 +171,7 @@ Each commit message consists of a **header**, an optional **body** and an option
 - `ci`: Changes to our CI configuration files and scripts
 
 ### Examples
+
 - `feat(barcode): add support for new barcode types`
 - `fix(font): correct TextOrientation handling in Font class`
 - `refactor(label): move ZPL command generation to LabelSize class`
@@ -175,11 +182,12 @@ Each commit message consists of a **header**, an optional **body** and an option
 - `feat(builder)!: builder() methods renamed to createXXX() for consistency`
 
 ### Version Increments
+
 Commit messages are used to automatically determine the next version number:
+
 - `fix:` patch version bump (1.0.0 -> 1.0.1)
 - `feat:` minor version bump (1.0.0 -> 1.1.0)
 - `feat!:` or `BREAKING CHANGE:` major version bump (1.0.0 -> 2.0.0)
-
 
 ## License
 

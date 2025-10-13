@@ -27,6 +27,7 @@ import lombok.Getter;
 @Getter
 public class LoadedMedia
 {
+
     /**
      * Minimum allowed length for any label in millimeters
      */
@@ -73,14 +74,15 @@ public class LoadedMedia
      * @param widthMm            Width of the media in millimeters
      * @param fixedLengthMm      Fixed length of the labels in millimeters (null for dynamic length)
      * @param maxDynamicLengthMm Maximum length for dynamic labels in millimeters (null for fixed length)
+     *
      * @throws IllegalArgumentException if dimensions are invalid or both lengths are specified/omitted
      */
     @Builder(builderMethodName = "createLoadedMedia", setterPrefix = "with")
     private LoadedMedia(double widthMm, Double fixedLengthMm, Double maxDynamicLengthMm)
     {
         validateDimensions(widthMm, fixedLengthMm, maxDynamicLengthMm);
-        this.widthMm = widthMm;
-        this.fixedLengthMm = fixedLengthMm;
+        this.widthMm            = widthMm;
+        this.fixedLengthMm      = fixedLengthMm;
         this.maxDynamicLengthMm = maxDynamicLengthMm;
     }
 
@@ -89,7 +91,9 @@ public class LoadedMedia
      * This creates a fixed-length media configuration.
      *
      * @param labelSize The label size to create media for
+     *
      * @return A LoadedMedia instance configured for the exact label dimensions
+     *
      * @throws IllegalArgumentException if the label dimensions are invalid
      */
     public static LoadedMedia fromLabelSize(LabelSize labelSize)
@@ -107,7 +111,9 @@ public class LoadedMedia
      *
      * @param labelSize   The minimum label size to support
      * @param maxLengthMm The maximum length to allow for dynamic labels
+     *
      * @return A LoadedMedia instance configured for dynamic labels
+     *
      * @throws IllegalArgumentException if the dimensions are invalid
      */
     public static LoadedMedia fromLabelSizeDynamic(LabelSize labelSize, double maxLengthMm)
@@ -134,6 +140,7 @@ public class LoadedMedia
      *
      * @param labelWidthMm  The width of the label in millimeters
      * @param labelHeightMm The height of the label in millimeters
+     *
      * @return true if the label can fit on this media, false otherwise
      */
     public boolean canFitLabel(double labelWidthMm, double labelHeightMm)
@@ -155,6 +162,7 @@ public class LoadedMedia
      * @param widthMm            Width of the media in millimeters
      * @param fixedLengthMm      Fixed length of the labels in millimeters
      * @param maxDynamicLengthMm Maximum length for dynamic labels in millimeters
+     *
      * @throws IllegalArgumentException if the dimensions are invalid
      */
     private void validateDimensions(double widthMm, Double fixedLengthMm, Double maxDynamicLengthMm)
@@ -180,6 +188,7 @@ public class LoadedMedia
      *
      * @param lengthType Description of the length being validated
      * @param length     The length to validate in millimeters
+     *
      * @throws IllegalArgumentException if the length is invalid
      */
     private void validateLength(String lengthType, Double length)

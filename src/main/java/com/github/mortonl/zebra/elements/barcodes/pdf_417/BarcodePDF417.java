@@ -1,6 +1,8 @@
-package com.github.mortonl.zebra.elements.barcodes;
+package com.github.mortonl.zebra.elements.barcodes.pdf_417;
 
 import com.github.mortonl.zebra.ZplCommand;
+import com.github.mortonl.zebra.elements.barcodes.Barcode;
+import com.github.mortonl.zebra.elements.fonts.DefaultFont;
 import com.github.mortonl.zebra.formatting.Orientation;
 import com.github.mortonl.zebra.label_settings.LabelSize;
 import com.github.mortonl.zebra.printer_configuration.PrintDensity;
@@ -75,6 +77,7 @@ import static com.github.mortonl.zebra.ZplCommand.generateZplIICommand;
 @SuperBuilder(builderMethodName = "createPDF417Barcode", setterPrefix = "with")
 public class BarcodePDF417 extends Barcode
 {
+
     /**
      * The orientation of the barcode.
      * Controls how the barcode is rotated on the label.
@@ -166,8 +169,7 @@ public class BarcodePDF417 extends Barcode
                 securityLevel,
                 dataColumns,
                 rows,
-                (enableRightSideTruncation != null ? enableRightSideTruncation ? "Y" : "N" : null)
-            ))
+                enableRightSideTruncation != null ? enableRightSideTruncation ? "Y" : "N" : null))
             .append(content.toZplString(dpi));
 
         return zplCommand.toString();
@@ -188,9 +190,9 @@ public class BarcodePDF417 extends Barcode
      * @throws IllegalStateException if any validation fails
      */
     @Override
-    public void validateInContext(LabelSize size, PrintDensity dpi) throws IllegalStateException
+    public void validateInContext(LabelSize size, PrintDensity dpi, final DefaultFont defaultFont) throws IllegalStateException
     {
-        super.validateInContext(size, dpi);
+        super.validateInContext(size, dpi, defaultFont);
         validateParameters();
     }
 
@@ -201,7 +203,8 @@ public class BarcodePDF417 extends Barcode
      */
     private void validateParameters()
     {
-        if (content.getData().length() > 3000) {
+        if (content.getData()
+                   .length() > 3000) {
             throw new IllegalStateException("Field data is limited to 3K characters");
         }
         if (rowHeightMm < 0) {

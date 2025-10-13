@@ -56,7 +56,9 @@ public enum LineColor
      * Find LineColor by ZPL code
      *
      * @param code the ZPL code ('B' or 'W')
+     *
      * @return the matching LineColor
+     *
      * @throws IllegalArgumentException if code is invalid
      */
     public static LineColor fromCode(char code)

@@ -1,8 +1,9 @@
-package com.github.mortonl.zebra.elements.barcodes;
+package com.github.mortonl.zebra.elements.barcodes.code_128;
 
 import com.github.mortonl.zebra.ZebraLabel;
-import com.github.mortonl.zebra.elements.barcodes.code_128.Code128Mode;
+import com.github.mortonl.zebra.elements.barcodes.Barcode;
 import com.github.mortonl.zebra.elements.fields.Field;
+import com.github.mortonl.zebra.elements.fonts.DefaultFont;
 import com.github.mortonl.zebra.formatting.Orientation;
 import com.github.mortonl.zebra.label_settings.LabelSize;
 import com.github.mortonl.zebra.printer_configuration.PrintDensity;
@@ -88,6 +89,7 @@ import static com.github.mortonl.zebra.ZplCommand.generateZplIICommand;
 @SuperBuilder(builderMethodName = "createCode128Barcode", setterPrefix = "with")
 public class BarcodeCode128 extends Barcode
 {
+
     /**
      * The height of the barcode in millimeters.
      * <p>Valid height range depends on the printer's DPI settings:</p>
@@ -226,7 +228,7 @@ public class BarcodeCode128 extends Barcode
      * </ul>
      */
     @Override
-    public void validateInContext(LabelSize size, PrintDensity dpi)
+    public void validateInContext(LabelSize size, PrintDensity dpi, final DefaultFont defaultFont)
     {
         double minValidHeightMm = 1.0 / dpi.getMaxDotsPerMillimetre();
         double maxValidHeightMm = 32000.0 / dpi.getMinDotsPerMillimetre();
@@ -244,7 +246,8 @@ public class BarcodeCode128 extends Barcode
             }
 
             // Check digit count for UCC Case Mode
-            long digitCount = String.valueOf(content.getData()).chars()
+            long digitCount = String.valueOf(content.getData())
+                                    .chars()
                                     .filter(Character::isDigit)
                                     .count();
 
@@ -253,6 +256,6 @@ public class BarcodeCode128 extends Barcode
             }
         }
 
-        super.validateInContext(size, dpi);
+        super.validateInContext(size, dpi, defaultFont);
     }
 }

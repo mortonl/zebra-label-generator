@@ -1,5 +1,6 @@
 package com.github.mortonl.zebra.elements;
 
+import com.github.mortonl.zebra.elements.fonts.DefaultFont;
 import com.github.mortonl.zebra.formatting.OriginJustification;
 import com.github.mortonl.zebra.label_settings.LabelSize;
 import com.github.mortonl.zebra.printer_configuration.PrintDensity;
@@ -34,6 +35,7 @@ import static com.github.mortonl.zebra.ZplCommand.generateZplIICommand;
 @SuperBuilder(builderMethodName = "createPositionedElement", setterPrefix = "with")
 public abstract class PositionedElement extends LabelElement
 {
+
     /**
      * The minimum allowed value in dots for both X and Y axis positions.
      * Used as the lower bound when validating element positions after
@@ -116,7 +118,7 @@ public abstract class PositionedElement extends LabelElement
      * @throws IllegalStateException if the position is outside the label boundaries
      */
     @Override
-    public void validateInContext(LabelSize size, PrintDensity dpi) throws IllegalStateException
+    public void validateInContext(LabelSize size, PrintDensity dpi, final DefaultFont defaultFont) throws IllegalStateException
     {
         validateAxisValue(xAxisLocationMm, "X-axis", dpi);
         validateAxisValue(yAxisLocationMm, "Y-axis", dpi);
@@ -169,6 +171,7 @@ public abstract class PositionedElement extends LabelElement
     protected static abstract class PositionedElementBuilder<C extends PositionedElement, B extends PositionedElementBuilder<C, B>>
         extends LabelElementBuilder<C, B>
     {
+
         /**
          * Sets the position of the element on the label.
          *
@@ -177,6 +180,7 @@ public abstract class PositionedElement extends LabelElement
          *
          * @param xAxisLocationMm horizontal position in millimeters from the left edge
          * @param yAxisLocationMm vertical position in millimeters from the top edge
+         *
          * @return this builder for method chaining
          */
         public B withPosition(double xAxisLocationMm, double yAxisLocationMm)

@@ -1,6 +1,7 @@
 package com.github.mortonl.zebra;
 
 import com.github.mortonl.zebra.elements.LabelElement;
+import com.github.mortonl.zebra.elements.fonts.DefaultFont;
 import com.github.mortonl.zebra.label_settings.InternationalCharacterSet;
 import com.github.mortonl.zebra.label_settings.LabelSize;
 import com.github.mortonl.zebra.printer_configuration.PrintDensity;
@@ -13,11 +14,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 import static com.github.mortonl.zebra.ZplCommand.END_FORMAT;
-import static com.github.mortonl.zebra.ZplCommand.LABEL_LENGTH;
 import static com.github.mortonl.zebra.ZplCommand.LINE_SEPERATOR;
-import static com.github.mortonl.zebra.ZplCommand.PRINT_WIDTH;
 import static com.github.mortonl.zebra.ZplCommand.START_FORMAT;
-import static com.github.mortonl.zebra.ZplCommand.generateZplIICommand;
 
 /**
  * Represents a printable Zebra label with configurable size, printer settings, and content elements.
@@ -49,6 +47,7 @@ import static com.github.mortonl.zebra.ZplCommand.generateZplIICommand;
 @AllArgsConstructor(access = lombok.AccessLevel.PRIVATE)
 public class ZebraLabel
 {
+
     /**
      * Physical width and height dimensions of the label media.
      *
@@ -81,20 +80,26 @@ public class ZebraLabel
      */
     private final InternationalCharacterSet internationalCharacterSet;
 
+    private DefaultFont currentDefaultFont;
+
     /**
      * Creates a new label instance with validation of core configuration parameters.
      *
      * @param size                      The physical dimensions of the label
      * @param printer                   The printer configuration
+     * @param elements                  The list of label elements
      * @param internationalCharacterSet Optional character set for international text
+     * @param defaultFont              The default font for the label
+     *
      * @return A new ZebraLabel instance
+     *
      * @throws IllegalArgumentException if size or printer is null, or if label size exceeds printer capabilities
      */
     @Builder(builderMethodName = "createLabel", setterPrefix = "for")
-    private static ZebraLabel createWithValidation(LabelSize size, PrinterConfiguration printer, List<LabelElement> elements, InternationalCharacterSet internationalCharacterSet)
+    private static ZebraLabel createWithValidation(LabelSize size, PrinterConfiguration printer, List<LabelElement> elements, InternationalCharacterSet internationalCharacterSet, DefaultFont defaultFont)
     {
         validateConfiguration(size, printer);
-        return new ZebraLabel(size, printer, elements == null ? new ArrayList<>() : elements, internationalCharacterSet);
+        return new ZebraLabel(size, printer, elements == null ? new ArrayList<>() : elements, internationalCharacterSet, defaultFont);
     }
 
     /**
@@ -102,6 +107,7 @@ public class ZebraLabel
      *
      * @param size    The label dimensions to validate
      * @param printer The printer configuration to validate against
+     *
      * @throws IllegalArgumentException if size or printer is null, or if label size exceeds printer capabilities
      */
     private static void validateConfiguration(LabelSize size, PrinterConfiguration printer)
@@ -121,6 +127,16 @@ public class ZebraLabel
     }
 
     /**
+     * Checks if a default font has been set for this label.
+     *
+     * @return true if a default font has been set
+     */
+    public boolean hasDefaultFont()
+    {
+        return currentDefaultFont != null;
+    }
+
+    /**
      * Adds a new element to the label after validating it against the label's constraints.
      * Elements are printed in the order they are added.
      *
@@ -131,15 +147,28 @@ public class ZebraLabel
      * }</pre>
      *
      * @param element The element to add to the label
+     *
      * @throws IllegalArgumentException if element is null or invalid for the label's constraints
-     * @throws IllegalStateException if invalid for the label's constraints
+     * @throws IllegalStateException    if invalid for the label's constraints
      */
     public void validateAndAddElement(LabelElement element)
     {
         if (element == null) {
             throw new IllegalArgumentException("Cannot add null elements to Label");
         }
-        element.validateInContext(size, printer.getDpi());
+        element.validateInContext(size, printer.getDpi(), currentDefaultFont);
+
+        if (element instanceof DefaultFont) {
+            currentDefaultFont = (DefaultFont) element;
+        } else if (element instanceof com.github.mortonl.zebra.elements.text.Text) {
+            com.github.mortonl.zebra.elements.text.Text textElement = (com.github.mortonl.zebra.elements.text.Text) element;
+            if (textElement.getFont() == null && currentDefaultFont == null) {
+                throw new IllegalStateException(
+                    "Text element must either specify a font or have a default font set on the label"
+                );
+            }
+        }
+
         elements.add(element);
     }
 
@@ -158,6 +187,7 @@ public class ZebraLabel
      * This method allows for preview generation at different print densities.
      *
      * @param dpi The print density to use for generating the ZPL code
+     *
      * @return The complete ZPL II code string for the label
      */
     public String toZplString(PrintDensity dpi)

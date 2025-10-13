@@ -159,6 +159,7 @@ public enum LabelSize
      * @param widthMm     width in millimeters
      * @param heightMm    height in millimeters
      * @param toleranceMm tolerance in millimeters for matching
+     *
      * @return Optional containing the matching label size, or empty if no match found within tolerance
      */
     public static Optional<LabelSize> findClosestSize(double widthMm, double heightMm, double toleranceMm)
@@ -168,7 +169,8 @@ public enum LabelSize
             .filter(size ->
                 Math.abs(size.widthMm - widthMm) <= toleranceMm &&
                     Math.abs(size.heightMm - heightMm) <= toleranceMm)
-            .min((a, b) -> {
+            .min((a, b) ->
+            {
                 double aDiff = Math.abs(a.widthMm - widthMm) + Math.abs(a.heightMm - heightMm);
                 double bDiff = Math.abs(b.widthMm - widthMm) + Math.abs(b.heightMm - heightMm);
                 return Double.compare(aDiff, bDiff);
@@ -181,6 +183,7 @@ public enum LabelSize
      * @param widthMm     width in millimeters
      * @param heightMm    height in millimeters
      * @param toleranceMm tolerance in millimeters
+     *
      * @return true if dimensions match within tolerance
      */
     public boolean matches(double widthMm, double heightMm, double toleranceMm)
@@ -213,7 +216,9 @@ public enum LabelSize
      * </ul>
      *
      * @param density the print density to use for conversion
+     *
      * @return height in dots, rounded down to the nearest integer
+     *
      * @see PrintDensity
      */
     public int getHeightInDots(PrintDensity density)
@@ -233,7 +238,9 @@ public enum LabelSize
      * </ul>
      *
      * @param density the print density to use for conversion
+     *
      * @return width in dots, rounded down to the nearest integer
+     *
      * @see PrintDensity
      */
     public int getWidthInDots(PrintDensity density)
@@ -253,7 +260,9 @@ public enum LabelSize
      * to the appropriate number of dots based on the printer's DPI setting.</p>
      *
      * @param dpi The print density of the target printer (e.g., 203, 300, or 600 DPI)
+     *
      * @return A String containing the ^PW and ^LL commands with appropriate values
+     *
      * @see PrintDensity
      * @see <a href="https://www.zebra.com/content/dam/zebra/manuals/printers/common/programming/zpl-zbi2-pm-en.pdf">ZPL Manual</a>
      */

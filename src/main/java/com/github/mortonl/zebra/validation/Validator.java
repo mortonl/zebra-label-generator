@@ -8,6 +8,7 @@ import lombok.experimental.UtilityClass;
 @UtilityClass
 public class Validator
 {
+
     /**
      * Validates that a value falls within an inclusive range.
      *
@@ -15,6 +16,7 @@ public class Validator
      * @param min       The minimum allowed value (inclusive)
      * @param max       The maximum allowed value (inclusive)
      * @param fieldName The name of the field being validated (for error messages)
+     *
      * @throws IllegalStateException if the value is outside the allowed range
      */
     public static void validateRange(double value, double min, double max, String fieldName)
@@ -34,6 +36,7 @@ public class Validator
      * @param min       The minimum allowed value (inclusive)
      * @param max       The maximum allowed value (inclusive)
      * @param fieldName The name of the field being validated (for error messages)
+     *
      * @throws IllegalStateException if the value is outside the allowed range
      */
     public static void validateRange(int value, int min, int max, String fieldName)
@@ -51,6 +54,7 @@ public class Validator
      *
      * @param value     The value to check for null
      * @param fieldName The name of the field being validated (for error messages)
+     *
      * @throws IllegalStateException if the value is null
      */
     public static void validateNotNull(Object value, String fieldName)
@@ -65,6 +69,7 @@ public class Validator
      *
      * @param value     The string to validate
      * @param fieldName The name of the field being validated (for error messages)
+     *
      * @throws IllegalStateException if the string is null or empty
      */
     public static void validateNotEmpty(String value, String fieldName)
@@ -72,8 +77,7 @@ public class Validator
         validateNotNull(value, fieldName);
         if (value
             .trim()
-            .isEmpty())
-        {
+            .isEmpty()) {
             throw new IllegalStateException(fieldName + " cannot be empty");
         }
     }

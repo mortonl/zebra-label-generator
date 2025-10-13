@@ -1,11 +1,10 @@
 package com.github.mortonl.zebra.elements;
 
-import com.github.mortonl.zebra.formatting.OriginJustification;
-import com.github.mortonl.zebra.label_settings.LabelSize;
-import com.github.mortonl.zebra.printer_configuration.PrintDensity;
 import lombok.Getter;
 import lombok.experimental.SuperBuilder;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
@@ -14,17 +13,34 @@ import org.junit.jupiter.params.provider.MethodSource;
 import java.util.stream.Stream;
 
 import static com.github.mortonl.zebra.elements.PositionedElement.MAX_AXIS_VALUE;
+import static com.github.mortonl.zebra.formatting.OriginJustification.LEFT;
+import static com.github.mortonl.zebra.label_settings.LabelSize.LABEL_4X6;
+import static com.github.mortonl.zebra.printer_configuration.PrintDensity.DPI_203;
+import static org.junit.jupiter.api.Assertions.assertAll;
 import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
+@DisplayName("PositionedElement positioning and validation")
+@Tag("unit")
+@Tag("positioning")
 class PositionedElementTest
 {
-    private static final LabelSize TEST_LABEL = LabelSize.LABEL_4X6;
-    private static final PrintDensity X8_DOTS_PER_MM = PrintDensity.DPI_203;
 
-    private static Stream<Arguments> validPositions()
+    private static final double VALID_X_POSITION = 10.0;
+
+    private static final double VALID_Y_POSITION = 20.0;
+
+    private static final String EXPECTED_BASIC_ZPL = "^FO80,160";
+
+    private static final String EXPECTED_JUSTIFIED_ZPL = "^FO80,160,0";
+
+    private static final String EXPECTED_POSITION_ERROR_SUFFIX = " The element must be positioned within the label dimensions.";
+
+    private TestPositionedElement classUnderTest;
+
+    private static Stream<Arguments> validPositionsForValidateInContext()
     {
         return Stream.of(
             Arguments.of(0.0, 0.0, "Minimum values"),
@@ -33,7 +49,7 @@ class PositionedElementTest
         );
     }
 
-    private static Stream<Arguments> invalidPositions()
+    private static Stream<Arguments> invalidPositionsForValidateInContext()
     {
         return Stream.of(
             Arguments.of(150.0, 75.0, "X exceeds width", "X-axis position (150.00 mm) exceeds label width (101.60 mm)."),
@@ -42,90 +58,120 @@ class PositionedElementTest
         );
     }
 
-    @Test
-    void testToZplStringWithoutJustification()
+    @BeforeEach
+    void setUp()
     {
-        TestPositionedElement element = TestPositionedElement
+        classUnderTest = TestPositionedElement
             .createTestElement()
-            .withPosition(10.0, 20.0)
+            .withPosition(VALID_X_POSITION, VALID_Y_POSITION)
             .build();
-
-        String expected = "^FO" + X8_DOTS_PER_MM.toDots(10.0) + "," + X8_DOTS_PER_MM.toDots(20.0);
-        assertEquals(expected, element.toZplString(X8_DOTS_PER_MM));
     }
 
     @Test
-    void testToZplStringWithJustification()
+    @DisplayName("toZplString generates ZPL without justification")
+    @Tag("zpl-generation")
+    void Given_NoJustification_When_ToZplString_Then_GeneratesBasicZpl()
     {
-        TestPositionedElement element = TestPositionedElement
-            .createTestElement()
-            .withPosition(10.0, 20.0)
-            .withZOriginJustification(OriginJustification.LEFT)
-            .build();
+        // Given (classUnderTest has no justification by default)
 
-        String expected = "^FO80,160,0";
-        assertEquals(expected, element.toZplString(X8_DOTS_PER_MM));
+        // When
+        String actualZplString = classUnderTest.toZplString(DPI_203);
+
+        // Then
+        assertEquals(EXPECTED_BASIC_ZPL, actualZplString);
     }
 
-    @ParameterizedTest(name = "{2}")
-    @MethodSource("validPositions")
-    void testValidateInContextWithValidPositions(double x, double y, String testName)
+    @Test
+    @DisplayName("toZplString generates ZPL with justification")
+    @Tag("zpl-generation")
+    void Given_WithJustification_When_ToZplString_Then_GeneratesJustifiedZpl()
     {
-        TestPositionedElement element = TestPositionedElement
+        // Given
+        TestPositionedElement justifiedElement = TestPositionedElement
+            .createTestElement()
+            .withPosition(VALID_X_POSITION, VALID_Y_POSITION)
+            .withZOriginJustification(LEFT)
+            .build();
+
+        // When
+        String actualZplString = justifiedElement.toZplString(DPI_203);
+
+        // Then
+        assertEquals(EXPECTED_JUSTIFIED_ZPL, actualZplString);
+    }
+
+    @ParameterizedTest(name = "validateInContext accepts {2}")
+    @MethodSource("validPositionsForValidateInContext")
+    @DisplayName("validateInContext accepts valid positions")
+    @Tag("validation")
+    void Given_ValidPositions_When_ValidateInContext_Then_NoException(double x, double y, String testName)
+    {
+        // Given
+        TestPositionedElement validElement = TestPositionedElement
             .createTestElement()
             .withPosition(x, y)
             .build();
 
-        assertDoesNotThrow(() -> element.validateInContext(TEST_LABEL, X8_DOTS_PER_MM));
+        // When & Then
+        assertDoesNotThrow(() -> validElement.validateInContext(LABEL_4X6, DPI_203, null));
     }
 
-    @ParameterizedTest(name = "{2}")
-    @MethodSource("invalidPositions")
-    void testValidateInContextWithInvalidPositions(double x, double y, String testName, String expectedError)
+    @ParameterizedTest(name = "validateInContext rejects {2}")
+    @MethodSource("invalidPositionsForValidateInContext")
+    @DisplayName("validateInContext throws exception for invalid positions")
+    @Tag("validation")
+    void Given_InvalidPositions_When_ValidateInContext_Then_ThrowsException(double x, double y, String testName, String expectedError)
     {
-        TestPositionedElement element = TestPositionedElement
+        // Given
+        TestPositionedElement invalidElement = TestPositionedElement
             .createTestElement()
             .withPosition(x, y)
             .build();
 
-        IllegalStateException exception = assertThrows(
+        // When & Then
+        IllegalStateException actualException = assertThrows(
             IllegalStateException.class,
-            () -> element.validateInContext(TEST_LABEL, X8_DOTS_PER_MM)
+            () -> invalidElement.validateInContext(LABEL_4X6, DPI_203, null)
         );
 
-        assertEquals(expectedError + " The element must be positioned within the label dimensions.", exception.getMessage());
+        String expectedFullError = expectedError + EXPECTED_POSITION_ERROR_SUFFIX;
+        assertEquals(expectedFullError, actualException.getMessage());
     }
 
     @Test
-    @DisplayName("Validate error message when X-axis value exceeds maximum")
-    void testValidateAxisValueExceedsMaximum()
+    @DisplayName("validateInContext throws exception when X-axis exceeds maximum")
+    @Tag("validation")
+    void Given_XAxisExceedsMax_When_ValidateInContext_Then_ThrowsException()
     {
-        TestPositionedElement element = TestPositionedElement
+        // Given
+        TestPositionedElement exceedsMaxElement = TestPositionedElement
             .createTestElement()
-            .withXAxisLocationMm(X8_DOTS_PER_MM.toMillimetres(MAX_AXIS_VALUE + 1))
-            .withYAxisLocationMm(20.0)
+            .withXAxisLocationMm(DPI_203.toMillimetres(MAX_AXIS_VALUE + 1))
+            .withYAxisLocationMm(VALID_Y_POSITION)
             .build();
 
-        IllegalStateException exception = assertThrows(
+        // When & Then
+        IllegalStateException actualException = assertThrows(
             IllegalStateException.class,
-            () -> element.validateInContext(TEST_LABEL, X8_DOTS_PER_MM)
+            () -> exceedsMaxElement.validateInContext(LABEL_4X6, DPI_203, null)
         );
 
-        assertTrue(exception
-            .getMessage()
-            .contains("X-axis location must be between"));
+        assertTrue(actualException.getMessage()
+                                  .contains("X-axis location must be between"));
     }
 
     @Test
-    void testBuilderAtMethod()
+    @DisplayName("withPosition sets both axis locations correctly")
+    @Tag("builder")
+    void Given_PositionValues_When_WithPosition_Then_SetsBothAxes()
     {
-        TestPositionedElement element = TestPositionedElement
-            .createTestElement()
-            .withPosition(10.0, 20.0)
-            .build();
+        // Given & When (classUnderTest is built with position values)
 
-        assertEquals(10.0, element.getXAxisLocationMm());
-        assertEquals(20.0, element.getYAxisLocationMm());
+        // Then
+        assertAll(
+            () -> assertEquals(VALID_X_POSITION, classUnderTest.getXAxisLocationMm()),
+            () -> assertEquals(VALID_Y_POSITION, classUnderTest.getYAxisLocationMm())
+        );
     }
 
     // Concrete implementation for testing abstract class
@@ -133,5 +179,6 @@ class PositionedElementTest
     @SuperBuilder(builderMethodName = "createTestElement", setterPrefix = "with")
     private static class TestPositionedElement extends PositionedElement
     {
+
     }
 }

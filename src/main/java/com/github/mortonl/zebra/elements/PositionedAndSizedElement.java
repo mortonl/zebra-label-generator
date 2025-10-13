@@ -24,6 +24,7 @@ import lombok.experimental.SuperBuilder;
 @SuperBuilder(builderMethodName = "createPositionedAndSizedElement", setterPrefix = "with")
 public abstract class PositionedAndSizedElement extends PositionedElement
 {
+
     /**
      * The width of the element in millimeters.
      * Specifies the horizontal dimension of the printed element.
@@ -86,12 +87,14 @@ public abstract class PositionedAndSizedElement extends PositionedElement
      *
      * @param <C> The type of the element being built
      * @param <B> The type of the builder itself (for method chaining)
+     *
      * @see PositionedElementBuilder For position setting capabilities
      * @see PositionedAndSizedElement For the element class this builds
      */
-    public static abstract class PositionedAndSizedElementBuilder<C extends PositionedAndSizedElement, B extends PositionedAndSizedElementBuilder<C, B>>
+    public abstract static class PositionedAndSizedElementBuilder<C extends PositionedAndSizedElement, B extends PositionedAndSizedElementBuilder<C, B>>
         extends PositionedElementBuilder<C, B>
     {
+
         /**
          * Sets both width and height dimensions simultaneously.
          *
@@ -100,12 +103,14 @@ public abstract class PositionedAndSizedElement extends PositionedElement
          *
          * @param widthMm  The width in millimeters
          * @param heightMm The height in millimeters
+         *
          * @return The builder instance for method chaining
+         *
          * @throws IllegalArgumentException if either dimension is negative
          */
         public B withSize(double widthMm, double heightMm)
         {
-            this.widthMm = widthMm;
+            this.widthMm  = widthMm;
             this.heightMm = heightMm;
             return self();
         }

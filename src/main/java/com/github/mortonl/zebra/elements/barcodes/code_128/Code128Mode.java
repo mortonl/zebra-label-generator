@@ -1,6 +1,6 @@
 package com.github.mortonl.zebra.elements.barcodes.code_128;
 
-import com.github.mortonl.zebra.elements.barcodes.BarcodeCode128;
+import com.github.mortonl.zebra.elements.fonts.DefaultFont;
 import com.github.mortonl.zebra.label_settings.LabelSize;
 import com.github.mortonl.zebra.printer_configuration.PrintDensity;
 import lombok.AllArgsConstructor;
@@ -54,7 +54,7 @@ public enum Code128Mode
      *     <li>FNC1 is automatically inserted at the start</li>
      * </ul>
      *
-     * @see BarcodeCode128#validateInContext(LabelSize, PrintDensity)
+     * @see BarcodeCode128#validateInContext(LabelSize, PrintDensity, DefaultFont)
      */
     UCC_CASE("U"),
 

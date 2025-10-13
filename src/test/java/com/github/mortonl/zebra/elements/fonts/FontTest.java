@@ -1,120 +1,175 @@
 package com.github.mortonl.zebra.elements.fonts;
 
-import com.github.mortonl.zebra.formatting.Orientation;
-import com.github.mortonl.zebra.label_settings.LabelSize;
-import com.github.mortonl.zebra.printer_configuration.PrintDensity;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.CsvSource;
 import org.junit.jupiter.params.provider.ValueSource;
 
+import static com.github.mortonl.zebra.formatting.Orientation.NORMAL;
+import static com.github.mortonl.zebra.label_settings.LabelSize.LABEL_4X6;
+import static com.github.mortonl.zebra.printer_configuration.PrintDensity.DPI_203;
 import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
+@DisplayName("Font creation and validation")
+@Tag("unit")
+@Tag("font")
 class FontTest
 {
-    @Test
-    void testToZplString()
+
+    private static final char VALID_FONT_DESIGNATION = 'A';
+
+    private static final double VALID_WIDTH_MM = 4.0;
+
+    private static final double VALID_HEIGHT_MM = 3.0;
+
+    private static final String EXPECTED_ZPL_OUTPUT = "^AAN,24,32";
+
+    private static final String EXPECTED_INVALID_FONT_MESSAGE = "Font name must be A-Z or 0-9";
+
+    private Font classUnderTest;
+
+    @BeforeEach
+    void setUp()
     {
-        Font font = Font.createFont()
-                        .withFontDesignation('A')
-                        .withOrientation(Orientation.NORMAL)
-                        .withSize(4.0, 3.0)
-                        .build();
-
-        String zplString = font.toZplString(PrintDensity.DPI_203);
-
-        assertEquals("^AAN,24,32", zplString);
+        classUnderTest = Font.createFont()
+                             .withFontDesignation(VALID_FONT_DESIGNATION)
+                             .withOrientation(NORMAL)
+                             .withSize(VALID_WIDTH_MM, VALID_HEIGHT_MM)
+                             .build();
     }
 
     @Test
-    void testValidateInContext_ValidFont()
+    @DisplayName("toZplString generates correct ZPL command")
+    @Tag("zpl-generation")
+    void Given_ValidFont_When_ToZplString_Then_GeneratesCorrectZpl()
     {
-        Font font = Font.createFont()
-                        .withFontDesignation('A')
-                        .withSize(4.0, 3.0)
-                        .build();
+        // Given (classUnderTest is already configured)
 
-        assertDoesNotThrow(() -> font.validateInContext(LabelSize.LABEL_4X6, PrintDensity.DPI_203));
+        // When
+        String actualZplString = classUnderTest.toZplString(DPI_203);
+
+        // Then
+        assertEquals(EXPECTED_ZPL_OUTPUT, actualZplString);
     }
 
-    @ParameterizedTest(name = "Font designation {0} should be rejected")
-    @ValueSource(chars = {'a', 'z', '#', '$', ' ', 'ñ'})
-    void testValidateInContext_InvalidFontDesignation(char invalidDesignation)
+    @Test
+    @DisplayName("validateInContext accepts valid font")
+    @Tag("validation")
+    void Given_ValidFont_When_ValidateInContext_Then_NoException()
     {
-        Font font = Font.createFont()
-                        .withFontDesignation(invalidDesignation)
-                        .withSize(4.0, 3.0)
-                        .build();
+        // Given (classUnderTest is already configured with valid font)
 
-        IllegalStateException exception = assertThrows(
+        // When & Then
+        assertDoesNotThrow(() -> classUnderTest.validateInContext(LABEL_4X6, DPI_203, null));
+    }
+
+    @ParameterizedTest(name = "validateInContext rejects font designation {0}")
+    @ValueSource(chars = {'a',
+        'z',
+        '#',
+        '$',
+        ' ',
+        'ñ'})
+    @DisplayName("validateInContext throws exception for invalid font designation")
+    @Tag("validation")
+    void Given_InvalidDesignation_When_ValidateInContext_Then_ThrowsException(char invalidDesignation)
+    {
+        // Given
+        Font invalidFont = Font.createFont()
+                               .withFontDesignation(invalidDesignation)
+                               .withSize(VALID_WIDTH_MM, VALID_HEIGHT_MM)
+                               .build();
+
+        // When & Then
+        IllegalStateException actualException = assertThrows(
             IllegalStateException.class,
-            () -> font.validateInContext(LabelSize.LABEL_4X6, PrintDensity.DPI_203)
+            () -> invalidFont.validateInContext(LABEL_4X6, DPI_203, null)
         );
-        assertEquals("Font name must be A-Z or 0-9", exception.getMessage());
+        assertEquals(EXPECTED_INVALID_FONT_MESSAGE, actualException.getMessage());
     }
 
-    @ParameterizedTest(name = "Font designation {0} should be accepted")
-    @ValueSource(chars = {'A', 'Z', '0', '9', 'M', '5'})
-    void testValidateInContext_ValidFontDesignation(char validDesignation)
+    @ParameterizedTest(name = "validateInContext accepts font designation {0}")
+    @ValueSource(chars = {'A',
+        'Z',
+        '0',
+        '9',
+        'M',
+        '5'})
+    @DisplayName("validateInContext accepts valid font designations")
+    @Tag("validation")
+    void Given_ValidDesignation_When_ValidateInContext_Then_NoException(char validDesignation)
     {
-        Font font = Font.createFont()
-                        .withFontDesignation(validDesignation)
-                        .withSize(4.0, 3.0)
-                        .build();
+        // Given
+        Font validFont = Font.createFont()
+                             .withFontDesignation(validDesignation)
+                             .withSize(VALID_WIDTH_MM, VALID_HEIGHT_MM)
+                             .build();
 
-        assertDoesNotThrow(() -> font.validateInContext(LabelSize.LABEL_4X6, PrintDensity.DPI_203));
+        // When & Then
+        assertDoesNotThrow(() -> validFont.validateInContext(LABEL_4X6, DPI_203, null));
     }
 
-    @ParameterizedTest(name = "{2}")
+    @ParameterizedTest(name = "validateInContext rejects {2}")
     @CsvSource({
         "height,0.1,Font height below minimum (0.10mm) should be rejected,Font height 0.10mm is too small. Minimum height is 1.25mm for 203 DPI / 8 dots per mm",
         "height,4001.0,Font height above maximum (4001mm) should be rejected,Font height 4001.00mm is too large. Maximum height is 4000.00mm for 203 DPI / 8 dots per mm",
         "width,0.1,Font width below minimum (0.10mm) should be rejected,Font width 0.10mm is too small. Minimum width is 1.25mm for 203 DPI / 8 dots per mm",
         "width,4001.0,Font width above maximum (4001mm) should be rejected,Font width 4001.00mm is too large. Maximum width is 4000.00mm for 203 DPI / 8 dots per mm"
     })
-    void testValidateInContext_InvalidDimensions(
+    @DisplayName("validateInContext throws exception for invalid dimensions")
+    @Tag("validation")
+    void Given_InvalidDimensions_When_ValidateInContext_Then_ThrowsException(
         String dimension,
         double invalidValue,
         String testDescription,
         String expectedMessage
     )
     {
-        Font font = Font.createFont()
-                        .withFontDesignation('A')
-                        .withSize(dimension.equals("width") ? invalidValue : 2.0, dimension.equals("height") ? invalidValue : 2.0)
-                        .build();
+        // Given
+        Font invalidFont = Font.createFont()
+                               .withFontDesignation(VALID_FONT_DESIGNATION)
+                               .withSize("width".equals(dimension) ? invalidValue : 2.0, "height".equals(dimension) ? invalidValue : 2.0)
+                               .build();
 
-        IllegalStateException exception = assertThrows(
+        // When & Then
+        IllegalStateException actualException = assertThrows(
             IllegalStateException.class,
-            () -> font.validateInContext(LabelSize.LABEL_4X6, PrintDensity.DPI_203),
+            () -> invalidFont.validateInContext(LABEL_4X6, DPI_203, null),
             testDescription
         );
 
-        assertEquals(expectedMessage, exception.getMessage());
+        assertEquals(expectedMessage, actualException.getMessage());
     }
 
-    @ParameterizedTest(name = "{2}")
+    @ParameterizedTest(name = "validateInContext accepts {2}")
     @CsvSource({
         "height,1.25,Minimum allowed font height (1.25mm) should be valid",
         "height,4000.0,Maximum allowed font height (4000mm) should be valid",
         "width,1.25,Minimum allowed font width (1.25mm) should be valid",
         "width,4000.0,Maximum allowed font width (4000mm) should be valid"
     })
-    void testValidateInContext_ValidBoundaryDimensions(
+    @DisplayName("validateInContext accepts valid boundary dimensions")
+    @Tag("validation")
+    void Given_ValidBoundaryDimensions_When_ValidateInContext_Then_NoException(
         String dimension,
         double boundaryValue,
         String testDescription
     )
     {
-        Font font = Font.createFont()
-                        .withFontDesignation('A')
-                        .withSize(dimension.equals("width") ? boundaryValue : 2.0, dimension.equals("height") ? boundaryValue : 2.0)
-                        .build();
+        // Given
+        Font validFont = Font.createFont()
+                             .withFontDesignation(VALID_FONT_DESIGNATION)
+                             .withSize("width".equals(dimension) ? boundaryValue : 2.0, "height".equals(dimension) ? boundaryValue : 2.0)
+                             .build();
 
+        // When & Then
         assertDoesNotThrow(
-            () -> font.validateInContext(LabelSize.LABEL_4X6, PrintDensity.DPI_203),
+            () -> validFont.validateInContext(LABEL_4X6, DPI_203, null),
             testDescription
         );
     }

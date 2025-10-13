@@ -1,6 +1,7 @@
 package com.github.mortonl.zebra.elements.fields;
 
 import com.github.mortonl.zebra.elements.LabelElement;
+import com.github.mortonl.zebra.elements.fonts.DefaultFont;
 import com.github.mortonl.zebra.label_settings.LabelSize;
 import com.github.mortonl.zebra.printer_configuration.PrintDensity;
 import lombok.Getter;
@@ -42,6 +43,7 @@ import static com.github.mortonl.zebra.ZplCommand.generateZplIICommand;
 @SuperBuilder(builderMethodName = "createComment", setterPrefix = "with")
 public class Comment extends LabelElement
 {
+
     /**
      * The text content of the comment.
      * Must not contain any ZPL control characters that could prematurely terminate the comment.
@@ -83,12 +85,11 @@ public class Comment extends LabelElement
      * @throws IllegalStateException if the content contains any ZPL control characters
      */
     @Override
-    public void validateInContext(LabelSize size, PrintDensity dpi) throws IllegalStateException
+    public void validateInContext(LabelSize size, PrintDensity dpi, final DefaultFont defaultFont) throws IllegalStateException
     {
         if (CONTROL_CHARACTERS
             .stream()
-            .anyMatch(content::contains))
-        {
+            .anyMatch(content::contains)) {
             throw new IllegalStateException(
                 "Comments cannot contain the special characters " +
                     String.join(" or ", CONTROL_CHARACTERS) +

@@ -1,6 +1,7 @@
 package com.github.mortonl.zebra.elements;
 
 import com.github.mortonl.zebra.ZebraLabel;
+import com.github.mortonl.zebra.elements.fonts.DefaultFont;
 import com.github.mortonl.zebra.label_settings.LabelSize;
 import com.github.mortonl.zebra.printer_configuration.PrintDensity;
 import lombok.AllArgsConstructor;
@@ -17,6 +18,7 @@ import lombok.experimental.SuperBuilder;
 @AllArgsConstructor
 public abstract class LabelElement
 {
+
     /**
      * Generates the ZPL II commands for this label element.
      *
@@ -25,7 +27,9 @@ public abstract class LabelElement
      * in the generated command to allow printer defaults to take effect.</p>
      *
      * @param dpi The print density configuration for the target printer
+     *
      * @return A String containing the ZPL commands representing this element
+     *
      * @see PrintDensity
      */
     public abstract String toZplString(PrintDensity dpi);
@@ -33,14 +37,23 @@ public abstract class LabelElement
     /**
      * Validates that this element's properties are valid within the context of the given label specifications.
      *
-     * @param size the dimensions and specifications of the label
-     * @param dpi  the print density configuration for the target printer
+     * @param size        the dimensions and specifications of the label
+     * @param dpi         the print density configuration for the target printer
+     * @param defaultFont the default font settings for the label
+     *
      * @throws IllegalStateException if the element's properties are invalid for the given context
      */
-    public abstract void validateInContext(LabelSize size, PrintDensity dpi) throws IllegalStateException;
+    public abstract void validateInContext(LabelSize size, PrintDensity dpi, final DefaultFont defaultFont) throws IllegalStateException;
 
-    protected static abstract class LabelElementBuilder<C extends LabelElement, B extends LabelElementBuilder<C, B>>
+    /**
+     * Builder for creating LabelElement instances with type-safe configuration.
+     *
+     * @param <C> the type of LabelElement being built
+     * @param <B> the concrete builder type (self-referential for method chaining)
+     */
+    protected abstract static class LabelElementBuilder<C extends LabelElement, B extends LabelElementBuilder<C, B>>
     {
+
         /**
          * Validates and adds this element to the specified label in one step.
          * This is the recommended way to add an element to a label as it ensures
@@ -55,6 +68,8 @@ public abstract class LabelElement
          * }</pre>
          *
          * @param label The {@link ZebraLabel} to add this barcode to
+         * @return the built element instance
+         *
          * @throws IllegalStateException if the barcode configuration is invalid
          *                               for the given label's size and printer density settings
          * @see ZebraLabel#validateAndAddElement(LabelElement)
