@@ -1,6 +1,7 @@
 package com.github.mortonl.zebra.label_settings;
 
 import com.github.mortonl.zebra.elements.LabelElement;
+import com.github.mortonl.zebra.elements.fonts.DefaultFont;
 import com.github.mortonl.zebra.formatting.FontEncoding;
 import com.github.mortonl.zebra.printer_configuration.PrintDensity;
 import lombok.Getter;
@@ -21,6 +22,7 @@ import static com.github.mortonl.zebra.ZplCommand.generateZplIICommand;
 @SuperBuilder(builderMethodName = "createInternationalCharacterSet", setterPrefix = "with")
 public class InternationalCharacterSet extends LabelElement
 {
+
     /**
      * The font encoding to be used for text interpretation.
      * Determines how character bytes are mapped to printed symbols.
@@ -35,6 +37,7 @@ public class InternationalCharacterSet extends LabelElement
      * Generates a ^CI command with the appropriate encoding parameter.
      *
      * @param dpi the print density of the target printer
+     *
      * @return the ZPL II command string for setting the character encoding
      */
     @Override
@@ -47,12 +50,14 @@ public class InternationalCharacterSet extends LabelElement
      * Validates the character set configuration in the context of a specific label size and print density.
      * Ensures that required parameters are properly set.
      *
-     * @param size the dimensions of the target label
-     * @param dpi  the print density of the target printer
+     * @param size        the dimensions of the target label
+     * @param dpi         the print density of the target printer
+     * @param defaultFont the default font settings for the label
+     *
      * @throws IllegalArgumentException if the encoding is null
      */
     @Override
-    public void validateInContext(LabelSize size, PrintDensity dpi) throws IllegalArgumentException
+    public void validateInContext(LabelSize size, PrintDensity dpi, final DefaultFont defaultFont) throws IllegalArgumentException
     {
         if (encoding == null) {
             throw new IllegalArgumentException("Encoding cannot be null");

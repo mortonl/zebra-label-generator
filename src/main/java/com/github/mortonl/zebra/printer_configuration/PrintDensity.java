@@ -72,7 +72,9 @@ public enum PrintDensity
      * Finds the PrintDensity matching a specific DPI value.
      *
      * @param dpi The dots per inch value to match
+     *
      * @return The matching PrintDensity
+     *
      * @throws IllegalArgumentException if no matching density is found
      */
     public static PrintDensity fromDotsPerInch(int dpi)
@@ -89,7 +91,9 @@ public enum PrintDensity
      * Finds the PrintDensity matching a specific dots per millimeter value.
      *
      * @param dotsPerMm The dots per millimeter value to match
+     *
      * @return The matching PrintDensity
+     *
      * @throws IllegalArgumentException if no matching density is found
      */
     public static PrintDensity fromDotsPerMillimetre(int dotsPerMm)
@@ -144,6 +148,7 @@ public enum PrintDensity
      * </ul>
      *
      * @param millimeters The measurement in millimeters
+     *
      * @return The equivalent number of dots, rounded to the nearest integer
      */
     public int toDots(double millimeters)
@@ -186,7 +191,9 @@ public enum PrintDensity
      *
      * @param millimeters  The measurement in millimeters
      * @param roundingMode The rounding mode to apply
+     *
      * @return The equivalent number of dots, rounded according to the specified mode
+     *
      * @throws IllegalArgumentException if roundingMode is null
      */
     public int toDots(double millimeters, RoundingMode roundingMode)
@@ -204,6 +211,7 @@ public enum PrintDensity
      * Uses high precision decimal arithmetic to ensure accurate conversion.
      *
      * @param dots The number of dots
+     *
      * @return The equivalent measurement in millimeters, with 10 decimal places precision
      */
     public final double toMillimetres(final int dots)

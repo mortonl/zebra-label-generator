@@ -1,6 +1,7 @@
 package com.github.mortonl.zebra.elements.fields;
 
 import com.github.mortonl.zebra.elements.LabelElement;
+import com.github.mortonl.zebra.elements.fonts.DefaultFont;
 import com.github.mortonl.zebra.label_settings.LabelSize;
 import com.github.mortonl.zebra.printer_configuration.PrintDensity;
 import lombok.Getter;
@@ -41,6 +42,7 @@ import static com.github.mortonl.zebra.ZplCommand.FIELD_START;
 @SuperBuilder(builderMethodName = "createField", setterPrefix = "with")
 public class Field extends LabelElement
 {
+
     /**
      * The content data for this field.
      * Can contain plain text or hexadecimal data depending on the {@code enableHexCharacters} setting.
@@ -121,7 +123,7 @@ public class Field extends LabelElement
      * @throws IllegalStateException if the field data is null
      */
     @Override
-    public void validateInContext(LabelSize size, PrintDensity dpi) throws IllegalStateException
+    public void validateInContext(LabelSize size, PrintDensity dpi, final DefaultFont defaultFont) throws IllegalStateException
     {
         if (data == null) {
             throw new IllegalStateException("Field Data cannot be null");

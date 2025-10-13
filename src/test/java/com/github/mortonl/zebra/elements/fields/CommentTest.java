@@ -1,7 +1,8 @@
 package com.github.mortonl.zebra.elements.fields;
 
-import com.github.mortonl.zebra.label_settings.LabelSize;
-import com.github.mortonl.zebra.printer_configuration.PrintDensity;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
@@ -9,14 +10,32 @@ import org.junit.jupiter.params.provider.MethodSource;
 
 import java.util.stream.Stream;
 
+import static com.github.mortonl.zebra.label_settings.LabelSize.LABEL_4X6;
+import static com.github.mortonl.zebra.printer_configuration.PrintDensity.DPI_203;
 import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
+@DisplayName("Comment field creation and validation")
+@Tag("unit")
+@Tag("comment")
 class CommentTest
 {
-    private static Stream<Arguments> validComments()
+
+    private static final String VALID_COMMENT_TEXT = "Test Comment";
+
+    private static final String EMPTY_COMMENT_TEXT = "";
+
+    private static final String EXPECTED_VALID_ZPL = "^FXTest Comment^FS";
+
+    private static final String EXPECTED_EMPTY_ZPL = "^FX^FS";
+
+    private static final String EXPECTED_ERROR_MESSAGE = "Comments cannot contain the special characters";
+
+    private Comment classUnderTest;
+
+    private static Stream<Arguments> validCommentsForValidateInContext()
     {
         return Stream.of(
             Arguments.of("Simple comment", "This is a test comment"),
@@ -26,7 +45,7 @@ class CommentTest
         );
     }
 
-    private static Stream<Arguments> invalidComments()
+    private static Stream<Arguments> invalidCommentsForValidateInContext()
     {
         return Stream.of(
             Arguments.of("Comment with ~", "Test~Comment"),
@@ -37,53 +56,92 @@ class CommentTest
         );
     }
 
-    @Test
-    void testToZplString()
+    @BeforeEach
+    void setUp()
     {
-        Comment comment = Comment
+        classUnderTest = Comment
             .createComment()
-            .withContent("Test Comment")
+            .withContent(VALID_COMMENT_TEXT)
             .build();
-        String expected = "^FX" + "Test Comment" + "^FS";
-        assertEquals(expected, comment.toZplString(PrintDensity.DPI_203));
     }
 
     @Test
-    void testToZplStringWithEmptyComment()
+    @DisplayName("toZplString generates correct ZPL for valid comment")
+    @Tag("zpl-generation")
+    void Given_ValidComment_When_ToZplString_Then_GeneratesCorrectZpl()
     {
-        Comment comment = Comment.createComment().withContent("").build();
-        String expected = "^FX" + "^FS";
-        assertEquals(expected, comment.toZplString(PrintDensity.DPI_203));
+        // Given (classUnderTest is already configured with valid comment)
+
+        // When
+        String actualZplString = classUnderTest.toZplString(DPI_203);
+
+        // Then
+        assertEquals(EXPECTED_VALID_ZPL, actualZplString);
     }
 
-    @ParameterizedTest(name = "{0}")
-    @MethodSource("validComments")
-    void testValidateInContextWithValidComments(String testName, String commentText)
+    @Test
+    @DisplayName("toZplString generates correct ZPL for empty comment")
+    @Tag("zpl-generation")
+    void Given_EmptyComment_When_ToZplString_Then_GeneratesCorrectZpl()
     {
-        Comment comment = Comment.createComment().withContent(commentText).build();
-        assertDoesNotThrow(() -> comment.validateInContext(LabelSize.LABEL_4X6, PrintDensity.DPI_203));
+        // Given
+        Comment emptyComment = Comment.createComment()
+                                      .withContent(EMPTY_COMMENT_TEXT)
+                                      .build();
+
+        // When
+        String actualZplString = emptyComment.toZplString(DPI_203);
+
+        // Then
+        assertEquals(EXPECTED_EMPTY_ZPL, actualZplString);
     }
 
-    @ParameterizedTest(name = "{0}")
-    @MethodSource("invalidComments")
-    void testValidateInContextWithInvalidComments(String testName, String commentText)
+    @ParameterizedTest(name = "validateInContext accepts {0}")
+    @MethodSource("validCommentsForValidateInContext")
+    @DisplayName("validateInContext accepts valid comments")
+    @Tag("validation")
+    void Given_ValidComment_When_ValidateInContext_Then_NoException(String testName, String commentText)
     {
-        Comment comment = Comment.createComment().withContent(commentText).build();
-        IllegalStateException exception = assertThrows(
+        // Given
+        Comment validComment = Comment.createComment()
+                                      .withContent(commentText)
+                                      .build();
+
+        // When & Then
+        assertDoesNotThrow(() -> validComment.validateInContext(LABEL_4X6, DPI_203, null));
+    }
+
+    @ParameterizedTest(name = "validateInContext rejects {0}")
+    @MethodSource("invalidCommentsForValidateInContext")
+    @DisplayName("validateInContext throws exception for invalid comments")
+    @Tag("validation")
+    void Given_InvalidComment_When_ValidateInContext_Then_ThrowsException(String testName, String commentText)
+    {
+        // Given
+        Comment invalidComment = Comment.createComment()
+                                        .withContent(commentText)
+                                        .build();
+
+        // When & Then
+        IllegalStateException actualException = assertThrows(
             IllegalStateException.class,
-            () -> comment.validateInContext(LabelSize.LABEL_4X6, PrintDensity.DPI_203)
+            () -> invalidComment.validateInContext(LABEL_4X6, DPI_203, null)
         );
 
-        assertTrue(exception
-            .getMessage()
-            .contains("Comments cannot contain the special characters"));
+        assertTrue(actualException.getMessage()
+                                  .contains(EXPECTED_ERROR_MESSAGE));
     }
 
     @Test
-    void testNullComment()
+    @DisplayName("build throws exception for null comment content")
+    @Tag("validation")
+    void Given_NullContent_When_Build_Then_ThrowsException()
     {
+        // Given, When & Then
         assertThrows(NullPointerException.class, () ->
-            Comment.createComment().withContent(null).build()
+            Comment.createComment()
+                   .withContent(null)
+                   .build()
         );
     }
 }

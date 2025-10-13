@@ -2,33 +2,33 @@
 name: Build
 
 on:
-    workflow_call:
+  workflow_call:
 
 jobs:
-    build:
-        runs-on: ubuntu-latest
-        steps:
-            - uses: actions/checkout@v4
-            - uses: actions/setup-java@v4
-              with:
-                  java-version: '21'
-                  distribution: 'corretto'
-                  cache: maven
-                  cache-dependency-path: 'pom.xml' # optional If this option is omitted, the action searches for the dependency file in the entire repository.
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-java@v4
+        with:
+          java-version: '21'
+          distribution: 'corretto'
+          cache: maven
+          cache-dependency-path: 'pom.xml' # optional If this option is omitted, the action searches for the dependency file in the entire repository.
 
-            - name: Build and test
-              run: ./mvnw package
+      - name: Build and test
+        run: ./mvnw package
 
-            - name: Upload build artifacts
-              uses: actions/upload-artifact@v4
-              with:
-                  name: build-artifacts
-                  path: |
-                      target/*.jar
-                      target/*.pom
+      - name: Upload build artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: build-artifacts
+          path: |
+            target/*.jar
+            target/*.pom
 
-            - name: Upload coverage report
-              uses: actions/upload-artifact@v4
-              with:
-                  name: coverage-report
-                  path: target/site/jacoco/
+      - name: Upload coverage report
+        uses: actions/upload-artifact@v4
+        with:
+          name: coverage-report
+          path: target/site/jacoco/

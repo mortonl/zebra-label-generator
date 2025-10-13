@@ -3,6 +3,7 @@ package com.github.mortonl.zebra.elements.text;
 import com.github.mortonl.zebra.ZplCommand;
 import com.github.mortonl.zebra.elements.PositionedElement;
 import com.github.mortonl.zebra.elements.fields.Field;
+import com.github.mortonl.zebra.elements.fonts.DefaultFont;
 import com.github.mortonl.zebra.elements.fonts.Font;
 import com.github.mortonl.zebra.formatting.Orientation;
 import com.github.mortonl.zebra.label_settings.LabelSize;
@@ -55,6 +56,7 @@ import static com.github.mortonl.zebra.validation.Validator.validateNotEmpty;
 @SuperBuilder(builderMethodName = "createText", setterPrefix = "with")
 public class Text extends PositionedElement
 {
+
     /**
      * Controls color inversion of the text field.
      *
@@ -121,15 +123,32 @@ public class Text extends PositionedElement
      * <p>Additional validation for text elements:</p>
      * <ul>
      *     <li>Content must not be empty</li>
+     *     <li>Either font must be specified or default font must be set on label</li>
      * </ul>
      *
-     * @throws IllegalStateException if the text content is empty
+     * @throws IllegalStateException if the text content is empty or font requirements not met
      */
     @Override
-    public void validateInContext(LabelSize size, PrintDensity dpi) throws IllegalStateException
+    public void validateInContext(LabelSize size, PrintDensity dpi, final DefaultFont defaultFont) throws IllegalStateException
     {
-        super.validateInContext(size, dpi);
+        super.validateInContext(size, dpi, defaultFont);
         validateNotEmpty(content.getData(), "Text");
+        validateFontRequirement(size, dpi, defaultFont);
+    }
+
+    /**
+     * Validates font requirements for text elements.
+     * Either this element must have a font or the label must have a default font set.
+     */
+    private void validateFontRequirement(LabelSize size, PrintDensity dpi, DefaultFont currentDefaultFont)
+    {
+        if (font != null) {
+            font.validateInContext(size, dpi, currentDefaultFont);
+        } else {
+            if (currentDefaultFont == null) {
+                throw new IllegalStateException("No default font set on label");
+            }
+        }
     }
 
     /**
@@ -138,9 +157,9 @@ public class Text extends PositionedElement
      * @param <C> the type of Text being built
      * @param <B> the concrete builder type (self-referential for method chaining)
      */
-    public static abstract class TextBuilder<C extends Text, B extends TextBuilder<C, B>>
-        extends PositionedElement.PositionedElementBuilder<C, B>
+    public abstract static class TextBuilder<C extends Text, B extends TextBuilder<C, B>> extends PositionedElement.PositionedElementBuilder<C, B>
     {
+
         /**
          * Sets the content of the text element using plain text.
          * This method automatically configures the underlying {@link Field} with the
@@ -154,7 +173,9 @@ public class Text extends PositionedElement
          * }</pre>
          *
          * @param contents The text content to display
+         *
          * @return the builder instance for method chaining
+         *
          * @throws IllegalArgumentException if contents is null
          * @see Field.FieldBuilder#withData(String)
          * @see #withHexadecimalContent(String)
@@ -181,7 +202,9 @@ public class Text extends PositionedElement
          * }</pre>
          *
          * @param contents The hexadecimal string representing the text content
+         *
          * @return the builder instance for method chaining
+         *
          * @throws IllegalArgumentException if contents is null or not valid hexadecimal
          * @see Field.FieldBuilder#withData(String)
          * @see #withPlainTextContent(String)

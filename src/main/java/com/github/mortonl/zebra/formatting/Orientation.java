@@ -1,8 +1,8 @@
 package com.github.mortonl.zebra.formatting;
 
-import com.github.mortonl.zebra.elements.barcodes.BarcodeCode128;
-import com.github.mortonl.zebra.elements.barcodes.BarcodeInterleaved2of5;
-import com.github.mortonl.zebra.elements.barcodes.BarcodePDF417;
+import com.github.mortonl.zebra.elements.barcodes.code_128.BarcodeCode128;
+import com.github.mortonl.zebra.elements.barcodes.interleaved_2OF5.BarcodeInterleaved2of5;
+import com.github.mortonl.zebra.elements.barcodes.pdf_417.BarcodePDF417;
 import com.github.mortonl.zebra.elements.fonts.Font;
 import lombok.AllArgsConstructor;
 import lombok.Getter;

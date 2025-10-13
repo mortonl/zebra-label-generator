@@ -3,6 +3,7 @@ package com.github.mortonl.zebra.elements.barcodes;
 import com.github.mortonl.zebra.ZebraLabel;
 import com.github.mortonl.zebra.elements.PositionedElement;
 import com.github.mortonl.zebra.elements.fields.Field;
+import com.github.mortonl.zebra.elements.fonts.DefaultFont;
 import com.github.mortonl.zebra.label_settings.LabelSize;
 import com.github.mortonl.zebra.printer_configuration.PrintDensity;
 import lombok.Getter;
@@ -45,6 +46,7 @@ import static com.github.mortonl.zebra.validation.Validator.validateNotNull;
 @SuperBuilder(builderMethodName = "createBarcode", setterPrefix = "with")
 public abstract class Barcode extends PositionedElement
 {
+
     /**
      * The content to be encoded in the barcode.
      * This field holds both the data and formatting information for the barcode content.
@@ -57,11 +59,9 @@ public abstract class Barcode extends PositionedElement
      * <p>The content field supports both plain text and hexadecimal data formats,
      * depending on the specific requirements of the barcode type and data being encoded.</p>
      *
-     * @param content the field containing the barcode content and its formatting information
-     * @return the field containing the barcode content and its formatting information
      * @see Field
      */
-    Field content;
+    protected Field content;
 
     /**
      * {@inheritDoc}
@@ -90,9 +90,9 @@ public abstract class Barcode extends PositionedElement
      * </ul>
      */
     @Override
-    public void validateInContext(LabelSize size, PrintDensity dpi) throws IllegalStateException
+    public void validateInContext(LabelSize size, PrintDensity dpi, final DefaultFont defaultFont) throws IllegalStateException
     {
-        super.validateInContext(size, dpi);
+        super.validateInContext(size, dpi, defaultFont);
         validateNotNull(content, "content");
         validateNotEmpty(content.getData(), "Data");
     }
@@ -103,9 +103,10 @@ public abstract class Barcode extends PositionedElement
      * @param <C> the type of Barcode being built
      * @param <B> the concrete builder type (self-referential for method chaining)
      */
-    public static abstract class BarcodeBuilder<C extends Barcode, B extends BarcodeBuilder<C, B>>
+    public abstract static class BarcodeBuilder<C extends Barcode, B extends BarcodeBuilder<C, B>>
         extends PositionedElement.PositionedElementBuilder<C, B>
     {
+
         /**
          * Sets the barcode content using plain text.
          * This is the recommended method for setting content when using regular text or numbers.
@@ -117,7 +118,9 @@ public abstract class Barcode extends PositionedElement
          * }</pre>
          *
          * @param contents The plain text content to encode in the barcode
+         *
          * @return The builder instance for method chaining
+         *
          * @see Field
          */
         public B withPlainTextContent(String contents)
@@ -141,7 +144,9 @@ public abstract class Barcode extends PositionedElement
          * }</pre>
          *
          * @param contents The content in hexadecimal format
+         *
          * @return The builder instance for method chaining
+         *
          * @see Field
          */
         public B withHexadecimalContent(String contents)
@@ -159,7 +164,9 @@ public abstract class Barcode extends PositionedElement
          * For most cases, use {@link #withPlainTextContent(String)} or {@link #withHexadecimalContent(String)} instead.
          *
          * @param contents The custom Field instance
+         *
          * @return The builder instance for method chaining
+         *
          * @see Field
          */
         public B withContent(Field contents)

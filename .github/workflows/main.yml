@@ -4,86 +4,89 @@ name: Main Branch Deploy
 run-name: ${{ github.actor }} is deploying to main branch 🚀
 
 on:
-    push:
-        branches:
-            - main
+  push:
+    branches:
+      - main
 
 permissions:
-    id-token: write
-    contents: write
+  id-token: write
+  contents: write
 
 jobs:
-    build:
-        uses: ./.github/workflows/build.yml
+  build:
+    uses: ./.github/workflows/build.yml
 
-    version:
-        needs: build
-        runs-on: ubuntu-latest
-        outputs:
-            new-version: ${{ steps.increment-version.outputs.new-version }}
-        steps:
-            - uses: actions/checkout@v4
-            - name: Increment version
-              id: increment-version
-              uses: RichardInnocent/semantic-versioning-maven@v0.1.0
-            - name: Print if version changed
-              if: steps.increment-version.outputs.previous-version != steps.increment-version.outputs.new-version
-              run: echo "The new version is now ${{ steps.increment-version.outputs.new-version }}"
+  version:
+    needs: build
+    runs-on: ubuntu-latest
+    outputs:
+      new-version: ${{ steps.increment-version.outputs.new-version }}
+    steps:
+      - uses: actions/checkout@v4
+      - name: Increment version
+        id: increment-version
+        uses: RichardInnocent/semantic-versioning-maven@v0.1.0
+      - name: Print if version changed
+        if: steps.increment-version.outputs.previous-version != steps.increment-version.outputs.new-version
+        run: echo "The new version is now ${{ steps.increment-version.outputs.new-version }}"
 
-    sign-and-deploy:
-        needs: [build, version]
-        runs-on: ubuntu-latest
-        environment: production
-        steps:
-            - uses: actions/checkout@v4
+  sign-and-deploy:
+    needs: [ build, version ]
+    runs-on: ubuntu-latest
+    environment: production
+    steps:
+      - uses: actions/checkout@v4
 
-            - uses: actions/setup-java@v4
-              with:
-                  java-version: '21'
-                  distribution: 'corretto'
-                  cache: maven
-                  cache-dependency-path: 'pom.xml'
+      - uses: actions/setup-java@v4
+        with:
+          java-version: '21'
+          distribution: 'corretto'
+          cache: maven
+          cache-dependency-path: 'pom.xml'
+          server-id: central
+          server-username: MAVEN_USERNAME
+          server-password: MAVEN_PASSWORD
 
-            - name: Add mask for GPG email
-              run: echo "::add-mask::${{ secrets.GPG_EMAIL }}"
+      - name: Add mask for GPG email
+        run: echo "::add-mask::${{ secrets.GPG_EMAIL }}"
 
-            - name: Import GPG Key
-              uses: crazy-max/ghaction-import-gpg@v6
-              with:
-                  gpg_private_key: ${{ secrets.GPG_PRIVATE_KEY }}
-                  passphrase: ${{ secrets.GPG_PASSPHRASE }}
-                  git_user_signingkey: true
-                  git_commit_gpgsign: true
-                  git_tag_gpgsign: true
-            - name: Download build artifacts
-              uses: actions/download-artifact@v4
-              with:
-                  name: build-artifacts
-                  path: target
+      - name: Import GPG Key
+        uses: crazy-max/ghaction-import-gpg@v6
+        with:
+          gpg_private_key: ${{ secrets.GPG_PRIVATE_KEY }}
+          passphrase: ${{ secrets.GPG_PASSPHRASE }}
+          git_user_signingkey: true
+          git_commit_gpgsign: true
+          git_tag_gpgsign: true
+      - name: Download build artifacts
+        uses: actions/download-artifact@v4
+        with:
+          name: build-artifacts
+          path: target
 
-            - name: Sign and deploy
-              env:
-                  MAVEN_USERNAME: ${{ secrets.CENTRAL_USERNAME }}
-                  MAVEN_PASSWORD: ${{ secrets.CENTRAL_PASSWORD }}
-                  MAVEN_GPG_PASSPHRASE: ${{ secrets.GPG_PASSPHRASE }}
-              run: ./mvnw package gpg:sign deploy
+      - name: Sign and deploy
+        env:
+          MAVEN_USERNAME: ${{ secrets.CENTRAL_USERNAME }}
+          MAVEN_PASSWORD: ${{ secrets.CENTRAL_PASSWORD }}
+          MAVEN_GPG_PASSPHRASE: ${{ secrets.GPG_PASSPHRASE }}
+        run: ./mvnw package gpg:sign deploy
 
-    update-badges:
-        needs: sign-and-deploy
-        runs-on: ubuntu-latest
-        steps:
-            - uses: actions/checkout@v4
-            - uses: actions/download-artifact@v4
-              with:
-                  name: coverage-report
-            - name: Generate JaCoCo Badge
-              uses: cicirello/jacoco-badge-generator@v2
-              with:
-                  generate-branches-badge: true
-                  coverage-label: Coverage (Overall)
-                  branches-label: Coverage (Branches)
-            - name: Commit and push the badge
-              run: |
-                  git add *.svg
-                  git commit -S -m "docs(badges): update code coverage badge [skip ci]"
-                  git push
+  update-badges:
+    needs: sign-and-deploy
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/download-artifact@v4
+        with:
+          name: coverage-report
+      - name: Generate JaCoCo Badge
+        uses: cicirello/jacoco-badge-generator@v2
+        with:
+          generate-branches-badge: true
+          coverage-label: Coverage (Overall)
+          branches-label: Coverage (Branches)
+      - name: Commit and push the badge
+        run: |
+          git add *.svg
+          git commit -S -m "docs(badges): update code coverage badge [skip ci]"
+          git push

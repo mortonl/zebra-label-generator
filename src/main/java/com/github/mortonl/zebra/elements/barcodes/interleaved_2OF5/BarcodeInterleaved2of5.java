@@ -1,6 +1,8 @@
-package com.github.mortonl.zebra.elements.barcodes;
+package com.github.mortonl.zebra.elements.barcodes.interleaved_2OF5;
 
 import com.github.mortonl.zebra.ZplCommand;
+import com.github.mortonl.zebra.elements.barcodes.Barcode;
+import com.github.mortonl.zebra.elements.fonts.DefaultFont;
 import com.github.mortonl.zebra.formatting.Orientation;
 import com.github.mortonl.zebra.label_settings.LabelSize;
 import com.github.mortonl.zebra.printer_configuration.PrintDensity;
@@ -48,6 +50,7 @@ import static com.github.mortonl.zebra.validation.Validator.validateRange;
 @SuperBuilder(builderMethodName = "createInterleaved2of5Barcode", setterPrefix = "with")
 public class BarcodeInterleaved2of5 extends Barcode
 {
+
     /**
      * The orientation of the barcode.
      * Controls how the barcode is rotated on the label.
@@ -154,9 +157,9 @@ public class BarcodeInterleaved2of5 extends Barcode
      * @throws IllegalStateException if any validation fails
      */
     @Override
-    public void validateInContext(LabelSize size, PrintDensity dpi) throws IllegalStateException
+    public void validateInContext(LabelSize size, PrintDensity dpi, final DefaultFont defaultFont) throws IllegalStateException
     {
-        super.validateInContext(size, dpi);
+        super.validateInContext(size, dpi, defaultFont);
         validateParameters(size, dpi);
     }
 
@@ -165,6 +168,7 @@ public class BarcodeInterleaved2of5 extends Barcode
      *
      * @param size The label size constraints
      * @param dpi  The printer density configuration
+     *
      * @throws IllegalStateException if any validation fails
      */
     private void validateParameters(LabelSize size, PrintDensity dpi)

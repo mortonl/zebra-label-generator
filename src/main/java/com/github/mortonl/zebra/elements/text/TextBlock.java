@@ -1,5 +1,6 @@
 package com.github.mortonl.zebra.elements.text;
 
+import com.github.mortonl.zebra.elements.fonts.DefaultFont;
 import com.github.mortonl.zebra.elements.fonts.Font;
 import com.github.mortonl.zebra.formatting.TextJustification;
 import com.github.mortonl.zebra.label_settings.LabelSize;
@@ -56,6 +57,7 @@ import static com.github.mortonl.zebra.validation.Validator.validateRange;
 @SuperBuilder(builderMethodName = "createTextBlock", setterPrefix = "with")
 public class TextBlock extends Text
 {
+
     /**
      * The width of the text block in millimeters.
      * Controls automatic text wrapping and block boundaries.
@@ -184,14 +186,14 @@ public class TextBlock extends Text
             hangingIndentMm != null ? dpi.toDots(hangingIndentMm) : null);
 
         // Find the position of ^FH and ^FD
-        int hexIndex = textCommand.indexOf(FIELD_HEXADECIMAL_INDICATOR);
+        int hexIndex       = textCommand.indexOf(FIELD_HEXADECIMAL_INDICATOR);
         int fieldDataIndex = textCommand.indexOf(FIELD_DATA);
         if (fieldDataIndex == -1) {
             throw new IllegalStateException("Field data command (^FD) not found in text command");
         }
 
         // Insert fieldBlock command before ^FH if it exists, otherwise before ^FD
-        int insertPosition = (hexIndex != -1) ? hexIndex : fieldDataIndex;
+        int insertPosition = hexIndex != -1 ? hexIndex : fieldDataIndex;
 
         return textCommand.substring(0, insertPosition) +
             fieldBlockCommand +
@@ -213,9 +215,9 @@ public class TextBlock extends Text
      * @throws IllegalStateException if any dimension is invalid or exceeds label boundaries
      */
     @Override
-    public void validateInContext(LabelSize size, PrintDensity dpi) throws IllegalStateException
+    public void validateInContext(LabelSize size, PrintDensity dpi, final DefaultFont defaultFont) throws IllegalStateException
     {
-        super.validateInContext(size, dpi);
+        super.validateInContext(size, dpi, defaultFont);
         validateDimensions(size, dpi);
     }
 
@@ -223,8 +225,7 @@ public class TextBlock extends Text
     {
         // If all parameters are null, that's valid
         if (widthMm == null && maxLines == null && lineSpacingMm == null &&
-            justification == null && hangingIndentMm == null)
-        {
+            justification == null && hangingIndentMm == null) {
             return;
         }
 

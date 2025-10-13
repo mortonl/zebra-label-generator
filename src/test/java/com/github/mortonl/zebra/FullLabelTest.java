@@ -1,13 +1,16 @@
 package com.github.mortonl.zebra;
 
+import com.github.mortonl.zebra.elements.fonts.DefaultFont;
 import com.github.mortonl.zebra.elements.graphics.CompressionType;
 import com.github.mortonl.zebra.elements.graphics.GraphicBox;
 import com.github.mortonl.zebra.elements.graphics.GraphicField;
+import com.github.mortonl.zebra.elements.text.Text;
 import com.github.mortonl.zebra.formatting.FontEncoding;
 import com.github.mortonl.zebra.label_settings.InternationalCharacterSet;
-import com.github.mortonl.zebra.label_settings.LabelSize;
 import com.github.mortonl.zebra.printer_configuration.LoadedMedia;
 import com.github.mortonl.zebra.printer_configuration.PrinterConfiguration;
+import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 
 import static com.github.mortonl.zebra.label_settings.LabelSize.LABEL_4X6;
@@ -15,70 +18,124 @@ import static com.github.mortonl.zebra.printer_configuration.PrintDensity.DPI_20
 import static com.github.mortonl.zebra.printer_configuration.PrintDensity.DPI_300;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-public class FullLabelTest
+@DisplayName("FullLabel Tests")
+@Tag("integration")
+class FullLabelTest
 {
+
+    private static final String EXPECTED_DPI_203_ZPL = """
+        ^XA
+        ^PW812
+        ^LL1219
+        ^CI28
+        ^FO300,0^GB220,80,80,,0^FS
+        ^FO800,800^GFA,11,8000,80,ABCDEFabcdef0123456789^FS
+        ^CF0,80,80
+        ^FO0,0^FDLarger^FS
+        ^CF0,48,48
+        ^FO0,0^FDSmaller^FS
+        ^XZ""";
+
+    private static final String EXPECTED_DPI_300_ZPL = """
+        ^XA
+        ^PW1219
+        ^LL1828
+        ^CI28
+        ^FO450,0^GB330,120,120,,0^FS
+        ^FO1200,1200^GFA,11,8000,80,ABCDEFabcdef0123456789^FS
+        ^CF0,120,120
+        ^FO0,0^FDLarger^FS
+        ^CF0,72,72
+        ^FO0,0^FDSmaller^FS
+        ^XZ""";
+
+    private static final String TEST_GRAPHIC_DATA = "ABCDEFabcdef0123456789";
+
+    private static final double BOX_X_POSITION = 37.5;
+
+    private static final double BOX_Y_POSITION = 0.0;
+
+    private static final double BOX_WIDTH = 27.5;
+
+    private static final double BOX_HEIGHT = 10.0;
+
+    private static final double BOX_THICKNESS = 10.0;
+
+    private static final double FIELD_X_POSITION = 100.0;
+
+    private static final double FIELD_Y_POSITION = 100.0;
+
+    private static final int BINARY_BYTE_COUNT = 11;
+
+    private static final int GRAPHIC_FIELD_COUNT = 8000;
+
+    private static final int BYTES_PER_ROW = 80;
+
     @Test
-    void testGeneratingAFullyConfiguredLabelWithManyElements()
+    @DisplayName("Given configured label with elements, when generating ZPL, then returns correct output")
+    @Tag("zpl-generation")
+    void givenConfiguredLabelWithElements_whenGeneratingZpl_thenReturnsCorrectOutput()
     {
-        InternationalCharacterSet characterSet = InternationalCharacterSet.createInternationalCharacterSet()
-                                                                          .withEncoding(FontEncoding.UTF_8).build();
-        PrinterConfiguration printerConfiguration = PrinterConfiguration
+        // Given
+        PrinterConfiguration givenPrinterConfiguration = PrinterConfiguration
             .createPrinterConfiguration()
             .forDpi(DPI_203)
             .forLoadedMedia(LoadedMedia.fromLabelSize(LABEL_4X6))
             .build();
 
-        ZebraLabel testLabel = ZebraLabel
+        InternationalCharacterSet givenCharacterSet = InternationalCharacterSet.createInternationalCharacterSet()
+                                                                               .withEncoding(FontEncoding.UTF_8)
+                                                                               .build();
+
+        ZebraLabel givenLabel = ZebraLabel
             .createLabel()
             .forSize(LABEL_4X6)
-            .forPrinter(printerConfiguration)
-            .forInternationalCharacterSet(characterSet)
+            .forPrinter(givenPrinterConfiguration)
+            .forInternationalCharacterSet(givenCharacterSet)
             .build();
 
-        GraphicBox topBox = GraphicBox
-            .createGraphicBox()
-            .withPosition(37.5, 0)
-            .withSize(27.5, 10)
-            .withThicknessMm(10.0)
-            .withRoundness(0)
-            .addToLabel(testLabel);
+        GraphicBox.createGraphicBox()
+                  .withPosition(BOX_X_POSITION, BOX_Y_POSITION)
+                  .withSize(BOX_WIDTH, BOX_HEIGHT)
+                  .withThicknessMm(BOX_THICKNESS)
+                  .withRoundness(0)
+                  .addToLabel(givenLabel);
 
-        GraphicField graphicField = GraphicField
-            .createGraphicField()
-            .withPosition(100.0, 100.0)
-            .withCompressionType(CompressionType.ASCII_HEX)
-            .withBinaryByteCount(11)
-            .withGraphicFieldCount(8000)
-            .withBytesPerRow(80)
-//            .withData("::::::::::::K03RFC1IFCN0FC1QF8N07C,K03RFC1IFEN0FC1RFEL01FF,,:::::::::")  // Hex data here
-            //TODO: the validation login may be wrong here because i have seen working examples of the GFA command that have no hex chars like above
-            .withData("ABCDEFabcdef0123456789")
-            .addToLabel(testLabel);
+        GraphicField.createGraphicField()
+                    .withPosition(FIELD_X_POSITION, FIELD_Y_POSITION)
+                    .withCompressionType(CompressionType.ASCII_HEX)
+                    .withBinaryByteCount(BINARY_BYTE_COUNT)
+                    .withGraphicFieldCount(GRAPHIC_FIELD_COUNT)
+                    .withBytesPerRow(BYTES_PER_ROW)
+                    .withData(TEST_GRAPHIC_DATA)
+                    .addToLabel(givenLabel);
 
-        String DPI203Actual = testLabel.toZplString(DPI_203);
+        DefaultFont.createDefaultFont()
+                   .withFontDesignation('0')
+                   .withSize(10, 10)
+                   .addToLabel(givenLabel);
 
-        String DPI203Expected = """
-            ^XA
-            ^PW812
-            ^LL1219
-            ^CI28
-            ^FO300,0^GB220,80,80,,0^FS
-            ^FO800,800^GFA,11,8000,80,ABCDEFabcdef0123456789^FS
-            ^XZ""";
+        Text.createText()
+                        .withPosition(0, 0)
+                        .withPlainTextContent("Larger")
+                        .addToLabel(givenLabel);
 
-        assertEquals(DPI203Expected, DPI203Actual);
+        DefaultFont.createDefaultFont()
+                   .withFontDesignation('0')
+                   .withSize(6, 6)
+                   .addToLabel(givenLabel);
 
-        String DPI300Actual = testLabel.toZplString(DPI_300);
+        Text.createText()
+            .withPosition(0, 0)
+            .withPlainTextContent("Smaller")
+            .addToLabel(givenLabel);
 
-        String DPI300Expected = """
-            ^XA
-            ^PW1219
-            ^LL1828
-            ^CI28
-            ^FO450,0^GB330,120,120,,0^FS
-            ^FO1200,1200^GFA,11,8000,80,ABCDEFabcdef0123456789^FS
-            ^XZ""";
+        // When
+        String actualDpi203Zpl = givenLabel.toZplString(DPI_203);
+        String actualDpi300Zpl = givenLabel.toZplString(DPI_300);
 
-        assertEquals(DPI300Expected, DPI300Actual);
+        // Then
+        assertEquals(EXPECTED_DPI_203_ZPL, actualDpi203Zpl);
+        assertEquals(EXPECTED_DPI_300_ZPL, actualDpi300Zpl);
     }
 }

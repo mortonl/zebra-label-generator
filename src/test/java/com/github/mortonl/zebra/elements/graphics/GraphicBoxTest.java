@@ -1,223 +1,309 @@
 package com.github.mortonl.zebra.elements.graphics;
 
-import com.github.mortonl.zebra.label_settings.LabelSize;
-import com.github.mortonl.zebra.printer_configuration.PrintDensity;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.ValueSource;
 
 import static com.github.mortonl.zebra.formatting.LineColor.BLACK;
+import static com.github.mortonl.zebra.label_settings.LabelSize.LABEL_4X6;
+import static com.github.mortonl.zebra.printer_configuration.PrintDensity.DPI_203;
+import static org.junit.jupiter.api.Assertions.assertAll;
 import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
+@DisplayName("GraphicBox creation and validation")
+@Tag("unit")
+@Tag("graphics")
 class GraphicBoxTest
 {
-    @Test
-    void shouldValidateCompleteGraphicBox()
-    {
-        GraphicBox box = GraphicBox
-            .createGraphicBox()
-            .withWidthMm(50.0)
-            .withHeightMm(75.0)
-            .withThicknessMm(1.0)
-            .withRoundness(4)
-            .build();
 
-        assertDoesNotThrow(() -> box.validateInContext(LabelSize.LABEL_4X6, PrintDensity.DPI_203));
+    private static final double VALID_WIDTH_MM = 50.0;
+
+    private static final double VALID_HEIGHT_MM = 75.0;
+
+    private static final double VALID_THICKNESS_MM = 1.0;
+
+    private static final int VALID_ROUNDNESS = 4;
+
+    private static final double HORIZONTAL_LINE_LENGTH = 100.0;
+
+    private static final double VERTICAL_LINE_LENGTH = 100.0;
+
+    private static final double LINE_THICKNESS = 1.0;
+
+    private GraphicBox classUnderTest;
+
+    @BeforeEach
+    void setUp()
+    {
+        classUnderTest = GraphicBox
+            .createGraphicBox()
+            .withWidthMm(VALID_WIDTH_MM)
+            .withHeightMm(VALID_HEIGHT_MM)
+            .withThicknessMm(VALID_THICKNESS_MM)
+            .withRoundness(VALID_ROUNDNESS)
+            .build();
     }
 
     @Test
-    void shouldAllowAllNullParameters()
+    @DisplayName("validateInContext accepts complete graphic box")
+    @Tag("validation")
+    void Given_CompleteGraphicBox_When_ValidateInContext_Then_NoException()
     {
-        GraphicBox box = GraphicBox
-            .createGraphicBox()
-            .build();
-        assertDoesNotThrow(() -> box.validateInContext(LabelSize.LABEL_4X6, PrintDensity.DPI_203));
+        // Given (classUnderTest is already configured with complete parameters)
+
+        // When & Then
+        assertDoesNotThrow(() -> classUnderTest.validateInContext(LABEL_4X6, DPI_203, null));
     }
 
-    @ParameterizedTest
-    @ValueSource(ints = {-1, 9})
-    void shouldRejectInvalidRoundness(int invalidRoundness)
+    @Test
+    @DisplayName("validateInContext accepts null parameters")
+    @Tag("validation")
+    void Given_NullParameters_When_ValidateInContext_Then_NoException()
     {
-        GraphicBox box = GraphicBox
+        // Given
+        GraphicBox nullParametersBox = GraphicBox
+            .createGraphicBox()
+            .build();
+
+        // When & Then
+        assertDoesNotThrow(() -> nullParametersBox.validateInContext(LABEL_4X6, DPI_203, null));
+    }
+
+    @ParameterizedTest(name = "validateInContext rejects roundness {0}")
+    @ValueSource(ints = {-1,
+        9})
+    @DisplayName("validateInContext throws exception for invalid roundness")
+    @Tag("validation")
+    void Given_InvalidRoundness_When_ValidateInContext_Then_ThrowsException(int invalidRoundness)
+    {
+        // Given
+        GraphicBox invalidRoundnessBox = GraphicBox
             .createGraphicBox()
             .withRoundness(invalidRoundness)
             .build();
 
-        IllegalStateException exception = assertThrows(IllegalStateException.class,
-            () -> box.validateInContext(LabelSize.LABEL_4X6, PrintDensity.DPI_203));
-        assertTrue(exception
-            .getMessage()
-            .contains("Roundness"));
+        // When & Then
+        IllegalStateException actualException = assertThrows(IllegalStateException.class,
+            () -> invalidRoundnessBox.validateInContext(LABEL_4X6, DPI_203, null));
+        assertTrue(actualException.getMessage()
+                                  .contains("Roundness"));
     }
 
     @Test
-    void shouldRejectThicknessBelowMinimum()
+    @DisplayName("validateInContext throws exception for thickness below minimum")
+    @Tag("validation")
+    void Given_ThicknessBelowMin_When_ValidateInContext_Then_ThrowsException()
     {
-        GraphicBox box = GraphicBox
+        // Given
+        GraphicBox thinBox = GraphicBox
             .createGraphicBox()
             .withThicknessMm(0.03)
             .build();
 
-        IllegalStateException exception = assertThrows(IllegalStateException.class,
-            () -> box.validateInContext(LabelSize.LABEL_4X6, PrintDensity.DPI_203));
-        assertTrue(exception
-            .getMessage()
-            .contains("Thickness"));
+        // When & Then
+        IllegalStateException actualException = assertThrows(IllegalStateException.class,
+            () -> thinBox.validateInContext(LABEL_4X6, DPI_203, null));
+        assertTrue(actualException.getMessage()
+                                  .contains("Thickness"));
     }
 
     @Test
-    void shouldRejectThicknessAboveMaximum()
+    @DisplayName("validateInContext throws exception for thickness above maximum")
+    @Tag("validation")
+    void Given_ThicknessAboveMax_When_ValidateInContext_Then_ThrowsException()
     {
-        GraphicBox box = GraphicBox
+        // Given
+        GraphicBox thickBox = GraphicBox
             .createGraphicBox()
             .withThicknessMm(1400.0)
             .build();
 
-        IllegalStateException exception = assertThrows(IllegalStateException.class,
-            () -> box.validateInContext(LabelSize.LABEL_4X6, PrintDensity.DPI_203));
-        assertTrue(exception
-            .getMessage()
-            .contains("Thickness"));
+        // When & Then
+        IllegalStateException actualException = assertThrows(IllegalStateException.class,
+            () -> thickBox.validateInContext(LABEL_4X6, DPI_203, null));
+        assertTrue(actualException.getMessage()
+                                  .contains("Thickness"));
     }
 
     @Test
-    void shouldRejectWidthExceedingLabelWidth()
+    @DisplayName("validateInContext throws exception for width exceeding label")
+    @Tag("validation")
+    void Given_WidthExceedsLabel_When_ValidateInContext_Then_ThrowsException()
     {
-        GraphicBox box = GraphicBox
+        // Given
+        GraphicBox wideBox = GraphicBox
             .createGraphicBox()
             .withWidthMm(102.0) // Exceeds LABEL_4X6 width (101.6mm)
             .build();
 
-        IllegalStateException exception = assertThrows(IllegalStateException.class,
-            () -> box.validateInContext(LabelSize.LABEL_4X6, PrintDensity.DPI_203));
-        assertTrue(exception
-            .getMessage()
-            .contains("Width"));
+        // When & Then
+        IllegalStateException actualException = assertThrows(IllegalStateException.class,
+            () -> wideBox.validateInContext(LABEL_4X6, DPI_203, null));
+        assertTrue(actualException.getMessage()
+                                  .contains("Width"));
     }
 
     @Test
-    void shouldRejectHeightExceedingLabelHeight()
+    @DisplayName("validateInContext throws exception for height exceeding label")
+    @Tag("validation")
+    void Given_HeightExceedsLabel_When_ValidateInContext_Then_ThrowsException()
     {
-        GraphicBox box = GraphicBox
+        // Given
+        GraphicBox tallBox = GraphicBox
             .createGraphicBox()
             .withHeightMm(153.0) // Exceeds LABEL_4X6 height (152.4mm)
             .build();
 
-        IllegalStateException exception = assertThrows(IllegalStateException.class,
-            () -> box.validateInContext(LabelSize.LABEL_4X6, PrintDensity.DPI_203));
-        assertTrue(exception
-            .getMessage()
-            .contains("Height"));
+        // When & Then
+        IllegalStateException actualException = assertThrows(IllegalStateException.class,
+            () -> tallBox.validateInContext(LABEL_4X6, DPI_203, null));
+        assertTrue(actualException.getMessage()
+                                  .contains("Height"));
     }
 
     @Test
-    void shouldRejectWidthLessThanThickness()
+    @DisplayName("validateInContext throws exception for width less than thickness")
+    @Tag("validation")
+    void Given_WidthLessThanThickness_When_ValidateInContext_Then_ThrowsException()
     {
-        GraphicBox box = GraphicBox
+        // Given
+        GraphicBox narrowBox = GraphicBox
             .createGraphicBox()
             .withWidthMm(1.0)
             .withThicknessMm(2.0)
             .build();
 
-        IllegalStateException exception = assertThrows(IllegalStateException.class,
-            () -> box.validateInContext(LabelSize.LABEL_4X6, PrintDensity.DPI_203));
-        assertTrue(exception
-            .getMessage()
-            .contains("Width"));
+        // When & Then
+        IllegalStateException actualException = assertThrows(IllegalStateException.class,
+            () -> narrowBox.validateInContext(LABEL_4X6, DPI_203, null));
+        assertTrue(actualException.getMessage()
+                                  .contains("Width"));
     }
 
     @Test
-    void shouldRejectHeightLessThanThickness()
+    @DisplayName("validateInContext throws exception for height less than thickness")
+    @Tag("validation")
+    void Given_HeightLessThanThickness_When_ValidateInContext_Then_ThrowsException()
     {
-        GraphicBox box = GraphicBox
+        // Given
+        GraphicBox shortBox = GraphicBox
             .createGraphicBox()
             .withHeightMm(1.0)
             .withThicknessMm(2.0)
             .build();
 
-        IllegalStateException exception = assertThrows(IllegalStateException.class,
-            () -> box.validateInContext(LabelSize.LABEL_4X6, PrintDensity.DPI_203));
-        assertTrue(exception
-            .getMessage()
-            .contains("Height"));
+        // When & Then
+        IllegalStateException actualException = assertThrows(IllegalStateException.class,
+            () -> shortBox.validateInContext(LABEL_4X6, DPI_203, null));
+        assertTrue(actualException.getMessage()
+                                  .contains("Height"));
     }
 
     @Test
-    void shouldCreateHorizontalLine()
+    @DisplayName("horizontalLine creates correct horizontal line")
+    @Tag("builder")
+    void Given_HorizontalLineParams_When_HorizontalLine_Then_CreatesCorrectLine()
     {
-        GraphicBox horizontalLine = GraphicBox
-            .horizontalLine(100.0, 1.0)
+        // Given & When
+        GraphicBox actualHorizontalLine = GraphicBox
+            .horizontalLine(HORIZONTAL_LINE_LENGTH, LINE_THICKNESS)
             .build();
 
-        assertEquals(100.0, horizontalLine.getWidthMm());
-        assertEquals(1.0, horizontalLine.getHeightMm());
-        assertEquals(1.0, horizontalLine.getThicknessMm());
-    }
-
-    @Test
-    void shouldCreateVerticalLine()
-    {
-        GraphicBox verticalLine = GraphicBox
-            .verticalLine(100.0, 1.0)
-            .build();
-
-        assertEquals(1.0, verticalLine.getWidthMm());
-        assertEquals(100.0, verticalLine.getHeightMm());
-        assertEquals(1.0, verticalLine.getThicknessMm());
-    }
-
-    @Test
-    void shouldGenerateCompleteZplString()
-    {
-        GraphicBox box = GraphicBox
-            .createGraphicBox()
-            .withWidthMm(50.0)
-            .withHeightMm(75.0)
-            .withThicknessMm(1.0)
-            .withColor(BLACK)
-            .withRoundness(4)
-            .build();
-
-        String zplString = box.toZplString(PrintDensity.DPI_203);
-
-        assertTrue(zplString.contains("^GB"));
-        assertTrue(zplString.contains("400"));  // 50mm * 8 dots/mm = 400 dots
-        assertTrue(zplString.contains("600"));  // 75mm * 8 dots/mm = 600 dots
-        assertTrue(zplString.contains("8"));    // 1mm * 8 dots/mm = 8 dots
-        assertTrue(zplString.contains("B"));    // color code
-        assertTrue(zplString.contains("4"));    // roundness
-    }
-
-    @Test
-    void shouldGenerateZplStringWithNullValues()
-    {
-        GraphicBox box = GraphicBox
-            .createGraphicBox()
-            .withWidthMm(50.0)
-            .withHeightMm(75.0)
-            .build();
-
-        String zplString = box.toZplString(PrintDensity.DPI_203);
-
-        // Check the complete command structure
-        assertTrue(zplString.startsWith("^FO"));
-        assertTrue(zplString.endsWith("^FS"));
-
-        // Extract the GB command parameters
-        String gbCommand = zplString.substring(
-            zplString.indexOf("^GB") + 3,
-            zplString.indexOf("^FS")
+        // Then
+        assertAll(
+            () -> assertEquals(HORIZONTAL_LINE_LENGTH, actualHorizontalLine.getWidthMm()),
+            () -> assertEquals(LINE_THICKNESS, actualHorizontalLine.getHeightMm()),
+            () -> assertEquals(LINE_THICKNESS, actualHorizontalLine.getThicknessMm())
         );
-        String[] parameters = gbCommand.split(",", -1); // Use -1 to keep empty tokens
+    }
 
-        // Verify each parameter
-        assertEquals("400", parameters[0]); // width
-        assertEquals("600", parameters[1]); // height
-        assertEquals("", parameters[2]);    // thickness (null)
-        assertEquals("", parameters[3]);    // color (null)
-        assertEquals("", parameters[4]);    // roundness (null)
+    @Test
+    @DisplayName("verticalLine creates correct vertical line")
+    @Tag("builder")
+    void Given_VerticalLineParams_When_VerticalLine_Then_CreatesCorrectLine()
+    {
+        // Given & When
+        GraphicBox actualVerticalLine = GraphicBox
+            .verticalLine(VERTICAL_LINE_LENGTH, LINE_THICKNESS)
+            .build();
+
+        // Then
+        assertAll(
+            () -> assertEquals(LINE_THICKNESS, actualVerticalLine.getWidthMm()),
+            () -> assertEquals(VERTICAL_LINE_LENGTH, actualVerticalLine.getHeightMm()),
+            () -> assertEquals(LINE_THICKNESS, actualVerticalLine.getThicknessMm())
+        );
+    }
+
+    @Test
+    @DisplayName("toZplString generates complete ZPL with all parameters")
+    @Tag("zpl-generation")
+    void Given_CompleteBox_When_ToZplString_Then_GeneratesCompleteZpl()
+    {
+        // Given
+        GraphicBox completeBox = GraphicBox
+            .createGraphicBox()
+            .withWidthMm(VALID_WIDTH_MM)
+            .withHeightMm(VALID_HEIGHT_MM)
+            .withThicknessMm(VALID_THICKNESS_MM)
+            .withColor(BLACK)
+            .withRoundness(VALID_ROUNDNESS)
+            .build();
+
+        // When
+        String actualZplString = completeBox.toZplString(DPI_203);
+
+        // Then
+        assertAll(
+            () -> assertTrue(actualZplString.contains("^GB")),
+            () -> assertTrue(actualZplString.contains("400")),  // 50mm * 8 dots/mm = 400 dots
+            () -> assertTrue(actualZplString.contains("600")),  // 75mm * 8 dots/mm = 600 dots
+            () -> assertTrue(actualZplString.contains("8")),    // 1mm * 8 dots/mm = 8 dots
+            () -> assertTrue(actualZplString.contains("B")),    // color code
+            () -> assertTrue(actualZplString.contains("4"))     // roundness
+        );
+    }
+
+    @Test
+    @DisplayName("toZplString generates ZPL with null optional parameters")
+    @Tag("zpl-generation")
+    void Given_NullOptionalParams_When_ToZplString_Then_GeneratesZplWithEmpty()
+    {
+        // Given
+        GraphicBox partialBox = GraphicBox
+            .createGraphicBox()
+            .withWidthMm(VALID_WIDTH_MM)
+            .withHeightMm(VALID_HEIGHT_MM)
+            .build();
+
+        // When
+        String actualZplString = partialBox.toZplString(DPI_203);
+
+        // Then
+        String gbCommand = actualZplString.substring(
+            actualZplString.indexOf("^GB") + 3,
+            actualZplString.indexOf("^FS")
+        );
+        String[] actualParameters = gbCommand.split(",", -1);
+
+        String expectedWidth  = "400";
+        String expectedHeight = "600";
+        String expectedEmpty  = "";
+
+        assertAll(
+            () -> assertTrue(actualZplString.startsWith("^FO")),
+            () -> assertTrue(actualZplString.endsWith("^FS")),
+            () -> assertEquals(expectedWidth, actualParameters[0]),
+            () -> assertEquals(expectedHeight, actualParameters[1]),
+            () -> assertEquals(expectedEmpty, actualParameters[2]),
+            () -> assertEquals(expectedEmpty, actualParameters[3]),
+            () -> assertEquals(expectedEmpty, actualParameters[4])
+        );
     }
 }

@@ -47,6 +47,7 @@ import static com.github.mortonl.zebra.ZplCommand.SET_FONT;
 @SuperBuilder(builderMethodName = "createFont", setterPrefix = "with")
 public class Font extends LabelElement
 {
+
     /**
      * Minimum size in printer dots for font dimensions.
      * Used to validate both height and width measurements after conversion from millimeters.
@@ -149,7 +150,7 @@ public class Font extends LabelElement
     public String toZplString(PrintDensity dpi)
     {
         int heightDots = dpi.toDots(heightMm);
-        int widthDots = dpi.toDots(widthMm);
+        int widthDots  = dpi.toDots(widthMm);
 
         return ZplCommand.generateZplIICommand(
             // Fonts are a special case where the commands first parameter (character designation) is used as part of the command itself
@@ -173,11 +174,37 @@ public class Font extends LabelElement
      * @throws IllegalStateException if any validation fails
      */
     @Override
-    public void validateInContext(LabelSize size, PrintDensity dpi) throws IllegalStateException
+    public void validateInContext(LabelSize size, PrintDensity dpi, final DefaultFont defaultFont) throws IllegalStateException
     {
         validateFontName();
         validateDimension("height", heightMm, dpi);
         validateDimension("width", widthMm, dpi);
+        validateNotSameAsDefault(defaultFont);
+    }
+
+    /**
+     * Validates that this font is not identical to the default font.
+     */
+    private void validateNotSameAsDefault(DefaultFont defaultFont)
+    {
+        if (defaultFont != null && isSameAsDefault(defaultFont)) {
+            throw new IllegalStateException(
+                "Font specification matches current default font - For efficiency don't specify the font on this element"
+            );
+        }
+    }
+
+    /**
+     * Checks if this font has the same configuration as the current default font.
+     * 
+     * @param other the default font to compare against
+     * @return true if this font matches the default font configuration
+     */
+    protected boolean isSameAsDefault(DefaultFont other)
+    {
+        return fontDesignation == other.getFontDesignation() &&
+            Double.compare(heightMm, other.getHeightMm()) == 0 &&
+            Double.compare(widthMm, other.getWidthMm()) == 0;
     }
 
     /**
@@ -201,6 +228,7 @@ public class Font extends LabelElement
      * @param dimensionName  The name of the dimension being validated ("height" or "width")
      * @param dimensionValue The value in millimeters to validate
      * @param dpi            The printer density configuration
+     *
      * @throws IllegalStateException if the dimension is outside the valid range
      */
     private void validateDimension(String dimensionName, double dimensionValue, PrintDensity dpi)
@@ -235,16 +263,18 @@ public class Font extends LabelElement
     public static abstract class FontBuilder<C extends Font, B extends FontBuilder<C, B>>
         extends LabelElementBuilder<C, B>
     {
+
         /**
          * Sets both width and height of the font in millimeters.
          *
          * @param widthMm  The width in millimeters
          * @param heightMm The height in millimeters
+         *
          * @return The builder instance for method chaining
          */
         public B withSize(double widthMm, double heightMm)
         {
-            this.widthMm = widthMm;
+            this.widthMm  = widthMm;
             this.heightMm = heightMm;
             return self();
         }

@@ -1,8 +1,8 @@
 package com.github.mortonl.zebra.elements.graphics;
 
-import com.github.mortonl.zebra.label_settings.LabelSize;
-import com.github.mortonl.zebra.printer_configuration.PrintDensity;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
@@ -10,21 +10,36 @@ import org.junit.jupiter.params.provider.MethodSource;
 
 import java.util.stream.Stream;
 
+import static com.github.mortonl.zebra.elements.graphics.CompressionType.ASCII_HEX;
+import static com.github.mortonl.zebra.label_settings.LabelSize.LABEL_4X6;
+import static com.github.mortonl.zebra.printer_configuration.PrintDensity.DPI_203;
 import static org.junit.jupiter.api.Assertions.assertAll;
 import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-@DisplayName("GraphicField Tests")
+@DisplayName("GraphicField creation and validation")
+@Tag("unit")
+@Tag("graphics")
 class GraphicFieldTest
 {
-    private static final String SAMPLE_DATA = "A5A5"; // Example graphic data
+
+    private static final String SAMPLE_DATA = "A5A5";
+
     private static final int BINARY_BYTE_COUNT = 2;
+
     private static final int GRAPHIC_FIELD_COUNT = 1;
+
     private static final int BYTES_PER_ROW = 1;
 
-    private static Stream<Arguments> validGraphicFieldParameters()
+    private static final double VALID_X_POSITION = 50.0;
+
+    private static final double VALID_Y_POSITION = 75.0;
+
+    private GraphicField classUnderTest;
+
+    private static Stream<Arguments> validParametersForValidateInContext()
     {
         return Stream.of(
             Arguments.of(0.0, 0.0, "Minimum position values"),
@@ -33,7 +48,7 @@ class GraphicFieldTest
         );
     }
 
-    private static Stream<Arguments> invalidGraphicFieldParameters()
+    private static Stream<Arguments> invalidParametersForValidateInContext()
     {
         return Stream.of(
             Arguments.of(-1.0, 0.0, "Negative X position"),
@@ -43,10 +58,25 @@ class GraphicFieldTest
         );
     }
 
-    @Test
-    @DisplayName("Should require graphic data")
-    void shouldRequireGraphicData()
+    @BeforeEach
+    void setUp()
     {
+        classUnderTest = GraphicField
+            .createGraphicField()
+            .withPosition(VALID_X_POSITION, VALID_Y_POSITION)
+            .withData(SAMPLE_DATA)
+            .withBinaryByteCount(BINARY_BYTE_COUNT)
+            .withGraphicFieldCount(GRAPHIC_FIELD_COUNT)
+            .withBytesPerRow(BYTES_PER_ROW)
+            .build();
+    }
+
+    @Test
+    @DisplayName("build throws exception when graphic data is null")
+    @Tag("validation")
+    void Given_NullGraphicData_When_Build_Then_ThrowsException()
+    {
+        // Given, When & Then
         assertThrows(NullPointerException.class, () ->
                 GraphicField
                     .createGraphicField()
@@ -59,11 +89,14 @@ class GraphicFieldTest
         );
     }
 
-    @ParameterizedTest(name = "Should accept valid parameters: {2}")
-    @MethodSource("validGraphicFieldParameters")
-    void shouldAcceptValidParameters(Double xPositionMm, Double yPositionMm, String scenario)
+    @ParameterizedTest(name = "validateInContext accepts {2}")
+    @MethodSource("validParametersForValidateInContext")
+    @DisplayName("validateInContext accepts valid parameters")
+    @Tag("validation")
+    void Given_ValidParams_When_ValidateInContext_Then_NoException(Double xPositionMm, Double yPositionMm, String scenario)
     {
-        GraphicField field = GraphicField
+        // Given
+        GraphicField validField = GraphicField
             .createGraphicField()
             .withPosition(xPositionMm, yPositionMm)
             .withData(SAMPLE_DATA)
@@ -72,14 +105,18 @@ class GraphicFieldTest
             .withBytesPerRow(BYTES_PER_ROW)
             .build();
 
-        assertDoesNotThrow(() -> field.validateInContext(LabelSize.LABEL_4X6, PrintDensity.DPI_203));
+        // When & Then
+        assertDoesNotThrow(() -> validField.validateInContext(LABEL_4X6, DPI_203, null));
     }
 
-    @ParameterizedTest(name = "Should reject invalid parameters: {2}")
-    @MethodSource("invalidGraphicFieldParameters")
-    void shouldRejectInvalidParameters(Double xPositionMm, Double yPositionMm, String scenario)
+    @ParameterizedTest(name = "validateInContext rejects {2}")
+    @MethodSource("invalidParametersForValidateInContext")
+    @DisplayName("validateInContext throws exception for invalid parameters")
+    @Tag("validation")
+    void Given_InvalidParams_When_ValidateInContext_Then_ThrowsException(Double xPositionMm, Double yPositionMm, String scenario)
     {
-        GraphicField field = GraphicField
+        // Given
+        GraphicField invalidField = GraphicField
             .createGraphicField()
             .withPosition(xPositionMm, yPositionMm)
             .withData(SAMPLE_DATA)
@@ -88,96 +125,100 @@ class GraphicFieldTest
             .withBytesPerRow(BYTES_PER_ROW)
             .build();
 
+        // When & Then
         assertThrows(IllegalStateException.class,
-            () -> field.validateInContext(LabelSize.LABEL_4X6, PrintDensity.DPI_203),
+            () -> invalidField.validateInContext(LABEL_4X6, DPI_203, null),
             "Failed scenario: " + scenario);
     }
 
     @Test
-    @DisplayName("Should generate complete ZPL string")
-    void shouldGenerateCompleteZplString()
+    @DisplayName("toZplString generates complete ZPL with compression type")
+    @Tag("zpl-generation")
+    void Given_CompleteField_When_ToZplString_Then_GeneratesCompleteZpl()
     {
-        GraphicField field = GraphicField
+        // Given
+        GraphicField completeField = GraphicField
             .createGraphicField()
-            .withPosition(50.0, 75.0)
+            .withPosition(VALID_X_POSITION, VALID_Y_POSITION)
             .withData(SAMPLE_DATA)
             .withBinaryByteCount(BINARY_BYTE_COUNT)
             .withGraphicFieldCount(GRAPHIC_FIELD_COUNT)
             .withBytesPerRow(BYTES_PER_ROW)
-            .withCompressionType(CompressionType.ASCII_HEX)
+            .withCompressionType(ASCII_HEX)
             .build();
 
-        String zplString = field.toZplString(PrintDensity.DPI_203);
+        // When
+        String actualZplString = completeField.toZplString(DPI_203);
 
-        // Extract the FO command parameters
-        String foCommand = zplString.substring(
-            zplString.indexOf("^FO") + 3,
-            zplString.indexOf("^GF")
+        // Then
+        String foCommand = actualZplString.substring(
+            actualZplString.indexOf("^FO") + 3,
+            actualZplString.indexOf("^GF")
         );
-        String[] foParameters = foCommand.split(",", -1);
+        String[] actualFoParameters = foCommand.split(",", -1);
 
-        // Extract the GF command parameters
-        String gfCommand = zplString.substring(
-            zplString.indexOf("^GF") + 3,
-            zplString.indexOf(SAMPLE_DATA)
+        String gfCommand = actualZplString.substring(
+            actualZplString.indexOf("^GF") + 3,
+            actualZplString.indexOf(SAMPLE_DATA)
         );
-        String[] gfParameters = gfCommand.split(",", -1);
+        String[] actualGfParameters = gfCommand.split(",", -1);
+
+        String expectedXPosition       = "400";
+        String expectedYPosition       = "600";
+        String expectedCompressionType = "A";
 
         assertAll(
-            () -> assertTrue(zplString.startsWith("^FO"), "Should start with ^FO"),
-            () -> assertTrue(zplString.contains("^GF"), "Should contain ^GF"),
-            () -> assertTrue(zplString.endsWith("^FS"), "Should end with ^FS"),
-            () -> assertEquals("400", foParameters[0], "X position should be 400 dots (50mm * 8 dots/mm)"),
-            () -> assertEquals("600", foParameters[1], "Y position should be 600 dots (75mm * 8 dots/mm)"),
-            () -> assertEquals("A", gfParameters[0], "Compression type should be A for ASCII HEX"),
-            () -> assertEquals(String.valueOf(BINARY_BYTE_COUNT), gfParameters[1], "Binary byte count should match"),
-            () -> assertEquals(String.valueOf(GRAPHIC_FIELD_COUNT), gfParameters[2], "Graphic field count should match"),
-            () -> assertEquals(String.valueOf(BYTES_PER_ROW), gfParameters[3], "Bytes per row should match"),
-            () -> assertTrue(zplString.contains(SAMPLE_DATA), "Should contain graphic data")
+            () -> assertTrue(actualZplString.startsWith("^FO"), "Should start with ^FO"),
+            () -> assertTrue(actualZplString.contains("^GF"), "Should contain ^GF"),
+            () -> assertTrue(actualZplString.endsWith("^FS"), "Should end with ^FS"),
+            () -> assertEquals(expectedXPosition, actualFoParameters[0], "X position should be 400 dots (50mm * 8 dots/mm)"),
+            () -> assertEquals(expectedYPosition, actualFoParameters[1], "Y position should be 600 dots (75mm * 8 dots/mm)"),
+            () -> assertEquals(expectedCompressionType, actualGfParameters[0], "Compression type should be A for ASCII HEX"),
+            () -> assertEquals(String.valueOf(BINARY_BYTE_COUNT), actualGfParameters[1], "Binary byte count should match"),
+            () -> assertEquals(String.valueOf(GRAPHIC_FIELD_COUNT), actualGfParameters[2], "Graphic field count should match"),
+            () -> assertEquals(String.valueOf(BYTES_PER_ROW), actualGfParameters[3], "Bytes per row should match"),
+            () -> assertTrue(actualZplString.contains(SAMPLE_DATA), "Should contain graphic data")
         );
     }
 
     @Test
-    @DisplayName("Should generate ZPL string with null compression type")
-    void shouldGenerateZplStringWithNullCompressionType()
+    @DisplayName("toZplString generates ZPL with null compression type")
+    @Tag("zpl-generation")
+    void Given_NullCompressionType_When_ToZplString_Then_GeneratesZplWithEmpty()
     {
-        GraphicField field = GraphicField
-            .createGraphicField()
-            .withPosition(50.0, 75.0)
-            .withData(SAMPLE_DATA)
-            .withBinaryByteCount(BINARY_BYTE_COUNT)
-            .withGraphicFieldCount(GRAPHIC_FIELD_COUNT)
-            .withBytesPerRow(BYTES_PER_ROW)
-            .build();
+        // Given (classUnderTest has null compression type by default)
 
-        String completeZpl = field.toZplString(PrintDensity.DPI_203);
+        // When
+        String actualCompleteZpl = classUnderTest.toZplString(DPI_203);
 
-        // Extract the FO command parameters
-        String foCommand = completeZpl.substring(
-            completeZpl.indexOf("^FO") + 3,
-            completeZpl.indexOf("^GF")
+        // Then
+        String foCommand = actualCompleteZpl.substring(
+            actualCompleteZpl.indexOf("^FO") + 3,
+            actualCompleteZpl.indexOf("^GF")
         );
-        String[] foParameters = foCommand.split(",", -1);
+        String[] actualFoParameters = foCommand.split(",", -1);
 
-        // Extract the GF command parameters
-        String gfCommand = completeZpl.substring(
-            completeZpl.indexOf("^GF") + 3,
-            completeZpl.indexOf(SAMPLE_DATA)
+        String gfCommand = actualCompleteZpl.substring(
+            actualCompleteZpl.indexOf("^GF") + 3,
+            actualCompleteZpl.indexOf(SAMPLE_DATA)
         );
-        String[] gfParameters = gfCommand.split(",", -1);
+        String[] actualGfParameters = gfCommand.split(",", -1);
+
+        String expectedXPosition = "400";
+        String expectedYPosition = "600";
+        String expectedEmpty     = "";
 
         assertAll(
-            () -> assertTrue(completeZpl.startsWith("^FO"), "Should start with ^FO"),
-            () -> assertTrue(completeZpl.contains("^GF"), "Should contain ^GF"),
-            () -> assertTrue(completeZpl.endsWith("^FS"), "Should end with ^FS"),
-            () -> assertEquals("400", foParameters[0], "X position should be 400 dots (50mm * 8 dots/mm)"),
-            () -> assertEquals("600", foParameters[1], "Y position should be 600 dots (75mm * 8 dots/mm)"),
-            () -> assertTrue(gfParameters[0].isEmpty(), "Compression type parameter should be empty when null"),
-            () -> assertEquals(String.valueOf(BINARY_BYTE_COUNT), gfParameters[1], "Binary byte count should match"),
-            () -> assertEquals(String.valueOf(GRAPHIC_FIELD_COUNT), gfParameters[2], "Graphic field count should match"),
-            () -> assertEquals(String.valueOf(BYTES_PER_ROW), gfParameters[3], "Bytes per row should match"),
-            () -> assertTrue(completeZpl.contains(SAMPLE_DATA), "Should contain graphic data")
+            () -> assertTrue(actualCompleteZpl.startsWith("^FO"), "Should start with ^FO"),
+            () -> assertTrue(actualCompleteZpl.contains("^GF"), "Should contain ^GF"),
+            () -> assertTrue(actualCompleteZpl.endsWith("^FS"), "Should end with ^FS"),
+            () -> assertEquals(expectedXPosition, actualFoParameters[0], "X position should be 400 dots (50mm * 8 dots/mm)"),
+            () -> assertEquals(expectedYPosition, actualFoParameters[1], "Y position should be 600 dots (75mm * 8 dots/mm)"),
+            () -> assertEquals(expectedEmpty, actualGfParameters[0], "Compression type parameter should be empty when null"),
+            () -> assertEquals(String.valueOf(BINARY_BYTE_COUNT), actualGfParameters[1], "Binary byte count should match"),
+            () -> assertEquals(String.valueOf(GRAPHIC_FIELD_COUNT), actualGfParameters[2], "Graphic field count should match"),
+            () -> assertEquals(String.valueOf(BYTES_PER_ROW), actualGfParameters[3], "Bytes per row should match"),
+            () -> assertTrue(actualCompleteZpl.contains(SAMPLE_DATA), "Should contain graphic data")
         );
     }
-
 }

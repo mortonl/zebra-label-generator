@@ -1,8 +1,10 @@
 package com.github.mortonl.zebra.elements.barcodes;
 
+import com.github.mortonl.zebra.elements.barcodes.pdf_417.BarcodePDF417;
 import com.github.mortonl.zebra.formatting.Orientation;
-import com.github.mortonl.zebra.label_settings.LabelSize;
-import com.github.mortonl.zebra.printer_configuration.PrintDensity;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
@@ -10,16 +12,38 @@ import org.junit.jupiter.params.provider.MethodSource;
 
 import java.util.stream.Stream;
 
+import static com.github.mortonl.zebra.formatting.Orientation.NORMAL;
+import static com.github.mortonl.zebra.label_settings.LabelSize.LABEL_4X6;
+import static com.github.mortonl.zebra.printer_configuration.PrintDensity.DPI_203;
 import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
-public class BarcodePDF417Test
+@DisplayName("BarcodePDF417 barcode creation and validation")
+@Tag("unit")
+@Tag("barcode")
+class BarcodePDF417Test
 {
-    private static Stream<Arguments> invalidBarcodeParameters()
+
+    private static final double VALID_ROW_HEIGHT_MM = 10.0;
+
+    private static final int VALID_SECURITY_LEVEL = 5;
+
+    private static final int VALID_DATA_COLUMNS = 15;
+
+    private static final int VALID_ROWS = 20;
+
+    private static final String VALID_TEST_DATA = "Test data";
+
+    private static final String EXCESSIVE_DATA = new String(new char[3001]).replace('\0', 'a');
+
+    private static final String EXPECTED_ZPL_OUTPUT = "^FO100,148^B7N,5,10,20,30,N^FDTest123^FS";
+
+    private BarcodePDF417 classUnderTest;
+
+    private static Stream<Arguments> invalidParametersForValidateInContext()
     {
         return Stream.of(
-            // Test case name, data, rowHeight, securityLevel, dataColumns, rows
             Arguments.of("Empty Data", "", 10.0, 0, 1, 3),
             Arguments.of("Excessive Data", new String(new char[3001]).replace('\0', 'a'), 10.0, 0, 1, 3),
             Arguments.of("Invalid Data Columns", "Test", 10.0, 0, 31, 3),
@@ -29,25 +53,19 @@ public class BarcodePDF417Test
         );
     }
 
-    /**
-     * Test for valid parameters using method source
-     */
-    private static Stream<Arguments> validBarcodeParameters()
+    private static Stream<Arguments> validParametersForValidateInContext()
     {
         return Stream.of(
             Arguments.of("Valid Parameters", "Test data", 10.0, 5, 15, 20)
         );
     }
 
-    /**
-     * Test for ZPL string generation
-     */
-    private static Stream<Arguments> zplStringTestParameters()
+    private static Stream<Arguments> parametersForToZplString()
     {
         return Stream.of(
             Arguments.of(
                 "Normal Orientation",
-                Orientation.NORMAL,
+                NORMAL,
                 0.625,
                 10,
                 20,
@@ -58,20 +76,25 @@ public class BarcodePDF417Test
         );
     }
 
-    /**
-     * Parameterized test for validateInContext method with invalid parameters.
-     * Tests various invalid configurations that should throw IllegalStateException.
-     *
-     * @param testName      name of the test case
-     * @param data          barcode data
-     * @param rowHeight     height of each row
-     * @param securityLevel security level
-     * @param dataColumns   number of data columns
-     * @param rows          number of rows
-     */
-    @ParameterizedTest(name = "{0}")
-    @MethodSource("invalidBarcodeParameters")
-    void testValidateInContextWithInvalidParameters(
+    @BeforeEach
+    void setUp()
+    {
+        classUnderTest = BarcodePDF417
+            .createPDF417Barcode()
+            .withOrientation(NORMAL)
+            .withRowHeightMm(VALID_ROW_HEIGHT_MM)
+            .withSecurityLevel(VALID_SECURITY_LEVEL)
+            .withDataColumns(VALID_DATA_COLUMNS)
+            .withRows(VALID_ROWS)
+            .withPlainTextContent(VALID_TEST_DATA)
+            .build();
+    }
+
+    @ParameterizedTest(name = "validateInContext throws exception for {0}")
+    @MethodSource("invalidParametersForValidateInContext")
+    @DisplayName("validateInContext throws exception for invalid parameters")
+    @Tag("validation")
+    void Given_InvalidParams_When_ValidateInContext_Then_ThrowsException(
         String testName,
         String data,
         double rowHeight,
@@ -80,9 +103,10 @@ public class BarcodePDF417Test
         int rows
     )
     {
-        BarcodePDF417 barcode = BarcodePDF417
+        // Given
+        BarcodePDF417 invalidBarcode = BarcodePDF417
             .createPDF417Barcode()
-            .withOrientation(Orientation.NORMAL)
+            .withOrientation(NORMAL)
             .withRowHeightMm(rowHeight)
             .withSecurityLevel(securityLevel)
             .withDataColumns(dataColumns)
@@ -90,13 +114,16 @@ public class BarcodePDF417Test
             .withHexadecimalContent(data)
             .build();
 
+        // When & Then
         assertThrows(IllegalStateException.class,
-            () -> barcode.validateInContext(LabelSize.LABEL_4X6, PrintDensity.DPI_203));
+            () -> invalidBarcode.validateInContext(LABEL_4X6, DPI_203, null));
     }
 
-    @ParameterizedTest(name = "{0}")
-    @MethodSource("validBarcodeParameters")
-    void testValidateInContextWithValidParameters(
+    @ParameterizedTest(name = "validateInContext accepts {0}")
+    @MethodSource("validParametersForValidateInContext")
+    @DisplayName("validateInContext accepts valid parameters")
+    @Tag("validation")
+    void Given_ValidParams_When_ValidateInContext_Then_NoException(
         String testName,
         String data,
         double rowHeightMm,
@@ -105,9 +132,10 @@ public class BarcodePDF417Test
         int rows
     )
     {
-        BarcodePDF417 barcode = BarcodePDF417
+        // Given
+        BarcodePDF417 validBarcode = BarcodePDF417
             .createPDF417Barcode()
-            .withOrientation(Orientation.NORMAL)
+            .withOrientation(NORMAL)
             .withRowHeightMm(rowHeightMm)
             .withSecurityLevel(securityLevel)
             .withDataColumns(dataColumns)
@@ -115,13 +143,16 @@ public class BarcodePDF417Test
             .withPlainTextContent(data)
             .build();
 
+        // When & Then
         assertDoesNotThrow(() ->
-            barcode.validateInContext(LabelSize.LABEL_4X6, PrintDensity.DPI_203));
+            validBarcode.validateInContext(LABEL_4X6, DPI_203, null));
     }
 
-    @ParameterizedTest(name = "{0}")
-    @MethodSource("zplStringTestParameters")
-    void testToZplString(
+    @ParameterizedTest(name = "toZplString generates correct ZPL for {0}")
+    @MethodSource("parametersForToZplString")
+    @DisplayName("toZplString generates correct ZPL command")
+    @Tag("zpl-generation")
+    void Given_ConfiguredBarcode_When_ToZplString_Then_GeneratesCorrectZpl(
         String testName,
         Orientation orientation,
         double rowHeight,
@@ -132,7 +163,8 @@ public class BarcodePDF417Test
         String expectedZpl
     )
     {
-        BarcodePDF417 barcode = BarcodePDF417
+        // Given
+        BarcodePDF417 configuredBarcode = BarcodePDF417
             .createPDF417Barcode()
             .withPosition(12.5, 18.5)
             .withOrientation(orientation)
@@ -144,29 +176,21 @@ public class BarcodePDF417Test
             .withPlainTextContent(data)
             .build();
 
-        assertEquals(expectedZpl, barcode.toZplString(PrintDensity.DPI_203));
+        // When
+        String actualZplString = configuredBarcode.toZplString(DPI_203);
+
+        // Then
+        assertEquals(expectedZpl, actualZplString);
     }
 
-    /**
-     * Test case for validateInContext method when given valid parameters.
-     * This test verifies that no exception is thrown when calling validateInContext
-     * with valid LabelSize and PrintDensity, and the BarcodePDF417 object has valid parameters.
-     */
     @Test
-    public void test_validateInContext_withValidParameters()
+    @DisplayName("validateInContext accepts valid default configuration")
+    @Tag("validation")
+    void Given_ValidDefaultConfig_When_ValidateInContext_Then_NoException()
     {
-        BarcodePDF417 barcode = BarcodePDF417
-            .createPDF417Barcode()
-            .withOrientation(Orientation.NORMAL)
-            .withRowHeightMm(10.0)
-            .withSecurityLevel(5)
-            .withDataColumns(15)
-            .withRows(20)
-            .withPlainTextContent("Test data")
-            .build();
+        // Given (classUnderTest is already configured with valid parameters)
 
-        PrintDensity dpi = PrintDensity.DPI_203;
-
-        assertDoesNotThrow(() -> barcode.validateInContext(LabelSize.LABEL_4X6, dpi));
+        // When & Then
+        assertDoesNotThrow(() -> classUnderTest.validateInContext(LABEL_4X6, DPI_203, null));
     }
 }

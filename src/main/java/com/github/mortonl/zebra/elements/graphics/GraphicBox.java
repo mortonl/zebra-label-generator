@@ -1,6 +1,7 @@
 package com.github.mortonl.zebra.elements.graphics;
 
 import com.github.mortonl.zebra.elements.PositionedAndSizedElement;
+import com.github.mortonl.zebra.elements.fonts.DefaultFont;
 import com.github.mortonl.zebra.formatting.LineColor;
 import com.github.mortonl.zebra.label_settings.LabelSize;
 import com.github.mortonl.zebra.printer_configuration.PrintDensity;
@@ -53,6 +54,7 @@ import static com.github.mortonl.zebra.validation.Validator.validateRange;
 @SuperBuilder(builderMethodName = "createGraphicBox", setterPrefix = "with")
 public class GraphicBox extends PositionedAndSizedElement
 {
+
     /**
      * Maximum allowed dimension for width, height and thickness in millimeters.
      * This limit (1333.33mm or approximately 52.5 inches) is based on printer hardware constraints
@@ -148,7 +150,9 @@ public class GraphicBox extends PositionedAndSizedElement
      *
      * @param widthMm     Width in millimeters (thickness-32000)
      * @param thicknessMm Line thickness in millimeters (1-32000)
+     *
      * @return a builder instance configured for a horizontal line
+     *
      * @throws IllegalArgumentException if width or thickness is outside valid range
      */
     public static GraphicBoxBuilder<?, ?> horizontalLine(double widthMm, double thicknessMm)
@@ -172,7 +176,9 @@ public class GraphicBox extends PositionedAndSizedElement
      *
      * @param heightMm    Height in millimeters (thickness-32000)
      * @param thicknessMm Line thickness in millimeters (1-32000)
+     *
      * @return a builder instance configured for a vertical line
+     *
      * @throws IllegalArgumentException if height or thickness is outside valid range
      */
     public static GraphicBoxBuilder<?, ?> verticalLine(double heightMm, double thicknessMm)
@@ -216,7 +222,7 @@ public class GraphicBox extends PositionedAndSizedElement
      * </ul>
      */
     @Override
-    public void validateInContext(LabelSize size, PrintDensity dpi) throws IllegalStateException
+    public void validateInContext(LabelSize size, PrintDensity dpi, final DefaultFont defaultFont) throws IllegalStateException
     {
         // If all parameters are null, that's valid
         if (widthMm == null && heightMm == null && thicknessMm == null && color == null && roundness == null) {
@@ -301,8 +307,9 @@ public class GraphicBox extends PositionedAndSizedElement
         return (int) ((roundness * shorterSide) / 16); // (roundness/8) * (shorterSide/2)
     }
 
-    public static abstract class GraphicBoxBuilder<C extends GraphicBox, B extends GraphicBoxBuilder<C, B>>
+    public abstract static class GraphicBoxBuilder<C extends GraphicBox, B extends GraphicBoxBuilder<C, B>>
         extends PositionedAndSizedElementBuilder<C, B>
     {
+
     }
 }
