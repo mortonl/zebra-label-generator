@@ -17,7 +17,6 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 @Tag("formatting")
 class LineColorTest
 {
-
     private static final char BLACK_CODE = 'B';
 
     private static final char WHITE_CODE = 'W';

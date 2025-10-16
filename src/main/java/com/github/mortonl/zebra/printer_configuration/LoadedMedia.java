@@ -27,7 +27,6 @@ import lombok.Getter;
 @Getter
 public class LoadedMedia
 {
-
     /**
      * Minimum allowed length for any label in millimeters
      */

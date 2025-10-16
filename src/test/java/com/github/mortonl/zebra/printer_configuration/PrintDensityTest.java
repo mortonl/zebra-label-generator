@@ -23,7 +23,6 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 @Tag("printer-configuration")
 class PrintDensityTest
 {
-
     private static final int MIN_DOTS_PER_MM = 6;
 
     private static final int MAX_DOTS_PER_MM = 24;
@@ -156,11 +155,11 @@ class PrintDensityTest
     void Given_RecurringDecimal_When_ConvertRoundTrip_Then_MaintainsPrecision()
     {
         // Given
-        PrintDensity dpi        = DPI_300;
-        double       originalMm = 1.0 / 3.0; // A recurring decimal
+        PrintDensity dpi = DPI_300;
+        double originalMm = 1.0 / 3.0; // A recurring decimal
 
         // When
-        int    dots                = dpi.toDots(originalMm);
+        int dots = dpi.toDots(originalMm);
         double actualConvertedBack = dpi.toMillimetres(dots);
 
         // Then
@@ -176,8 +175,8 @@ class PrintDensityTest
         PrintDensity dpi = DPI_600;
 
         // When
-        double mm                  = dpi.toMillimetres(LARGE_DOTS_VALUE);
-        int    actualConvertedBack = dpi.toDots(mm);
+        double mm = dpi.toMillimetres(LARGE_DOTS_VALUE);
+        int actualConvertedBack = dpi.toDots(mm);
 
         // Then
         assertEquals(LARGE_DOTS_VALUE, actualConvertedBack);

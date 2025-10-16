@@ -24,7 +24,6 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 @Tag("barcode")
 class BarcodeInterleaved2of5Test
 {
-
     private static final double VALID_HEIGHT_MM = 10.0;
 
     private static final String VALID_EVEN_DATA = "1234";

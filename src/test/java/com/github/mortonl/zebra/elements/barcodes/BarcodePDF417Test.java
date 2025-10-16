@@ -24,7 +24,6 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 @Tag("barcode")
 class BarcodePDF417Test
 {
-
     private static final double VALID_ROW_HEIGHT_MM = 10.0;
 
     private static final int VALID_SECURITY_LEVEL = 5;

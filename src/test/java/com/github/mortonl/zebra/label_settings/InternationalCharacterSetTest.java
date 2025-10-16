@@ -21,7 +21,6 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 @Tag("character-set")
 class InternationalCharacterSetTest
 {
-
     private static final String EXPECTED_NULL_ENCODING_MESSAGE = "Encoding cannot be null";
 
     private InternationalCharacterSet classUnderTest;

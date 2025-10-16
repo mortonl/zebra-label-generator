@@ -35,7 +35,6 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 @Tag("barcode")
 class BarcodeCode128Test
 {
-
     private static final double VALID_HEIGHT_MM = 10.0;
 
     private static final String TEST_CONTENT = "123456";
@@ -92,13 +91,13 @@ class BarcodeCode128Test
     void Given_AllProperties_When_Build_Then_CreatesCorrectBarcode()
     {
         // Given
-        double      expectedHeight                  = VALID_HEIGHT_MM;
-        Orientation expectedOrientation             = NORMAL;
-        boolean     expectedUccCheckDigit           = true;
-        boolean     expectedInterpretationLine      = true;
-        boolean     expectedInterpretationLineAbove = true;
-        Code128Mode expectedMode                    = UCC_CASE;
-        String      expectedContent                 = TEST_CONTENT;
+        double expectedHeight = VALID_HEIGHT_MM;
+        Orientation expectedOrientation = NORMAL;
+        boolean expectedUccCheckDigit = true;
+        boolean expectedInterpretationLine = true;
+        boolean expectedInterpretationLineAbove = true;
+        Code128Mode expectedMode = UCC_CASE;
+        String expectedContent = TEST_CONTENT;
 
         // When
         BarcodeCode128 actualBarcode = BarcodeCode128

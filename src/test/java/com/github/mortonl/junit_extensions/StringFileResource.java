@@ -9,6 +9,5 @@ import java.lang.annotation.Target;
 @Retention(value = RetentionPolicy.RUNTIME)
 public @interface StringFileResource
 {
-
     String value();
 }

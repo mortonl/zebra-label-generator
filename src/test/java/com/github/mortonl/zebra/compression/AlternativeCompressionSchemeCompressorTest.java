@@ -1,6 +1,7 @@
 package com.github.mortonl.zebra.compression;
 
 import com.github.mortonl.junit_extensions.StringFileResource;
+import org.jetbrains.annotations.NotNull;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Tag;
@@ -11,9 +12,8 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 @DisplayName("AlternativeCompressionSchemeCompressor data compression")
 @Tag("unit")
 @Tag("compression")
-class AlternativeCompressionSchemeCompressorTest
+public class AlternativeCompressionSchemeCompressorTest
 {
-
     private static final int TYPICAL_BYTES_PER_ROW = 23;
 
     private static DataCompressor classUnderTest;
@@ -28,8 +28,8 @@ class AlternativeCompressionSchemeCompressorTest
     @DisplayName("compressData compresses ASCII hex data correctly")
     @Tag("compression")
     void Given_HexData_When_CompressData_Then_ReturnsCompressedFormat(
-        @StringFileResource("zebra/compression/decompressedASCIIHexData.txt") String decompressedHexWithLineBreaks,
-        @StringFileResource("zebra/compression/compressedASCIIHexData.txt") String expectedCompressedData
+        @StringFileResource("zebra/compression/203/decompressedASCIIHexData.txt") String decompressedHexWithLineBreaks,
+        @StringFileResource("zebra/compression/203/compressedASCIIHexData.txt") String expectedCompressedData
     )
     {
         // Given
@@ -39,11 +39,12 @@ class AlternativeCompressionSchemeCompressorTest
         String actualCompressedData = classUnderTest.compressData(decompressedInput, TYPICAL_BYTES_PER_ROW);
 
         // Then
-        String expectedFormatted = expectedCompressedData.replaceAll(",", ",\n")
-                                                         .replaceAll(":", ":\n");
-        String actualFormatted   = actualCompressedData.replaceAll(",", ",\n")
-                                                       .replaceAll(":", ":\n");
+        assertEquals(formatCompressedDataForComparison(expectedCompressedData), formatCompressedDataForComparison(actualCompressedData));
+    }
 
-        assertEquals(expectedFormatted, actualFormatted);
+    public static @NotNull String formatCompressedDataForComparison(final String actualCompressedData)
+    {
+        return actualCompressedData.replaceAll(",", ",\n")
+                                   .replaceAll(":", ":\n");
     }
 }

@@ -27,7 +27,6 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 @Tag("positioning")
 class PositionedElementTest
 {
-
     private static final double VALID_X_POSITION = 10.0;
 
     private static final double VALID_Y_POSITION = 20.0;
@@ -52,9 +51,9 @@ class PositionedElementTest
     private static Stream<Arguments> invalidPositionsForValidateInContext()
     {
         return Stream.of(
-            Arguments.of(150.0, 75.0, "X exceeds width", "X-axis position (150.00 mm) exceeds label width (101.60 mm)."),
-            Arguments.of(50.0, 200.0, "Y exceeds height", "Y-axis position (200.00 mm) exceeds label height (152.40 mm)."),
-            Arguments.of(150.0, 200.0, "Both exceed dimensions", "X-axis position (150.00 mm) exceeds label width (101.60 mm). Y-axis position (200.00 mm) exceeds label height (152.40 mm).")
+            Arguments.of(150.0, 75.0, "X exceeds width", "X-axis position (150.00 mm) exceeds label width (102.00 mm)."),
+            Arguments.of(50.0, 200.0, "Y exceeds height", "Y-axis position (200.00 mm) exceeds label height (152.00 mm)."),
+            Arguments.of(150.0, 200.0, "Both exceed dimensions", "X-axis position (150.00 mm) exceeds label width (102.00 mm). Y-axis position (200.00 mm) exceeds label height (152.00 mm).")
         );
     }
 
@@ -179,6 +178,5 @@ class PositionedElementTest
     @SuperBuilder(builderMethodName = "createTestElement", setterPrefix = "with")
     private static class TestPositionedElement extends PositionedElement
     {
-
     }
 }

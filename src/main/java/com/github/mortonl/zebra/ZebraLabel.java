@@ -2,10 +2,12 @@ package com.github.mortonl.zebra;
 
 import com.github.mortonl.zebra.elements.LabelElement;
 import com.github.mortonl.zebra.elements.fonts.DefaultFont;
+import com.github.mortonl.zebra.elements.text.Text;
 import com.github.mortonl.zebra.label_settings.InternationalCharacterSet;
 import com.github.mortonl.zebra.label_settings.LabelSize;
 import com.github.mortonl.zebra.printer_configuration.PrintDensity;
 import com.github.mortonl.zebra.printer_configuration.PrinterConfiguration;
+import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -44,10 +46,9 @@ import static com.github.mortonl.zebra.ZplCommand.START_FORMAT;
  * }</pre>
  */
 @Data
-@AllArgsConstructor(access = lombok.AccessLevel.PRIVATE)
+@AllArgsConstructor(access = AccessLevel.PRIVATE)
 public class ZebraLabel
 {
-
     /**
      * Physical width and height dimensions of the label media.
      *
@@ -89,7 +90,7 @@ public class ZebraLabel
      * @param printer                   The printer configuration
      * @param elements                  The list of label elements
      * @param internationalCharacterSet Optional character set for international text
-     * @param defaultFont              The default font for the label
+     * @param defaultFont               The default font for the label
      *
      * @return A new ZebraLabel instance
      *
@@ -160,8 +161,8 @@ public class ZebraLabel
 
         if (element instanceof DefaultFont) {
             currentDefaultFont = (DefaultFont) element;
-        } else if (element instanceof com.github.mortonl.zebra.elements.text.Text) {
-            com.github.mortonl.zebra.elements.text.Text textElement = (com.github.mortonl.zebra.elements.text.Text) element;
+        } else if (element instanceof Text) {
+            Text textElement = (Text) element;
             if (textElement.getFont() == null && currentDefaultFont == null) {
                 throw new IllegalStateException(
                     "Text element must either specify a font or have a default font set on the label"

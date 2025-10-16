@@ -24,7 +24,6 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 @Tag("graphics")
 class GraphicFieldTest
 {
-
     private static final String SAMPLE_DATA = "A5A5";
 
     private static final int BINARY_BYTE_COUNT = 2;
@@ -44,7 +43,7 @@ class GraphicFieldTest
         return Stream.of(
             Arguments.of(0.0, 0.0, "Minimum position values"),
             Arguments.of(50.0, 75.0, "Middle position values"),
-            Arguments.of(101.6, 152.4, "Maximum position values")
+            Arguments.of(102.00, 152.00, "Maximum position values")
         );
     }
 
@@ -53,7 +52,7 @@ class GraphicFieldTest
         return Stream.of(
             Arguments.of(-1.0, 0.0, "Negative X position"),
             Arguments.of(0.0, -1.0, "Negative Y position"),
-            Arguments.of(102.0, 75.0, "X position exceeds label width (102mm > 101.6mm)"),
+            Arguments.of(103.0, 75.0, "X position exceeds label width (102mm > 101.6mm)"),
             Arguments.of(50.0, 153.0, "Y position exceeds label height (153mm > 152.4mm)")
         );
     }
@@ -163,8 +162,8 @@ class GraphicFieldTest
         );
         String[] actualGfParameters = gfCommand.split(",", -1);
 
-        String expectedXPosition       = "400";
-        String expectedYPosition       = "600";
+        String expectedXPosition = "400";
+        String expectedYPosition = "600";
         String expectedCompressionType = "A";
 
         assertAll(
@@ -206,7 +205,7 @@ class GraphicFieldTest
 
         String expectedXPosition = "400";
         String expectedYPosition = "600";
-        String expectedEmpty     = "";
+        String expectedEmpty = "";
 
         assertAll(
             () -> assertTrue(actualCompleteZpl.startsWith("^FO"), "Should start with ^FO"),

@@ -49,65 +49,70 @@ public enum LabelSize
 {
     // Standard shipping labels
     /**
-     * 4" x 6" shipping label (101.6mm x 152.4mm).
+     * 4" x 6" shipping label (102mm x 152mm).
      * Common size for shipping and logistics applications.
      */
-    LABEL_4X6(101.6, 152.4, "4\" x 6\""),
+    LABEL_4X6(102, 152, "4\" x 6\""),
 
     /**
-     * 4" x 4" square label (101.6mm x 101.6mm).
+     * 4" x 4" square label (102mm x 102mm).
      */
-    LABEL_4X4(101.6, 101.6, "4\" x 4\""),
+    LABEL_4X4(102, 102, "4\" x 4\""),
 
     // Small package/product labels
     /**
-     * 2" x 1" small label (50.8mm x 25.4mm).
+     * 2" x 1" small label (51mm x 25mm).
      * Suitable for product labeling and small packages.
      */
-    LABEL_2X1(50.8, 25.4, "2\" x 1\""),
+    LABEL_2X1(51, 25, "2\" x 1\""),
 
     /**
-     * 2" x 2" square label (50.8mm x 50.8mm).
+     * 2" x 2" square label (51mm x 51mm).
      */
-    LABEL_2X2(50.8, 50.8, "2\" x 2\""),
+    LABEL_2X2(51, 51, "2\" x 2\""),
 
     /**
-     * 3" x 1" label (76.2mm x 25.4mm).
+     * 3" x 1" label (76mm x 25mm).
      */
-    LABEL_3X1(76.2, 25.4, "3\" x 1\""),
+    LABEL_3X1(76, 25, "3\" x 1\""),
 
     /**
-     * 3" x 2" label (76.2mm x 50.8mm).
+     * 3" x 2" label (76mm x 51mm).
      */
-    LABEL_3X2(76.2, 50.8, "3\" x 2\""),
+    LABEL_3X2(76, 51, "3\" x 2\""),
 
     // Large format labels
     /**
-     * 6" x 4" large label (152.4mm x 101.6mm).
+     * 6" x 4" large label (152mm x 102mm).
      * Suitable for shipping and product identification.
      */
-    LABEL_6X4(152.4, 101.6, "6\" x 4\""),
+    LABEL_6X4(152, 102, "6\" x 4\""),
 
     /**
-     * 8" x 6" large label (203.2mm x 152.4mm).
+     * 8" x 6" large label (203mm x 152mm).
      */
-    LABEL_8X6(203.2, 152.4, "8\" x 6\""),
+    LABEL_8X6(203, 152, "8\" x 6\""),
 
     // Specialty sizes
     /**
-     * 2.25" x 1.25" specialty label (57.15mm x 31.75mm).
+     * 2.25" x 1.25" specialty label (57mm x 32mm).
      */
-    LABEL_2_25X1_25(57.15, 31.75, "2.25\" x 1.25\""),
+    LABEL_2_25X1_25(57, 32, "2.25\" x 1.25\""),
 
     /**
-     * 2.25" x 4" specialty label (57.15mm x 101.6mm).
+     * 2.25" x 4" specialty label (57mm x 102mm).
      */
-    LABEL_2_25X4(57.15, 101.6, "2.25\" x 4\""),
+    LABEL_2_25X4(57, 102, "2.25\" x 4\""),
 
     /**
-     * 3.5" x 1" specialty label (88.9mm x 25.4mm).
+     * 3.5" x 1.5" specialty label (89mm x 38mm).
      */
-    LABEL_3_5X1(88.9, 25.4, "3.5\" x 1\""),
+    LABEL_3_5X1_5(89, 38, "3.5\" x 1.5\""),
+
+    /**
+     * 4" x 3" label (102mm x 76mm).
+     */
+    LABEL_4X3(102, 76, "4\" x 3\""),
 
     // European sizes
     /**
@@ -206,46 +211,65 @@ public enum LabelSize
 
     /**
      * Converts the label height to dots based on the specified print density.
-     * The result is rounded down to ensure the label fits within the specified dimensions.
+     * The base value is rounded down, then reduced by 4 dots to match the
+     * maximum accepted value for ZPL commands on many devices/viewers.
+     *
+     * <p>Why minus 4?</p>
+     * <ul>
+     *   <li>Empirical behavior: The Labelary Online ZPL Viewer caps ^LL values at
+     *       physical height (in dots) minus 4. Values exceeding that are truncated.</li>
+     *   <li>Printer firmware: Several Zebra firmware versions appear to reserve
+     *       a 2‑dot non-printable margin at top and bottom, effectively reducing
+     *       the usable range by 4 dots.</li>
+     * </ul>
      *
      * <p>Example at 203 DPI (8 dots/mm):</p>
      * <ul>
-     *     <li>25.4 mm → 203 dots</li>
-     *     <li>25.6 mm → 204 dots (25.6 * 8 = 204.8 rounds down to 204)</li>
-     *     <li>25.9 mm → 207 dots (25.9 * 8 = 207.2 rounds down to 207)</li>
+     *     <li>152.4 mm → 1219 dots base (152.4 × 8 = 1219.2 → 1219), then 1219 − 4 = 1215</li>
      * </ul>
      *
      * @param density the print density to use for conversion
      *
-     * @return height in dots, rounded down to the nearest integer
+     * @return height in dots (rounded down, then minus 4 to reflect max allowed)
      *
      * @see PrintDensity
+     * @see <a href="https://labelary.com/viewer.html">Labelary Online ZPL Viewer</a>
+     * @see <a href="https://www.zebra.com/content/dam/zebra/manuals/printers/common/programming/zpl-zbi2-pm-en.pdf">Zebra ZPL II Programming Guide</a>
      */
     public int getHeightInDots(PrintDensity density)
     {
-        return density.toDots(heightMm, RoundingMode.DOWN);
+        return density.toDots(heightMm, RoundingMode.DOWN) - 4;
     }
 
     /**
-     * Converts the label width to dots based on the specified print density.
-     * The result is rounded down to ensure the label fits within the specified dimensions.
+     * Converts the label width to dots based on the specified print density for use with ^PW.
+     * The base value is rounded down, then reduced by 4 dots to reflect the maximum
+     * effective print width observed by common renderers and firmware.
+     *
+     * <p>Why minus 4?</p>
+     * <ul>
+     *   <li>Labelary behavior: The Labelary Online ZPL Viewer limits ^PW to
+     *       physical width (in dots) minus 4; higher values are capped.</li>
+     *   <li>Firmware margins: Many printers appear to reserve an internal ~2‑dot
+     *       margin on each side, making 4 dots in total unavailable.</li>
+     * </ul>
      *
      * <p>Example at 203 DPI (8 dots/mm):</p>
      * <ul>
-     *     <li>101.6 mm → 812 dots</li>
-     *     <li>101.8 mm → 814 dots (101.8 * 8 = 814.4 rounds down to 814)</li>
-     *     <li>102.0 mm → 816 dots (102.0 * 8 = 816.0)</li>
+     *     <li>101.6 mm → 812 dots base (101.6 × 8 = 812.8 → 812), then 812 − 4 = 808</li>
      * </ul>
      *
      * @param density the print density to use for conversion
      *
-     * @return width in dots, rounded down to the nearest integer
+     * @return width in dots (rounded down, then minus 4 to reflect max allowed)
      *
      * @see PrintDensity
+     * @see <a href="https://labelary.com/viewer.html">Labelary Online ZPL Viewer</a>
+     * @see <a href="https://www.zebra.com/content/dam/zebra/manuals/printers/common/programming/zpl-zbi2-pm-en.pdf">Zebra ZPL II Programming Guide</a>
      */
     public int getWidthInDots(PrintDensity density)
     {
-        return density.toDots(widthMm, RoundingMode.DOWN);
+        return density.toDots(widthMm, RoundingMode.DOWN) - 4;
     }
 
     /**
@@ -253,11 +277,14 @@ public enum LabelSize
      *
      * <p>Generates the ^PW (Print Width) and ^LL (Label Length) commands based on
      * the label's physical dimensions converted to dots for the specified print density.
-     * For example, with 203 DPI and a 4x6 inch label, this would generate:
-     * {@code ^PW812^LL1218}</p>
+     * Values reflect the maximum accepted by many renderers/printers (base dots rounded
+     * down, then minus 4). For example, with 203 DPI and a 4×6 inch label, this generates:
+     * {@code ^PW808^LL1215}</p>
      *
      * <p>The width and length values are automatically converted from millimeters
-     * to the appropriate number of dots based on the printer's DPI setting.</p>
+     * to the appropriate number of dots based on the printer's DPI setting.
+     * The extra 4-dot reduction aligns with Labelary's handling and common firmware
+     * behavior that seems to reserve ~2 dots on each edge.</p>
      *
      * @param dpi The print density of the target printer (e.g., 203, 300, or 600 DPI)
      *
@@ -265,6 +292,7 @@ public enum LabelSize
      *
      * @see PrintDensity
      * @see <a href="https://www.zebra.com/content/dam/zebra/manuals/printers/common/programming/zpl-zbi2-pm-en.pdf">ZPL Manual</a>
+     * @see <a href="https://labelary.com/viewer.html">Labelary Online ZPL Viewer</a>
      */
     public String toZplString(PrintDensity dpi)
     {

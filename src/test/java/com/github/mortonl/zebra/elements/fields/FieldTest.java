@@ -21,7 +21,6 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 @Tag("field")
 class FieldTest
 {
-
     private static final String VALID_TEST_DATA = "Test Data";
 
     private static final String EXPECTED_BASIC_ZPL = FIELD_START + "Test Data" + FIELD_END;

@@ -1,5 +1,6 @@
 package com.github.mortonl.zebra.elements.text;
 
+import com.github.mortonl.zebra.ZebraLabel;
 import com.github.mortonl.zebra.ZplCommand;
 import com.github.mortonl.zebra.elements.PositionedElement;
 import com.github.mortonl.zebra.elements.fields.Field;
@@ -56,7 +57,6 @@ import static com.github.mortonl.zebra.validation.Validator.validateNotEmpty;
 @SuperBuilder(builderMethodName = "createText", setterPrefix = "with")
 public class Text extends PositionedElement
 {
-
     /**
      * Controls color inversion of the text field.
      *
@@ -159,6 +159,33 @@ public class Text extends PositionedElement
      */
     public abstract static class TextBuilder<C extends Text, B extends TextBuilder<C, B>> extends PositionedElement.PositionedElementBuilder<C, B>
     {
+        @Override
+        public C addToLabel(ZebraLabel label) throws IllegalStateException
+        {
+            // Attempt to resolve dynamic positioning using known text dimensions
+            Double elementWidthMm = null;
+            Double elementHeightMm = null;
+
+            // Determine the effective font (explicit or label default)
+            com.github.mortonl.zebra.elements.fonts.Font effectiveFont = this.font != null ? this.font : label.getCurrentDefaultFont();
+            if (effectiveFont != null) {
+                // Height is known from font
+                elementHeightMm = effectiveFont.getHeightMm();
+
+                // Approximate width for plain text when a fixed width is configured
+                if (this.content != null && Boolean.TRUE.equals(this.content.getEnableHexCharacters()) == false) {
+                    double charWidth = effectiveFont.getWidthMm();
+                    if (charWidth > 0) {
+                        int length = this.content.getData() != null ? this.content.getData()
+                                                                                  .length() : 0;
+                        elementWidthMm = charWidth * length;
+                    }
+                }
+            }
+
+            resolveDynamicPositioning(label.getSize(), elementWidthMm, elementHeightMm);
+            return super.addToLabel(label);
+        }
 
         /**
          * Sets the content of the text element using plain text.

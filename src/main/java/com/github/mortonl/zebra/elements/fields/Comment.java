@@ -43,7 +43,6 @@ import static com.github.mortonl.zebra.ZplCommand.generateZplIICommand;
 @SuperBuilder(builderMethodName = "createComment", setterPrefix = "with")
 public class Comment extends LabelElement
 {
-
     /**
      * The text content of the comment.
      * Must not contain any ZPL control characters that could prematurely terminate the comment.

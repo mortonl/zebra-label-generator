@@ -4,7 +4,6 @@ import com.github.mortonl.zebra.ZplCommand;
 import com.github.mortonl.zebra.elements.fields.Field;
 import com.github.mortonl.zebra.elements.fonts.DefaultFont;
 import com.github.mortonl.zebra.elements.fonts.Font;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
@@ -31,7 +30,6 @@ import static org.mockito.Mockito.when;
 @ExtendWith(MockitoExtension.class)
 class TextTest
 {
-
     private static final String TEST_CONTENT = "test content";
 
     private static final String EXPECTED_POSITION_COMMAND = "^FO80,160";
@@ -58,7 +56,6 @@ class TextTest
 
     @Mock
     private DefaultFont mockDefaultFont;
-
 
 
     @Test

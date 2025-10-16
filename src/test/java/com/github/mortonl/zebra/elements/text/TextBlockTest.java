@@ -2,14 +2,13 @@ package com.github.mortonl.zebra.elements.text;
 
 import com.github.mortonl.zebra.elements.fonts.DefaultFont;
 import com.github.mortonl.zebra.formatting.TextJustification;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
-import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
@@ -33,7 +32,6 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 @ExtendWith(MockitoExtension.class)
 class TextBlockTest
 {
-
     private static final String TEST_PLAIN_TEXT = "test";
 
     private static final String TEST_HEX_CONTENT = "48656C6C6F";
@@ -70,7 +68,6 @@ class TextBlockTest
             Arguments.of(50.0, 1, 0.0, 10000.0, "Hanging indent too large (10000mm)")
         );
     }
-
 
 
     @Test
@@ -161,9 +158,9 @@ class TextBlockTest
         );
         String[] actualParameters = fbCommand.split(",", -1);
 
-        String expectedWidth         = "400";
-        String expectedMaxLines      = "5";
-        String expectedLineSpacing   = "8";
+        String expectedWidth = "400";
+        String expectedMaxLines = "5";
+        String expectedLineSpacing = "8";
         String expectedJustification = "C";
         String expectedHangingIndent = "16";
 
@@ -238,9 +235,9 @@ class TextBlockTest
         );
         String[] actualParameters = fbCommand.split(",", -1);
 
-        String expectedWidth         = "400";
-        String expectedMaxLines      = "5";
-        String expectedEmpty         = "";
+        String expectedWidth = "400";
+        String expectedMaxLines = "5";
+        String expectedEmpty = "";
         String expectedJustification = "C";
 
         assertAll(
@@ -274,12 +271,12 @@ class TextBlockTest
                                         .filter(cmd -> !cmd.isEmpty())
                                         .toArray(String[]::new);
 
-        String expectedFirstCommand  = "FO0,0";
+        String expectedFirstCommand = "FO0,0";
         String expectedSecondCommand = "FB400,,,,";
-        String expectedThirdCommand  = "FH";
+        String expectedThirdCommand = "FH";
         String expectedFourthCommand = "FD48656C6C6F";
-        String expectedLastCommand   = "FS";
-        int    expectedCommandCount  = 5;
+        String expectedLastCommand = "FS";
+        int expectedCommandCount = 5;
 
         assertAll(
             () -> assertEquals(expectedFirstCommand, actualCommands[0], "First command should be FO with coordinates"),

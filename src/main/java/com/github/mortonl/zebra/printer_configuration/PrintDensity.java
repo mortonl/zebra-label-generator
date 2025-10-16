@@ -1,5 +1,6 @@
 package com.github.mortonl.zebra.printer_configuration;
 
+import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 
@@ -29,7 +30,7 @@ import java.util.stream.Stream;
  * }</pre>
  */
 @Getter
-@AllArgsConstructor(access = lombok.AccessLevel.PRIVATE)
+@AllArgsConstructor(access = AccessLevel.PRIVATE)
 public enum PrintDensity
 {
     /**

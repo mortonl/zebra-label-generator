@@ -47,7 +47,6 @@ import static com.github.mortonl.zebra.ZplCommand.SET_FONT;
 @SuperBuilder(builderMethodName = "createFont", setterPrefix = "with")
 public class Font extends LabelElement
 {
-
     /**
      * Minimum size in printer dots for font dimensions.
      * Used to validate both height and width measurements after conversion from millimeters.
@@ -150,7 +149,7 @@ public class Font extends LabelElement
     public String toZplString(PrintDensity dpi)
     {
         int heightDots = dpi.toDots(heightMm);
-        int widthDots  = dpi.toDots(widthMm);
+        int widthDots = dpi.toDots(widthMm);
 
         return ZplCommand.generateZplIICommand(
             // Fonts are a special case where the commands first parameter (character designation) is used as part of the command itself
@@ -196,8 +195,9 @@ public class Font extends LabelElement
 
     /**
      * Checks if this font has the same configuration as the current default font.
-     * 
+     *
      * @param other the default font to compare against
+     *
      * @return true if this font matches the default font configuration
      */
     protected boolean isSameAsDefault(DefaultFont other)
@@ -263,7 +263,6 @@ public class Font extends LabelElement
     public static abstract class FontBuilder<C extends Font, B extends FontBuilder<C, B>>
         extends LabelElementBuilder<C, B>
     {
-
         /**
          * Sets both width and height of the font in millimeters.
          *

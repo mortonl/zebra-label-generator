@@ -46,7 +46,6 @@ import static com.github.mortonl.zebra.validation.Validator.validateNotNull;
 @SuperBuilder(builderMethodName = "createBarcode", setterPrefix = "with")
 public abstract class Barcode extends PositionedElement
 {
-
     /**
      * The content to be encoded in the barcode.
      * This field holds both the data and formatting information for the barcode content.
@@ -106,6 +105,14 @@ public abstract class Barcode extends PositionedElement
     public abstract static class BarcodeBuilder<C extends Barcode, B extends BarcodeBuilder<C, B>>
         extends PositionedElement.PositionedElementBuilder<C, B>
     {
+        /**
+         * Exposes the current builder content for subclasses to use in estimation logic (e.g., width).
+         * Note: This is read-only; subclasses should not mutate the returned Field.
+         */
+        protected Field peekContent()
+        {
+            return this.content;
+        }
 
         /**
          * Sets the barcode content using plain text.

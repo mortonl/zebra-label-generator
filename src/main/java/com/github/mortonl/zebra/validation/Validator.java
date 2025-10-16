@@ -8,7 +8,6 @@ import lombok.experimental.UtilityClass;
 @UtilityClass
 public class Validator
 {
-
     /**
      * Validates that a value falls within an inclusive range.
      *

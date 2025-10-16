@@ -22,7 +22,6 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 @Tag("comment")
 class CommentTest
 {
-
     private static final String VALID_COMMENT_TEXT = "Test Comment";
 
     private static final String EMPTY_COMMENT_TEXT = "";

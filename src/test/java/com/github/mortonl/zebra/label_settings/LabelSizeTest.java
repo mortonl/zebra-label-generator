@@ -27,20 +27,21 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 @Tag("label-settings")
 class LabelSizeTest
 {
-
     private static final Pattern PRINT_WIDTH_PATTERN = Pattern.compile("\\^PW(\\d+)");
 
     private static final Pattern LABEL_LENGTH_PATTERN = Pattern.compile("\\^LL(\\d+)");
 
     private static final int EXPECTED_WIDTH_DPI_203 = 812;
 
-    private static final int EXPECTED_HEIGHT_DPI_203 = 1219;
+    private static final int EXPECTED_HEIGHT_DPI_203 = 1212;
 
     private static final double EXACT_MATCH_TOLERANCE = 0.1;
 
     private static final double WITHIN_TOLERANCE = 1.0;
+
     private static final double OUTSIDE_TOLERANCE = 0.01;
-    private static final String EXPECTED_TOSTRING_FORMAT = "4\" x 6\" (101.6mm x 152.4mm)";
+
+    private static final String EXPECTED_TOSTRING_FORMAT = "4\" x 6\" (102.0mm x 152.0mm)";
 
     private static LabelSize classUnderTest;
 
@@ -53,18 +54,18 @@ class LabelSizeTest
     private static Stream<Arguments> densityWidthDataForGetWidthInDots()
     {
         return Stream.of(
-            Arguments.of(DPI_203, 812),  // 101.6mm * 8
-            Arguments.of(DPI_300, 1219), // 101.6mm * 12
-            Arguments.of(DPI_600, 2438)  // 101.6mm * 24
+            Arguments.of(DPI_203, 812),  // 102mm * 8, minus 4
+            Arguments.of(DPI_300, 1220), // 102mm * 12, minus 4
+            Arguments.of(DPI_600, 2444)  // 102mm * 24, minus 4
         );
     }
 
     private static Stream<Arguments> densityHeightDataForGetHeightInDots()
     {
         return Stream.of(
-            Arguments.of(DPI_203, 1219), // 152.4mm * 8
-            Arguments.of(DPI_300, 1828), // 152.4mm * 12
-            Arguments.of(DPI_600, 3657)  // 152.4mm * 24
+            Arguments.of(DPI_203, 1212), // 152mm * 8, minus 4
+            Arguments.of(DPI_300, 1820), // 152mm * 12, minus 4
+            Arguments.of(DPI_600, 3644)  // 152mm * 24, minus 4
         );
     }
 
@@ -72,7 +73,7 @@ class LabelSizeTest
     {
         return Stream.of(
             // Exact match
-            Arguments.of(101.6, 152.4, EXACT_MATCH_TOLERANCE, Optional.of(LABEL_4X6)),
+            Arguments.of(102.0, 152.0, EXACT_MATCH_TOLERANCE, Optional.of(LABEL_4X6)),
             // Within tolerance
             Arguments.of(101.0, 152.0, WITHIN_TOLERANCE, Optional.of(LABEL_4X6)),
             // Outside tolerance

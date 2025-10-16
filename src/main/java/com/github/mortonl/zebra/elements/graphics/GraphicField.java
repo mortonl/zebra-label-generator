@@ -1,6 +1,6 @@
 package com.github.mortonl.zebra.elements.graphics;
 
-import java.awt.image.BufferedImage;
+import com.github.mortonl.zebra.ZebraLabel;
 import com.github.mortonl.zebra.compression.AlternativeCompressionSchemeCompressor;
 import com.github.mortonl.zebra.elements.PositionedElement;
 import com.github.mortonl.zebra.elements.fonts.DefaultFont;
@@ -13,9 +13,6 @@ import lombok.experimental.SuperBuilder;
 import static com.github.mortonl.zebra.ZplCommand.FIELD_END;
 import static com.github.mortonl.zebra.ZplCommand.GRAPHIC_FIELD;
 import static com.github.mortonl.zebra.ZplCommand.generateZplIICommand;
-import static com.github.mortonl.zebra.image_encoding.ImageToGraphicDataConverter.calculateBytesPerRow;
-import static com.github.mortonl.zebra.image_encoding.ImageToGraphicDataConverter.calculateTotalBytes;
-import static com.github.mortonl.zebra.image_encoding.ImageToGraphicDataConverter.convertToData;
 import static com.github.mortonl.zebra.validation.Validator.validateNotEmpty;
 import static com.github.mortonl.zebra.validation.Validator.validateRange;
 
@@ -55,7 +52,6 @@ import static com.github.mortonl.zebra.validation.Validator.validateRange;
 @SuperBuilder(builderMethodName = "createGraphicField", setterPrefix = "with")
 public class GraphicField extends PositionedElement
 {
-
     /**
      * The minimum allowed value for byte-related fields.
      */
@@ -285,40 +281,27 @@ public class GraphicField extends PositionedElement
     public static abstract class GraphicFieldBuilder<C extends GraphicField, B extends GraphicFieldBuilder<C, B>>
         extends PositionedElementBuilder<C, B>
     {
-
-        /**
-         * Converts an image to graphic field data and configures this builder.
-         * Automatically calculates all required parameters from the image.
-         *
-         * @param image           the BufferedImage to convert
-         * @param compressionType the compression type to use for encoding
-         *
-         * @return this builder for method chaining
-         */
-        public B fromImage(BufferedImage image, CompressionType compressionType)
+        @Override
+        public C addToLabel(ZebraLabel label) throws IllegalStateException
         {
-            String data        = convertToData(image, compressionType);
-            int    bytesPerRow = calculateBytesPerRow(image.getWidth());
-            int    totalBytes  = calculateTotalBytes(image, compressionType);
+            // Derive element dimensions (in mm) for dynamic positioning when possible
+            Double elementWidthMm = null;
+            Double elementHeightMm = null;
+            try {
+                int widthDots = this.bytesPerRow * 8;
+                int rows = this.graphicFieldCount / this.bytesPerRow; // rows = total bytes / bytesPerRow
+                int heightDots = rows; // each row is 1 dot high
 
-            return this.withCompressionType(compressionType)
-                       .withData(data)
-                       .withBytesPerRow(bytesPerRow)
-                       .withBinaryByteCount(totalBytes)
-                       .withGraphicFieldCount(totalBytes);
-        }
+                PrintDensity dpi = label.getPrinter()
+                                        .getDpi();
+                elementWidthMm  = dpi.toMillimetres(widthDots);
+                elementHeightMm = dpi.toMillimetres(heightDots);
+            } catch (Exception ignored) {
+                // If any values are not set yet, fall back to resolving with unknown dimensions
+            }
 
-        /**
-         * Converts an image to graphic field data using ASCII_HEX compression.
-         * Convenience method that defaults to ASCII_HEX compression type.
-         *
-         * @param image the BufferedImage to convert
-         *
-         * @return this builder for method chaining
-         */
-        public B fromImage(BufferedImage image)
-        {
-            return fromImage(image, CompressionType.ASCII_HEX);
+            resolveDynamicPositioning(label.getSize(), elementWidthMm, elementHeightMm);
+            return super.addToLabel(label);
         }
 
     }

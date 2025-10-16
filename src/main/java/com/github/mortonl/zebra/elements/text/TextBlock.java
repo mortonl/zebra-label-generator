@@ -57,7 +57,6 @@ import static com.github.mortonl.zebra.validation.Validator.validateRange;
 @SuperBuilder(builderMethodName = "createTextBlock", setterPrefix = "with")
 public class TextBlock extends Text
 {
-
     /**
      * The width of the text block in millimeters.
      * Controls automatic text wrapping and block boundaries.
@@ -186,7 +185,7 @@ public class TextBlock extends Text
             hangingIndentMm != null ? dpi.toDots(hangingIndentMm) : null);
 
         // Find the position of ^FH and ^FD
-        int hexIndex       = textCommand.indexOf(FIELD_HEXADECIMAL_INDICATOR);
+        int hexIndex = textCommand.indexOf(FIELD_HEXADECIMAL_INDICATOR);
         int fieldDataIndex = textCommand.indexOf(FIELD_DATA);
         if (fieldDataIndex == -1) {
             throw new IllegalStateException("Field data command (^FD) not found in text command");

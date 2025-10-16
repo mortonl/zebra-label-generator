@@ -54,7 +54,6 @@ import static com.github.mortonl.zebra.validation.Validator.validateRange;
 @SuperBuilder(builderMethodName = "createGraphicBox", setterPrefix = "with")
 public class GraphicBox extends PositionedAndSizedElement
 {
-
     /**
      * Maximum allowed dimension for width, height and thickness in millimeters.
      * This limit (1333.33mm or approximately 52.5 inches) is based on printer hardware constraints
@@ -224,6 +223,8 @@ public class GraphicBox extends PositionedAndSizedElement
     @Override
     public void validateInContext(LabelSize size, PrintDensity dpi, final DefaultFont defaultFont) throws IllegalStateException
     {
+        super.validateInContext(size, dpi, defaultFont);
+
         // If all parameters are null, that's valid
         if (widthMm == null && heightMm == null && thicknessMm == null && color == null && roundness == null) {
             return;
@@ -254,13 +255,6 @@ public class GraphicBox extends PositionedAndSizedElement
             }
 
             validateRange(heightMm, 0, MAX_DIMENSION, "Height");
-
-            if (heightMm > size.getHeightMm()) {
-                throw new IllegalStateException(
-                    String.format("Height (%.2f mm) exceeds label height (%.2f mm)",
-                        heightMm, size.getHeightMm())
-                );
-            }
         }
     }
 
@@ -276,13 +270,6 @@ public class GraphicBox extends PositionedAndSizedElement
             }
 
             validateRange(widthMm, 0, MAX_DIMENSION, "Width");
-
-            if (widthMm > size.getWidthMm()) {
-                throw new IllegalStateException(
-                    String.format("Width (%.2f mm) exceeds label width (%.2f mm)",
-                        widthMm, size.getWidthMm())
-                );
-            }
         }
     }
 
@@ -310,6 +297,5 @@ public class GraphicBox extends PositionedAndSizedElement
     public abstract static class GraphicBoxBuilder<C extends GraphicBox, B extends GraphicBoxBuilder<C, B>>
         extends PositionedAndSizedElementBuilder<C, B>
     {
-
     }
 }
