@@ -71,11 +71,6 @@ jobs:
           MAVEN_GPG_PASSPHRASE: ${{ secrets.GPG_PASSPHRASE }}
         run: ./mvnw package gpg:sign deploy
 
-  update-badges:
-    needs: sign-and-deploy
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v4
       - uses: actions/download-artifact@v4
         with:
           name: coverage-report
