@@ -79,9 +79,11 @@ jobs:
       - uses: actions/download-artifact@v4
         with:
           name: coverage-report
+          path: target/site/jacoco/
       - name: Generate JaCoCo Badge
         uses: cicirello/jacoco-badge-generator@v2
         with:
+          jacoco-csv-file: 'target/site/jacoco/jacoco.csv'
           generate-branches-badge: true
           coverage-label: Coverage (Overall)
           branches-label: Coverage (Branches)
