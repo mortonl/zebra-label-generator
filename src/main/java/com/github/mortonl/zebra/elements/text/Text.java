@@ -56,7 +56,6 @@ import static com.github.mortonl.zebra.validation.Validator.validateNotEmpty;
 @SuperBuilder(builderMethodName = "createText", setterPrefix = "with")
 public class Text extends PositionedElement
 {
-
     /**
      * Controls color inversion of the text field.
      *
@@ -159,7 +158,6 @@ public class Text extends PositionedElement
      */
     public abstract static class TextBuilder<C extends Text, B extends TextBuilder<C, B>> extends PositionedElement.PositionedElementBuilder<C, B>
     {
-
         /**
          * Sets the content of the text element using plain text.
          * This method automatically configures the underlying {@link Field} with the

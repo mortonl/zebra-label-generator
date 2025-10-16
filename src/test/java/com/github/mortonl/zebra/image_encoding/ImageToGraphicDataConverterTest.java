@@ -11,7 +11,8 @@ import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.CsvSource;
 
 import javax.imageio.ImageIO;
-import java.awt.*;
+import java.awt.Color;
+import java.awt.Graphics2D;
 import java.awt.image.BufferedImage;
 import java.util.Objects;
 
@@ -30,7 +31,6 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 @Tag("unit")
 class ImageToGraphicDataConverterTest
 {
-
     private static final byte EXPECTED_WHITE_PIXEL_BYTE = 0x00;
 
     private static final String EXPECTED_HEX_FOR_ALL_BLACK = "FF";
@@ -151,7 +151,6 @@ class ImageToGraphicDataConverterTest
     @Tag("integration")
     void givenPngFile_whenCreatingGraphicField_thenReturnsValidField(@StringFileResource("zebra/image_encoding/logoImageCommand-203-dpi.zpl") String expectedZplCommand, @StringFileResource("zebra/compression/decompressedASCIIHexData.txt") String decompressedHexWithLineBreaks) throws Exception
     {
-
         // Given
         BufferedImage givenImage = ImageIO.read(
             Objects.requireNonNull(getClass().getResourceAsStream("/zebra/image_encoding/evri-logo-203-dpi.png"))
@@ -164,7 +163,7 @@ class ImageToGraphicDataConverterTest
             .withEnableAlternativeDataCompression(true)
             .build();
 
-        String       actualDataWithLineBreaks      = addLineBreaks(actual.getData(), actual.getBytesPerRow());
+        String actualDataWithLineBreaks = addLineBreaks(actual.getData(), actual.getBytesPerRow());
         final String decompressedWithoutLineBreaks = decompressedHexWithLineBreaks.replaceAll("\n", "");
 
         // Then
@@ -181,8 +180,8 @@ class ImageToGraphicDataConverterTest
 
     private BufferedImage createFullRowImage(Color color)
     {
-        BufferedImage image    = new BufferedImage(IMAGE_WIDTH_8, IMAGE_HEIGHT_1, BufferedImage.TYPE_INT_RGB);
-        Graphics2D    graphics = image.createGraphics();
+        BufferedImage image = new BufferedImage(IMAGE_WIDTH_8, IMAGE_HEIGHT_1, BufferedImage.TYPE_INT_RGB);
+        Graphics2D graphics = image.createGraphics();
         graphics.setColor(color);
         graphics.fillRect(0, 0, IMAGE_WIDTH_8, IMAGE_HEIGHT_1);
         graphics.dispose();
@@ -191,8 +190,8 @@ class ImageToGraphicDataConverterTest
 
     private String addLineBreaks(String data, int bytesPerRow)
     {
-        int           charactersPerLine = bytesPerRow * 2;
-        StringBuilder result            = new StringBuilder();
+        int charactersPerLine = bytesPerRow * 2;
+        StringBuilder result = new StringBuilder();
 
         for (int i = 0; i < data.length(); i += charactersPerLine) {
             if (i > 0) {

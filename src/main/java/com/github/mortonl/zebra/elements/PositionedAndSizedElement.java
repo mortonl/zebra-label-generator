@@ -24,7 +24,6 @@ import lombok.experimental.SuperBuilder;
 @SuperBuilder(builderMethodName = "createPositionedAndSizedElement", setterPrefix = "with")
 public abstract class PositionedAndSizedElement extends PositionedElement
 {
-
     /**
      * The width of the element in millimeters.
      * Specifies the horizontal dimension of the printed element.
@@ -94,7 +93,6 @@ public abstract class PositionedAndSizedElement extends PositionedElement
     public abstract static class PositionedAndSizedElementBuilder<C extends PositionedAndSizedElement, B extends PositionedAndSizedElementBuilder<C, B>>
         extends PositionedElementBuilder<C, B>
     {
-
         /**
          * Sets both width and height dimensions simultaneously.
          *

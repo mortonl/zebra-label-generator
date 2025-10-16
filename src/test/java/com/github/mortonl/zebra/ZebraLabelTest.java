@@ -23,7 +23,6 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 @Tag("label")
 class ZebraLabelTest
 {
-
     private static final char DEFAULT_FONT_DESIGNATION = '0';
 
     private static final double DEFAULT_FONT_WIDTH = 8.75;
@@ -105,8 +104,8 @@ class ZebraLabelTest
             .addToLabel(classUnderTest);
 
         // Then
-        String actualZpl            = classUnderTest.toZplString();
-        int    expectedElementCount = 2; // Default font + text element
+        String actualZpl = classUnderTest.toZplString();
+        int expectedElementCount = 2; // Default font + text element
 
         assertAll("Text element validation",
             () -> assertEquals(expectedElementCount, classUnderTest.getElements()
@@ -139,8 +138,8 @@ class ZebraLabelTest
             .addToLabel(classUnderTest);
 
         // Then
-        String actualZpl            = classUnderTest.toZplString();
-        int    expectedElementCount = 3; // Default font + 2 text elements
+        String actualZpl = classUnderTest.toZplString();
+        int expectedElementCount = 3; // Default font + 2 text elements
 
         assertAll("Multiple text elements validation",
             () -> assertEquals(expectedElementCount, classUnderTest.getElements()
@@ -163,12 +162,12 @@ class ZebraLabelTest
     void Given_InvalidPositions_When_AddToLabel_Then_ThrowsExceptions()
     {
         // Given
-        int labelWidth  = LABEL_4X6.getWidthInDots(DPI_203);
+        int labelWidth = LABEL_4X6.getWidthInDots(DPI_203);
         int labelHeight = LABEL_4X6.getHeightInDots(DPI_203);
 
-        String expectedNegativeXMessage     = "X-axis position cannot be negative: -1.00";
-        String expectedNegativeYMessage     = "Y-axis position cannot be negative: -1.00";
-        String expectedExceedsWidthMessage  = "X-axis position (813.00 mm) exceeds label width (101.60 mm). The element must be positioned within the label dimensions.";
+        String expectedNegativeXMessage = "X-axis position cannot be negative: -1.00";
+        String expectedNegativeYMessage = "Y-axis position cannot be negative: -1.00";
+        String expectedExceedsWidthMessage = "X-axis position (813.00 mm) exceeds label width (101.60 mm). The element must be positioned within the label dimensions.";
         String expectedExceedsHeightMessage = "Y-axis position (1220.00 mm) exceeds label height (152.40 mm). The element must be positioned within the label dimensions.";
 
         // When & Then

@@ -5,9 +5,11 @@ import org.junit.jupiter.api.extension.ExtensionContext;
 import org.junit.jupiter.api.extension.ParameterContext;
 import org.junit.jupiter.api.extension.ParameterResolver;
 
+import java.io.IOException;
+import java.io.InputStream;
+
 public class StringResourceParameterResolver implements ParameterResolver
 {
-
     @Override
     public boolean supportsParameter(ParameterContext parameterContext, ExtensionContext extensionContext)
     {
@@ -20,11 +22,14 @@ public class StringResourceParameterResolver implements ParameterResolver
     @Override
     public Object resolveParameter(ParameterContext parameterContext, ExtensionContext extensionContext)
     {
-        String              location    = parameterContext.findAnnotation(StringFileResource.class)
-                                                          .get()
-                                                          .value();
-        java.io.InputStream inputStream = getClass().getClassLoader()
-                                                    .getResourceAsStream(location);
+        String location = parameterContext
+            .findAnnotation(StringFileResource.class)
+            .get()
+            .value();
+
+        InputStream inputStream = getClass()
+            .getClassLoader()
+            .getResourceAsStream(location);
 
         if (inputStream == null) {
             throw new RuntimeException("Resource not found: " + location);
@@ -32,12 +37,12 @@ public class StringResourceParameterResolver implements ParameterResolver
 
         try {
             return new String(inputStream.readAllBytes());
-        } catch (java.io.IOException e) {
+        } catch (IOException e) {
             throw new RuntimeException(e);
         } finally {
             try {
                 inputStream.close();
-            } catch (java.io.IOException e) {
+            } catch (IOException e) {
                 // Ignore close exception
             }
         }

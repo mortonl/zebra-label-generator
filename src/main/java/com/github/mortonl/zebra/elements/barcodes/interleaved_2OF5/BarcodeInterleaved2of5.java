@@ -50,7 +50,6 @@ import static com.github.mortonl.zebra.validation.Validator.validateRange;
 @SuperBuilder(builderMethodName = "createInterleaved2of5Barcode", setterPrefix = "with")
 public class BarcodeInterleaved2of5 extends Barcode
 {
-
     /**
      * The orientation of the barcode.
      * Controls how the barcode is rotated on the label.

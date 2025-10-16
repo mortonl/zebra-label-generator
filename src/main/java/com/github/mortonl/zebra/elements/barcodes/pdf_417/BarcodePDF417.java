@@ -77,7 +77,6 @@ import static com.github.mortonl.zebra.ZplCommand.generateZplIICommand;
 @SuperBuilder(builderMethodName = "createPDF417Barcode", setterPrefix = "with")
 public class BarcodePDF417 extends Barcode
 {
-
     /**
      * The orientation of the barcode.
      * Controls how the barcode is rotated on the label.

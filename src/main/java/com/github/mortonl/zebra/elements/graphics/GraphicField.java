@@ -1,6 +1,5 @@
 package com.github.mortonl.zebra.elements.graphics;
 
-import java.awt.image.BufferedImage;
 import com.github.mortonl.zebra.compression.AlternativeCompressionSchemeCompressor;
 import com.github.mortonl.zebra.elements.PositionedElement;
 import com.github.mortonl.zebra.elements.fonts.DefaultFont;
@@ -9,6 +8,8 @@ import com.github.mortonl.zebra.printer_configuration.PrintDensity;
 import lombok.Getter;
 import lombok.NonNull;
 import lombok.experimental.SuperBuilder;
+
+import java.awt.image.BufferedImage;
 
 import static com.github.mortonl.zebra.ZplCommand.FIELD_END;
 import static com.github.mortonl.zebra.ZplCommand.GRAPHIC_FIELD;
@@ -55,7 +56,6 @@ import static com.github.mortonl.zebra.validation.Validator.validateRange;
 @SuperBuilder(builderMethodName = "createGraphicField", setterPrefix = "with")
 public class GraphicField extends PositionedElement
 {
-
     /**
      * The minimum allowed value for byte-related fields.
      */
@@ -285,7 +285,6 @@ public class GraphicField extends PositionedElement
     public static abstract class GraphicFieldBuilder<C extends GraphicField, B extends GraphicFieldBuilder<C, B>>
         extends PositionedElementBuilder<C, B>
     {
-
         /**
          * Converts an image to graphic field data and configures this builder.
          * Automatically calculates all required parameters from the image.
@@ -297,9 +296,9 @@ public class GraphicField extends PositionedElement
          */
         public B fromImage(BufferedImage image, CompressionType compressionType)
         {
-            String data        = convertToData(image, compressionType);
-            int    bytesPerRow = calculateBytesPerRow(image.getWidth());
-            int    totalBytes  = calculateTotalBytes(image, compressionType);
+            String data = convertToData(image, compressionType);
+            int bytesPerRow = calculateBytesPerRow(image.getWidth());
+            int totalBytes = calculateTotalBytes(image, compressionType);
 
             return this.withCompressionType(compressionType)
                        .withData(data)

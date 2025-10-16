@@ -35,7 +35,6 @@ import static com.github.mortonl.zebra.ZplCommand.generateZplIICommand;
 @SuperBuilder(builderMethodName = "createPositionedElement", setterPrefix = "with")
 public abstract class PositionedElement extends LabelElement
 {
-
     /**
      * The minimum allowed value in dots for both X and Y axis positions.
      * Used as the lower bound when validating element positions after
@@ -171,7 +170,6 @@ public abstract class PositionedElement extends LabelElement
     protected static abstract class PositionedElementBuilder<C extends PositionedElement, B extends PositionedElementBuilder<C, B>>
         extends LabelElementBuilder<C, B>
     {
-
         /**
          * Sets the position of the element on the label.
          *

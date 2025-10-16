@@ -27,7 +27,6 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 @Tag("label-settings")
 class LabelSizeTest
 {
-
     private static final Pattern PRINT_WIDTH_PATTERN = Pattern.compile("\\^PW(\\d+)");
 
     private static final Pattern LABEL_LENGTH_PATTERN = Pattern.compile("\\^LL(\\d+)");
@@ -39,7 +38,9 @@ class LabelSizeTest
     private static final double EXACT_MATCH_TOLERANCE = 0.1;
 
     private static final double WITHIN_TOLERANCE = 1.0;
+
     private static final double OUTSIDE_TOLERANCE = 0.01;
+
     private static final String EXPECTED_TOSTRING_FORMAT = "4\" x 6\" (101.6mm x 152.4mm)";
 
     private static LabelSize classUnderTest;

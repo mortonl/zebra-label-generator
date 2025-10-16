@@ -21,7 +21,6 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 @Tag("graphics")
 class GraphicBoxTest
 {
-
     private static final double VALID_WIDTH_MM = 50.0;
 
     private static final double VALID_HEIGHT_MM = 75.0;
@@ -292,9 +291,9 @@ class GraphicBoxTest
         );
         String[] actualParameters = gbCommand.split(",", -1);
 
-        String expectedWidth  = "400";
+        String expectedWidth = "400";
         String expectedHeight = "600";
-        String expectedEmpty  = "";
+        String expectedEmpty = "";
 
         assertAll(
             () -> assertTrue(actualZplString.startsWith("^FO")),

@@ -20,7 +20,6 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 @Tag("font")
 class FontTest
 {
-
     private static final char VALID_FONT_DESIGNATION = 'A';
 
     private static final double VALID_WIDTH_MM = 4.0;

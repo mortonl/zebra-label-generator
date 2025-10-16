@@ -27,7 +27,6 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 @Tag("positioning")
 class PositionedElementTest
 {
-
     private static final double VALID_X_POSITION = 10.0;
 
     private static final double VALID_Y_POSITION = 20.0;
@@ -179,6 +178,5 @@ class PositionedElementTest
     @SuperBuilder(builderMethodName = "createTestElement", setterPrefix = "with")
     private static class TestPositionedElement extends PositionedElement
     {
-
     }
 }

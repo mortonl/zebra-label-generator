@@ -22,7 +22,6 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 @Tag("integration")
 class FullLabelTest
 {
-
     private static final String EXPECTED_DPI_203_ZPL = """
         ^XA
         ^PW812
@@ -116,9 +115,9 @@ class FullLabelTest
                    .addToLabel(givenLabel);
 
         Text.createText()
-                        .withPosition(0, 0)
-                        .withPlainTextContent("Larger")
-                        .addToLabel(givenLabel);
+            .withPosition(0, 0)
+            .withPlainTextContent("Larger")
+            .addToLabel(givenLabel);
 
         DefaultFont.createDefaultFont()
                    .withFontDesignation('0')

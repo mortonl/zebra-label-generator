@@ -37,10 +37,12 @@ Generate unit tests meeting these criteria:
 Update this test class to follow these rules and conventions:
 
 #### Imports
+
 - Do **not** use wildcard imports.
 - Prefer **static imports** for functions and constants.
 
 #### Test Structure
+
 - Test **only one public method** of the class per test method.
 - Use **@DisplayName** on test classes and test methods to describe their purpose clearly.
 - Use **@Tag** annotations on test classes and methods to support test grouping and filtering.
@@ -57,11 +59,13 @@ Update this test class to follow these rules and conventions:
     - If the class is **mutable** or its state could be polluted between tests, instantiate it in a `@BeforeEach` method to ensure test isolation.
 
 #### Parameterised Testing
+
 - If testing a method with multiple input variations, use a **parameterised test**.
 - Use **@CsvSource** when variations are short and readable.
 - Use **@MethodSource** when variations are complex or lengthy.
 
 #### Assertions
+
 - Use **`assertAll`** when asserting multiple properties of a single result to report all failures together.
 - Prefix variables used in assertions with `actual` and `expected` to improve readability.
 - Assert only **hard-coded expected values** against actual results.
@@ -74,12 +78,14 @@ Update this test class to follow these rules and conventions:
     - For longer or complex expectations, load them from clearly named files in the `test/resources` directory. Place them in an obvious and relevant location to keep test code clean and maintainable.
 
 #### Mocking
+
 - Mock any dependency whose functionality is **outside the scope** of the class under test.
 - Use **Mockito.verify** to confirm all expected interactions with mocks.
 - Use **verifyNoMoreInteractions** to ensure no unexpected interactions occurred.
 - If the **order of interactions matters** (i.e. it would affect the outcomes), use **`InOrder`** to verify the sequence.
 
 #### Random Values
+
 - Use **random values** to increase input diversity and uncover edge cases.
 - Ensure **reproducibility** by:
     - Using a fixed seed (e.g. `new Random(42)`) or logging the seed used.
@@ -87,6 +93,7 @@ Update this test class to follow these rules and conventions:
 - Use random values **only where meaningful**, such as numeric ranges, strings, or dates, and avoid them where deterministic behaviour is required.
 
 #### Edge Case Testing
+
 - Always include tests for edge cases:
     - Empty strings
     - Null values
@@ -94,6 +101,7 @@ Update this test class to follow these rules and conventions:
     - Unexpected but valid inputs
 
 #### Test Hygiene & Maintainability
+
 - Never implement **production logic** in a test case just to pass assertions.
 - Write tests with **realistic scenarios** in mind to ensure meaningful coverage.
 - Create **helper functions** to generate commonly used objects and mock data to improve readability and maintainability.

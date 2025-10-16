@@ -21,7 +21,6 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 @Tag("font")
 class DefaultFontTest
 {
-
     private static final char VALID_FONT_DESIGNATION = 'A';
 
     private static final double VALID_HEIGHT_MM = 5.0;
@@ -59,8 +58,8 @@ class DefaultFontTest
     void givenValidFont_whenToZplString_thenGeneratesCorrectCommand()
     {
         // Given
-        int    expectedHeightDots = testDpi.toDots(VALID_HEIGHT_MM);
-        int    expectedWidthDots  = testDpi.toDots(VALID_WIDTH_MM);
+        int expectedHeightDots = testDpi.toDots(VALID_HEIGHT_MM);
+        int expectedWidthDots = testDpi.toDots(VALID_WIDTH_MM);
         String expectedZplCommand = EXPECTED_ZPL_COMMAND_PREFIX + VALID_FONT_DESIGNATION + "," + expectedHeightDots + "," + expectedWidthDots;
 
         // When
@@ -82,10 +81,10 @@ class DefaultFontTest
     void givenDifferentDpi_whenToZplString_thenConvertsCorrectly(String dpiName, int dotsPerInch, int dotsPerMm)
     {
         // Given
-        PrintDensity dpi                = PrintDensity.valueOf(dpiName);
-        int          expectedHeightDots = dpi.toDots(VALID_HEIGHT_MM);
-        int          expectedWidthDots  = dpi.toDots(VALID_WIDTH_MM);
-        String       expectedZplCommand = EXPECTED_ZPL_COMMAND_PREFIX + VALID_FONT_DESIGNATION + "," + expectedHeightDots + "," + expectedWidthDots;
+        PrintDensity dpi = PrintDensity.valueOf(dpiName);
+        int expectedHeightDots = dpi.toDots(VALID_HEIGHT_MM);
+        int expectedWidthDots = dpi.toDots(VALID_WIDTH_MM);
+        String expectedZplCommand = EXPECTED_ZPL_COMMAND_PREFIX + VALID_FONT_DESIGNATION + "," + expectedHeightDots + "," + expectedWidthDots;
 
         // When
         String actualZplCommand = classUnderTest.toZplString(dpi);
@@ -126,15 +125,15 @@ class DefaultFontTest
     {
         // Given
         double randomHeight = 1.0 + random.nextDouble() * 10.0;
-        double randomWidth  = 1.0 + random.nextDouble() * 10.0;
+        double randomWidth = 1.0 + random.nextDouble() * 10.0;
         DefaultFont font = DefaultFont.createDefaultFont()
                                       .withFontDesignation(VALID_FONT_DESIGNATION)
                                       .withHeightMm(randomHeight)
                                       .withWidthMm(randomWidth)
                                       .build();
 
-        int    expectedHeightDots = testDpi.toDots(randomHeight);
-        int    expectedWidthDots  = testDpi.toDots(randomWidth);
+        int expectedHeightDots = testDpi.toDots(randomHeight);
+        int expectedWidthDots = testDpi.toDots(randomWidth);
         String expectedZplCommand = EXPECTED_ZPL_COMMAND_PREFIX + VALID_FONT_DESIGNATION + "," + expectedHeightDots + "," + expectedWidthDots;
 
         // When
@@ -259,16 +258,17 @@ class DefaultFontTest
     void givenBuilderWithAllProperties_whenBuild_thenCreatesCorrectFont()
     {
         // Given
-        char   expectedDesignation = 'Z';
-        double expectedHeight      = 7.5;
-        double expectedWidth       = 4.2;
+        char expectedDesignation = 'Z';
+        double expectedHeight = 7.5;
+        double expectedWidth = 4.2;
 
         // When
-        DefaultFont actualFont = DefaultFont.createDefaultFont()
-                                            .withFontDesignation(expectedDesignation)
-                                            .withHeightMm(expectedHeight)
-                                            .withWidthMm(expectedWidth)
-                                            .build();
+        DefaultFont actualFont = DefaultFont
+            .createDefaultFont()
+            .withFontDesignation(expectedDesignation)
+            .withHeightMm(expectedHeight)
+            .withWidthMm(expectedWidth)
+            .build();
 
         // Then
         assertAll(
@@ -284,7 +284,7 @@ class DefaultFontTest
     void givenBuilderWithSize_whenBuild_thenSetsBothDimensions()
     {
         // Given
-        double expectedWidth  = 6.0;
+        double expectedWidth = 6.0;
         double expectedHeight = 8.0;
 
         // When

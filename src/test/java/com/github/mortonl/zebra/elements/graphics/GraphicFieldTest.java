@@ -24,7 +24,6 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 @Tag("graphics")
 class GraphicFieldTest
 {
-
     private static final String SAMPLE_DATA = "A5A5";
 
     private static final int BINARY_BYTE_COUNT = 2;
@@ -163,8 +162,8 @@ class GraphicFieldTest
         );
         String[] actualGfParameters = gfCommand.split(",", -1);
 
-        String expectedXPosition       = "400";
-        String expectedYPosition       = "600";
+        String expectedXPosition = "400";
+        String expectedYPosition = "600";
         String expectedCompressionType = "A";
 
         assertAll(
@@ -206,7 +205,7 @@ class GraphicFieldTest
 
         String expectedXPosition = "400";
         String expectedYPosition = "600";
-        String expectedEmpty     = "";
+        String expectedEmpty = "";
 
         assertAll(
             () -> assertTrue(actualCompleteZpl.startsWith("^FO"), "Should start with ^FO"),

@@ -71,9 +71,9 @@ public class AlternativeCompressionSchemeCompressor extends DataCompressor
             return data;
         }
 
-        final int           charactersPerLine = bytesPerRow * 2;
-        final StringBuilder compressedResult  = new StringBuilder();
-        String              previousLine      = null;
+        final int charactersPerLine = bytesPerRow * 2;
+        final StringBuilder compressedResult = new StringBuilder();
+        String previousLine = null;
 
         for (int position = 0; position < data.length(); position += charactersPerLine) {
             final String currentLine = extractLine(data, position, charactersPerLine);
@@ -144,11 +144,11 @@ public class AlternativeCompressionSchemeCompressor extends DataCompressor
     private String compressWithRunLengthEncoding(final String line, final int charactersPerLine)
     {
         final StringBuilder compressed = new StringBuilder();
-        int                 position   = 0;
+        int position = 0;
 
         while (position < line.length()) {
             final char currentCharacter = line.charAt(position);
-            final int  consecutiveCount = countConsecutiveCharacters(line, position, currentCharacter);
+            final int consecutiveCount = countConsecutiveCharacters(line, position, currentCharacter);
 
             if (isTrailingFillCharacter(line, position, consecutiveCount, charactersPerLine, currentCharacter)) {
                 compressed.append(getLineFillCharacterSymbol(currentCharacter));
@@ -173,8 +173,8 @@ public class AlternativeCompressionSchemeCompressor extends DataCompressor
 
     private boolean isTrailingFillCharacter(final String line, final int position, final int count, final int charactersPerLine, final char character)
     {
-        final boolean isAtEndOfLine           = position + count == line.length();
-        final boolean isFullLine              = line.length() == charactersPerLine;
+        final boolean isAtEndOfLine = position + count == line.length();
+        final boolean isFullLine = line.length() == charactersPerLine;
         final boolean isLineFillableCharacter = character == '0' || character == '1';
 
         return isAtEndOfLine && isFullLine && isLineFillableCharacter;

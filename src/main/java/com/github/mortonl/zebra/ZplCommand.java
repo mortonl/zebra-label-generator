@@ -1,5 +1,6 @@
 package com.github.mortonl.zebra;
 
+import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
 
 import java.util.List;
@@ -23,10 +24,9 @@ import java.util.stream.Stream;
  *     .append(ZplCommand.END_FORMAT);                                    // ^XZ
  * }</pre>
  */
-@NoArgsConstructor(access = lombok.AccessLevel.PRIVATE)
+@NoArgsConstructor(access = AccessLevel.PRIVATE)
 public class ZplCommand
 {
-
     public static final String CONTROL_CHARACTER_1 = "^";
 
     public static final String CONTROL_CHARACTER_2 = "~";

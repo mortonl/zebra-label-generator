@@ -11,9 +11,8 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 @DisplayName("AlternativeCompressionSchemeCompressor data compression")
 @Tag("unit")
 @Tag("compression")
-class AlternativeCompressionSchemeCompressorTest
+public class AlternativeCompressionSchemeCompressorTest
 {
-
     private static final int TYPICAL_BYTES_PER_ROW = 23;
 
     private static DataCompressor classUnderTest;
@@ -41,8 +40,8 @@ class AlternativeCompressionSchemeCompressorTest
         // Then
         String expectedFormatted = expectedCompressedData.replaceAll(",", ",\n")
                                                          .replaceAll(":", ":\n");
-        String actualFormatted   = actualCompressedData.replaceAll(",", ",\n")
-                                                       .replaceAll(":", ":\n");
+        String actualFormatted = actualCompressedData.replaceAll(",", ",\n")
+                                                     .replaceAll(":", ":\n");
 
         assertEquals(expectedFormatted, actualFormatted);
     }

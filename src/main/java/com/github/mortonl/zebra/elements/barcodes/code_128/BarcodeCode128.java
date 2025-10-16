@@ -89,7 +89,6 @@ import static com.github.mortonl.zebra.ZplCommand.generateZplIICommand;
 @SuperBuilder(builderMethodName = "createCode128Barcode", setterPrefix = "with")
 public class BarcodeCode128 extends Barcode
 {
-
     /**
      * The height of the barcode in millimeters.
      * <p>Valid height range depends on the printer's DPI settings:</p>
@@ -240,7 +239,6 @@ public class BarcodeCode128 extends Barcode
 
         // Validate mode-specific requirements
         if (mode == Code128Mode.UCC_CASE) {
-
             if (content == null || content.getData() == null) {
                 throw new IllegalStateException("Data cannot be null when using UCC Case Mode");
             }

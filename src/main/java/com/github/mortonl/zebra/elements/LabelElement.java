@@ -18,7 +18,6 @@ import lombok.experimental.SuperBuilder;
 @AllArgsConstructor
 public abstract class LabelElement
 {
-
     /**
      * Generates the ZPL II commands for this label element.
      *
@@ -53,7 +52,6 @@ public abstract class LabelElement
      */
     protected abstract static class LabelElementBuilder<C extends LabelElement, B extends LabelElementBuilder<C, B>>
     {
-
         /**
          * Validates and adds this element to the specified label in one step.
          * This is the recommended way to add an element to a label as it ensures
@@ -68,6 +66,7 @@ public abstract class LabelElement
          * }</pre>
          *
          * @param label The {@link ZebraLabel} to add this barcode to
+         *
          * @return the built element instance
          *
          * @throws IllegalStateException if the barcode configuration is invalid

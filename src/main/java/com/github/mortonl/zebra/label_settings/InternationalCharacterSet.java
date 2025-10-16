@@ -22,7 +22,6 @@ import static com.github.mortonl.zebra.ZplCommand.generateZplIICommand;
 @SuperBuilder(builderMethodName = "createInternationalCharacterSet", setterPrefix = "with")
 public class InternationalCharacterSet extends LabelElement
 {
-
     /**
      * The font encoding to be used for text interpretation.
      * Determines how character bytes are mapped to printed symbols.

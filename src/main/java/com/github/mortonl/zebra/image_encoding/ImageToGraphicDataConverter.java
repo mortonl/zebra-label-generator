@@ -10,7 +10,6 @@ import java.awt.image.BufferedImage;
  */
 public class ImageToGraphicDataConverter
 {
-
     /** Number of bits per byte */
     private static final int BITS_PER_BYTE = 8;
 
@@ -90,10 +89,10 @@ public class ImageToGraphicDataConverter
      */
     public static byte[] convertToMonochrome(BufferedImage image)
     {
-        int    width       = image.getWidth();
-        int    height      = image.getHeight();
-        int    bytesPerRow = calculateBytesPerRow(width);
-        byte[] bitmap      = new byte[bytesPerRow * height];
+        int width = image.getWidth();
+        int height = image.getHeight();
+        int bytesPerRow = calculateBytesPerRow(width);
+        byte[] bitmap = new byte[bytesPerRow * height];
 
         for (int y = 0; y < height; y++) {
             for (int x = 0; x < width; x++) {
@@ -104,7 +103,7 @@ public class ImageToGraphicDataConverter
 
                 if (gray < GRAYSCALE_THRESHOLD) {
                     int byteIndex = y * bytesPerRow + x / BITS_PER_BYTE;
-                    int bitIndex  = BYTE_ALIGNMENT_OFFSET - (x % BITS_PER_BYTE);
+                    int bitIndex = BYTE_ALIGNMENT_OFFSET - (x % BITS_PER_BYTE);
                     bitmap[byteIndex] |= (1 << bitIndex);
                 }
             }

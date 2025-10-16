@@ -42,7 +42,6 @@ import static com.github.mortonl.zebra.ZplCommand.FIELD_START;
 @SuperBuilder(builderMethodName = "createField", setterPrefix = "with")
 public class Field extends LabelElement
 {
-
     /**
      * The content data for this field.
      * Can contain plain text or hexadecimal data depending on the {@code enableHexCharacters} setting.

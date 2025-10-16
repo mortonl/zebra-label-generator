@@ -54,7 +54,6 @@ import static com.github.mortonl.zebra.validation.Validator.validateRange;
 @SuperBuilder(builderMethodName = "createGraphicBox", setterPrefix = "with")
 public class GraphicBox extends PositionedAndSizedElement
 {
-
     /**
      * Maximum allowed dimension for width, height and thickness in millimeters.
      * This limit (1333.33mm or approximately 52.5 inches) is based on printer hardware constraints
@@ -310,6 +309,5 @@ public class GraphicBox extends PositionedAndSizedElement
     public abstract static class GraphicBoxBuilder<C extends GraphicBox, B extends GraphicBoxBuilder<C, B>>
         extends PositionedAndSizedElementBuilder<C, B>
     {
-
     }
 }
