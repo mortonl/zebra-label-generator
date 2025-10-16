@@ -1,5 +1,6 @@
 package com.github.mortonl.zebra.elements;
 
+import com.github.mortonl.zebra.ZebraLabel;
 import com.github.mortonl.zebra.elements.fonts.DefaultFont;
 import com.github.mortonl.zebra.formatting.OriginJustification;
 import com.github.mortonl.zebra.label_settings.LabelSize;
@@ -173,6 +174,15 @@ public abstract class PositionedElement extends LabelElement
     protected static abstract class PositionedElementBuilder<C extends PositionedElement, B extends PositionedElementBuilder<C, B>>
         extends LabelElementBuilder<C, B>
     {
+        // Dynamic positioning markers
+        private DynamicPosition dynamicXPosition;
+
+        private DynamicPosition dynamicYPosition;
+
+        private Double xOffsetMm;
+
+        private Double yOffsetMm;
+
         /**
          * Sets the position of the element on the label.
          *
@@ -186,9 +196,195 @@ public abstract class PositionedElement extends LabelElement
          */
         public B withPosition(double xAxisLocationMm, double yAxisLocationMm)
         {
-            this.xAxisLocationMm = xAxisLocationMm;
-            this.yAxisLocationMm = yAxisLocationMm;
+            this.xAxisLocationMm  = xAxisLocationMm;
+            this.yAxisLocationMm  = yAxisLocationMm;
+            this.dynamicXPosition = null;
+            this.dynamicYPosition = null;
+            this.xOffsetMm        = null;
+            this.yOffsetMm        = null;
             return self();
+        }
+
+        /**
+         * Positions the element at the left edge of the label (x = 0).
+         *
+         * @return this builder for method chaining
+         */
+        public B onLeftEdge()
+        {
+            this.dynamicXPosition = DynamicPosition.LEFT;
+            this.xOffsetMm        = null;
+            return self();
+        }
+
+        /**
+         * Positions the element at the right edge of the label.
+         * Note: For sized elements, this accounts for the element's width.
+         *
+         * @return this builder for method chaining
+         */
+        public B onRightEdge()
+        {
+            this.dynamicXPosition = DynamicPosition.RIGHT;
+            this.xOffsetMm        = null;
+            return self();
+        }
+
+        /**
+         * Centers the element horizontally on the label.
+         * Note: For sized elements, this accounts for the element's width.
+         *
+         * @return this builder for method chaining
+         */
+        public B centeredHorizontally()
+        {
+            this.dynamicXPosition = DynamicPosition.CENTER;
+            this.xOffsetMm        = null;
+            return self();
+        }
+
+        /**
+         * Positions the element at the top edge of the label (y = 0).
+         *
+         * @return this builder for method chaining
+         */
+        public B onTopEdge()
+        {
+            this.dynamicYPosition = DynamicPosition.TOP;
+            this.yOffsetMm        = null;
+            return self();
+        }
+
+        /**
+         * Positions the element at the bottom edge of the label.
+         * Note: For sized elements, this accounts for the element's height.
+         *
+         * @return this builder for method chaining
+         */
+        public B onBottomEdge()
+        {
+            this.dynamicYPosition = DynamicPosition.BOTTOM;
+            this.yOffsetMm        = null;
+            return self();
+        }
+
+        /**
+         * Centers the element vertically on the label.
+         * Note: For sized elements, this accounts for the element's height.
+         *
+         * @return this builder for method chaining
+         */
+        public B centeredVertically()
+        {
+            this.dynamicYPosition = DynamicPosition.CENTER;
+            this.yOffsetMm        = null;
+            return self();
+        }
+
+        /**
+         * Centers the element both horizontally and vertically on the label.
+         * Note: For sized elements, this accounts for the element's dimensions.
+         *
+         * @return this builder for method chaining
+         */
+        public B centered()
+        {
+            return centeredHorizontally().centeredVertically();
+        }
+
+        /**
+         * Adds a horizontal offset to the current position.
+         * Can be used with dynamic positioning methods.
+         *
+         * @param offsetMm offset in millimeters (positive = right, negative = left)
+         *
+         * @return this builder for method chaining
+         */
+        public B withXOffset(double offsetMm)
+        {
+            this.xOffsetMm = offsetMm;
+            return self();
+        }
+
+        /**
+         * Adds a vertical offset to the current position.
+         * Can be used with dynamic positioning methods.
+         *
+         * @param offsetMm offset in millimeters (positive = down, negative = up)
+         *
+         * @return this builder for method chaining
+         */
+        public B withYOffset(double offsetMm)
+        {
+            this.yOffsetMm = offsetMm;
+            return self();
+        }
+
+        /**
+         * Resolves dynamic positioning to actual coordinates.
+         * This method should be called before build() to resolve any dynamic positions.
+         *
+         * @param labelSize     the label size to use for dynamic positioning
+         * @param elementWidth  the width of the element (null if not applicable)
+         * @param elementHeight the height of the element (null if not applicable)
+         */
+        protected void resolveDynamicPositioning(LabelSize labelSize, Double elementWidth, Double elementHeight)
+        {
+            if (dynamicXPosition != null) {
+                xAxisLocationMm = resolveDynamicX(labelSize, elementWidth);
+            }
+            if (dynamicYPosition != null) {
+                yAxisLocationMm = resolveDynamicY(labelSize, elementHeight);
+            }
+        }
+
+        private double resolveDynamicX(LabelSize labelSize, Double elementWidth)
+        {
+            double position = switch (dynamicXPosition) {
+                case LEFT -> 0.0;
+                case RIGHT -> elementWidth != null ?
+                    labelSize.getWidthMm() - elementWidth :
+                    labelSize.getWidthMm();
+                case CENTER -> elementWidth != null ?
+                    (labelSize.getWidthMm() - elementWidth) / 2.0 :
+                    labelSize.getWidthMm() / 2.0;
+                default -> 0.0;
+            };
+            return xOffsetMm != null ? position + xOffsetMm : position;
+        }
+
+        private double resolveDynamicY(LabelSize labelSize, Double elementHeight)
+        {
+            double position = switch (dynamicYPosition) {
+                case TOP -> 0.0;
+                case BOTTOM -> elementHeight != null ?
+                    labelSize.getHeightMm() - elementHeight :
+                    labelSize.getHeightMm();
+                case CENTER -> elementHeight != null ?
+                    (labelSize.getHeightMm() - elementHeight) / 2.0 :
+                    labelSize.getHeightMm() / 2.0;
+                default -> 0.0;
+            };
+            return yOffsetMm != null ? position + yOffsetMm : position;
+        }
+
+        /**
+         * Validates and adds this element to the specified label, resolving any dynamic positioning first.
+         */
+        @Override
+        public C addToLabel(ZebraLabel label) throws IllegalStateException
+        {
+            // Resolve any dynamic positioning using the provided label context before building
+            resolveDynamicPositioning(label.getSize(), null, null);
+            return super.addToLabel(label);
+        }
+
+        /**
+         * Enum for dynamic positioning options
+         */
+        protected enum DynamicPosition
+        {
+            LEFT, RIGHT, CENTER, TOP, BOTTOM
         }
     }
 }

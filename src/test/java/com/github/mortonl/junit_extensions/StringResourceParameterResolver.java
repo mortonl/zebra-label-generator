@@ -22,11 +22,9 @@ public class StringResourceParameterResolver implements ParameterResolver
     @Override
     public Object resolveParameter(ParameterContext parameterContext, ExtensionContext extensionContext)
     {
-        String location = parameterContext
-            .findAnnotation(StringFileResource.class)
-            .get()
-            .value();
-
+        String location = parameterContext.findAnnotation(StringFileResource.class)
+                                          .get()
+                                          .value();
         InputStream inputStream = getClass()
             .getClassLoader()
             .getResourceAsStream(location);

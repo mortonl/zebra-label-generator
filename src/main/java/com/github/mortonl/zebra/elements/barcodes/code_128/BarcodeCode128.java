@@ -186,6 +186,30 @@ public class BarcodeCode128 extends Barcode
      */
     private final Code128Mode mode;
 
+    // Localized defaults and width estimation logic moved from BarcodeWidthEstimator
+    private static final int DEFAULT_MODULE_WIDTH_DOTS = 2; // ZPL firmware default for ^BY
+
+    /**
+     * Estimate the width of a Code 128 barcode (in dots).
+     * Simplified model using module count approximation.
+     */
+    private static int estimateCode128WidthDots(String content, boolean hex, int moduleWidthDots)
+    {
+        if (moduleWidthDots <= 0) {
+            moduleWidthDots = DEFAULT_MODULE_WIDTH_DOTS;
+        }
+        int symbols = 0;
+        if (content != null) {
+            if (hex) {
+                symbols = Math.max(0, content.length() / 2);
+            } else {
+                symbols = content.length();
+            }
+        }
+        int totalModules = 55 + 11 * symbols; // quiet(20) + start/check/stop(35) + data
+        return moduleWidthDots * totalModules;
+    }
+
     /**
      * {@inheritDoc}
      *
@@ -255,5 +279,28 @@ public class BarcodeCode128 extends Barcode
         }
 
         super.validateInContext(size, dpi, defaultFont);
+    }
+
+    public static abstract class BarcodeCode128Builder<C extends BarcodeCode128, B extends BarcodeCode128Builder<C, B>>
+        extends Barcode.BarcodeBuilder<C, B>
+    {
+        @Override
+        public C addToLabel(ZebraLabel label) throws IllegalStateException
+        {
+            // Estimate width based on content and defaults (for dynamic positioning)
+            Double elementHeightMm = this.heightMm;
+            Double elementWidthMm = null;
+            try {
+                Field fld = peekContent();
+                String data = fld != null ? fld.getData() : null;
+                boolean isHex = fld != null && Boolean.TRUE.equals(fld.getEnableHexCharacters());
+                int widthDots = estimateCode128WidthDots(data, isHex, DEFAULT_MODULE_WIDTH_DOTS);
+                elementWidthMm = label.getPrinter().getDpi().toMillimetres(widthDots);
+            } catch (Exception ignored) {
+                // best-effort; if estimation fails we proceed without width
+            }
+            resolveDynamicPositioning(label.getSize(), elementWidthMm, elementHeightMm);
+            return super.addToLabel(label);
+        }
     }
 }

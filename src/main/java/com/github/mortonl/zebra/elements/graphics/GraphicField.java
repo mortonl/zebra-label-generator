@@ -1,5 +1,6 @@
 package com.github.mortonl.zebra.elements.graphics;
 
+import com.github.mortonl.zebra.ZebraLabel;
 import com.github.mortonl.zebra.compression.AlternativeCompressionSchemeCompressor;
 import com.github.mortonl.zebra.elements.PositionedElement;
 import com.github.mortonl.zebra.elements.fonts.DefaultFont;
@@ -280,5 +281,28 @@ public class GraphicField extends PositionedElement
     public static abstract class GraphicFieldBuilder<C extends GraphicField, B extends GraphicFieldBuilder<C, B>>
         extends PositionedElementBuilder<C, B>
     {
+        @Override
+        public C addToLabel(ZebraLabel label) throws IllegalStateException
+        {
+            // Derive element dimensions (in mm) for dynamic positioning when possible
+            Double elementWidthMm = null;
+            Double elementHeightMm = null;
+            try {
+                int widthDots = this.bytesPerRow * 8;
+                int rows = this.graphicFieldCount / this.bytesPerRow; // rows = total bytes / bytesPerRow
+                int heightDots = rows; // each row is 1 dot high
+
+                PrintDensity dpi = label.getPrinter()
+                                        .getDpi();
+                elementWidthMm  = dpi.toMillimetres(widthDots);
+                elementHeightMm = dpi.toMillimetres(heightDots);
+            } catch (Exception ignored) {
+                // If any values are not set yet, fall back to resolving with unknown dimensions
+            }
+
+            resolveDynamicPositioning(label.getSize(), elementWidthMm, elementHeightMm);
+            return super.addToLabel(label);
+        }
+
     }
 }

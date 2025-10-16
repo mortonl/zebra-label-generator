@@ -50,25 +50,25 @@ public enum LabelSize
 {
     // Small package/product labels
     /**
-     * 2" x 1" small label (50.8 mm x 25.4 mm).
+     * 2" x 1" small label (51mm x 25mm).
      * Suitable for product labelling and small packages.
      */
-    LABEL_2X1(50.8, 25.4, "2\" x 1\""),
+    LABEL_2X1(51, 25, "2\" x 1\""),
 
     /**
-     * 2" x 2" square label (50.8 mm x 50.8 mm).
+     * 2" x 2" square label (51mm x 51mm).
      */
-    LABEL_2X2(50.8, 50.8, "2\" x 2\""),
+    LABEL_2X2(51, 51, "2\" x 2\""),
 
     /**
-     * 3" x 1" label (76.2 mm x 25.4 mm).
+     * 3" x 1" label (76mm x 25mm).
      */
-    LABEL_3X1(76.2, 25.4, "3\" x 1\""),
+    LABEL_3X1(76, 25, "3\" x 1\""),
 
     /**
-     * 3" x 2" label (76.2 mm x 50.8 mm).
+     * 3" x 2" label (76mm x 51mm).
      */
-    LABEL_3X2(76.2, 50.8, "3\" x 2\""),
+    LABEL_3X2(76, 51, "3\" x 2\""),
 
     // Standard shipping labels
     /**
@@ -84,31 +84,36 @@ public enum LabelSize
 
     // Large format labels
     /**
-     * 6" x 4" large label (152.4 mm x 101.6 mm).
+     * 6" x 4" large label (152mm x 102mm).
      * Suitable for shipping and product identification.
      */
-    LABEL_6X4(152.4, 101.6, "6\" x 4\""),
+    LABEL_6X4(152, 102, "6\" x 4\""),
 
     /**
-     * 8" x 6" large label (203.2 mm x 152.4 mm).
+     * 8" x 6" large label (203mm x 152mm).
      */
-    LABEL_8X6(203.2, 152.4, "8\" x 6\""),
+    LABEL_8X6(203, 152, "8\" x 6\""),
 
     // Specialty sizes
     /**
-     * 2.25" x 1.25" specialty label (57.15 mm x 31.75 mm).
+     * 2.25" x 1.25" specialty label (57mm x 32mm).
      */
-    LABEL_2_25X1_25(57.15, 31.75, "2.25\" x 1.25\""),
+    LABEL_2_25X1_25(57, 32, "2.25\" x 1.25\""),
 
     /**
-     * 2.25" x 4" specialty label (57.15 mm x 101.6 mm).
+     * 2.25" x 4" specialty label (57mm x 102mm).
      */
-    LABEL_2_25X4(57.15, 101.6, "2.25\" x 4\""),
+    LABEL_2_25X4(57, 102, "2.25\" x 4\""),
 
     /**
-     * 3.5" x 1" specialty label (88.9 mm x 25.4 mm).
+     * 3.5" x 1.5" specialty label (89mm x 38mm).
      */
-    LABEL_3_5X1(88.9, 25.4, "3.5\" x 1\""),
+    LABEL_3_5X1_5(89, 38, "3.5\" x 1.5\""),
+
+    /**
+     * 4" x 3" label (102mm x 76mm).
+     */
+    LABEL_4X3(102, 76, "4\" x 3\""),
 
     // European Paper Sizes
     /**
@@ -257,7 +262,7 @@ public enum LabelSize
      *
      * @param density the print density to use for conversion
      *
-     * @return height in dots, rounded down to the nearest integer
+     * @return height in dots (rounded down, then minus 4 to reflect max allowed)
      *
      * @see PrintDensity
      * @see <a href="https://labelary.com/viewer.html">Labelary Online ZPL Viewer</a>

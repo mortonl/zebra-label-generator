@@ -1,5 +1,6 @@
 package com.github.mortonl.zebra.elements.barcodes.pdf_417;
 
+import com.github.mortonl.zebra.ZebraLabel;
 import com.github.mortonl.zebra.ZplCommand;
 import com.github.mortonl.zebra.elements.barcodes.Barcode;
 import com.github.mortonl.zebra.elements.fonts.DefaultFont;
@@ -217,6 +218,21 @@ public class BarcodePDF417 extends Barcode
         }
         if (rows < 0 || rows > 90) {
             throw new IllegalStateException("Number of rows must be between 3 and 90");
+        }
+    }
+
+    public static abstract class BarcodePDF417Builder<C extends BarcodePDF417, B extends BarcodePDF417Builder<C, B>>
+        extends Barcode.BarcodeBuilder<C, B>
+    {
+        @Override
+        public C addToLabel(ZebraLabel label) throws IllegalStateException
+        {
+            Double elementHeightMm = null;
+            if (this.rows != null && this.rowHeightMm != null) {
+                elementHeightMm = this.rows * this.rowHeightMm;
+            }
+            resolveDynamicPositioning(label.getSize(), null, elementHeightMm);
+            return super.addToLabel(label);
         }
     }
 }

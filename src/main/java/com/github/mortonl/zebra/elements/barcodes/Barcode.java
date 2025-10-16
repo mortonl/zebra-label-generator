@@ -106,6 +106,15 @@ public abstract class Barcode extends PositionedElement
         extends PositionedElement.PositionedElementBuilder<C, B>
     {
         /**
+         * Exposes the current builder content for subclasses to use in estimation logic (e.g., width).
+         * Note: This is read-only; subclasses should not mutate the returned Field.
+         */
+        protected Field peekContent()
+        {
+            return this.content;
+        }
+
+        /**
          * Sets the barcode content using plain text.
          * This is the recommended method for setting content when using regular text or numbers.
          * Automatically configures a {@link Field} instance with appropriate settings for plain text.

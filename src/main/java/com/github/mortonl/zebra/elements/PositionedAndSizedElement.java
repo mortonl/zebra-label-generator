@@ -20,6 +20,13 @@ import lombok.experimental.SuperBuilder;
  *     .withPosition(10.0, 20.0)
  *     .withSize(50.0, 30.0)
  *     .build();
+ *
+ * // Or using dynamic positioning:
+ * PositionedAndSizedElement element = SomePositionedAndSizedElement.builder()
+ *     .centered()
+ *     .withSize(50.0, 30.0)
+ *     .forLabel(LabelSize.LABEL_4X6)
+ *     .build();
  * }</pre>
  *
  * @see PositionedElement For positioning functionality
@@ -127,6 +134,14 @@ public abstract class PositionedAndSizedElement extends PositionedElement
      *     .withWidth(50.0)
      *     .withHeight(30.0)
      *     .build();
+     *
+     * // Or using dynamic sizing
+     * SomeElement element = SomeElement.builder()
+     *     .centered()
+     *     .withDynamicWidth(30.0)  // width = labelWidth - 30.0
+     *     .withHeight(10.0)
+     *     .forLabel(LabelSize.LABEL_4X6)
+     *     .build();
      * }</pre>
      *
      * @param <C> The type of the element being built
@@ -138,6 +153,15 @@ public abstract class PositionedAndSizedElement extends PositionedElement
     public abstract static class PositionedAndSizedElementBuilder<C extends PositionedAndSizedElement, B extends PositionedAndSizedElementBuilder<C, B>>
         extends PositionedElementBuilder<C, B>
     {
+        // Dynamic sizing markers
+        private DynamicSizing dynamicWidth;
+
+        private DynamicSizing dynamicHeight;
+
+        private Double widthMarginMm;
+
+        private Double heightMarginMm;
+
         /**
          * Sets both width and height dimensions simultaneously.
          *
@@ -153,9 +177,104 @@ public abstract class PositionedAndSizedElement extends PositionedElement
          */
         public B withSize(double widthMm, double heightMm)
         {
-            this.widthMm  = widthMm;
-            this.heightMm = heightMm;
+            this.widthMm       = widthMm;
+            this.heightMm      = heightMm;
+            this.dynamicWidth  = null;
+            this.dynamicHeight = null;
             return self();
+        }
+
+        /**
+         * Sets the width to be dynamically calculated based on the label width.
+         * The actual width will be: labelWidth - marginMm
+         *
+         * @param marginMm the margin to subtract from label width (total margin for both sides)
+         *
+         * @return this builder for method chaining
+         */
+        public B withDynamicWidth(double marginMm)
+        {
+            this.dynamicWidth  = DynamicSizing.FILL;
+            this.widthMarginMm = marginMm;
+            return self();
+        }
+
+        /**
+         * Sets the height to be dynamically calculated based on the label height.
+         * The actual height will be: labelHeight - marginMm
+         *
+         * @param marginMm the margin to subtract from label height (total margin for both sides)
+         *
+         * @return this builder for method chaining
+         */
+        public B withDynamicHeight(double marginMm)
+        {
+            this.dynamicHeight  = DynamicSizing.FILL;
+            this.heightMarginMm = marginMm;
+            return self();
+        }
+
+        /**
+         * Sets the element to fill the entire label width (0 margin).
+         *
+         * @return this builder for method chaining
+         */
+        public B fillWidth()
+        {
+            return withDynamicWidth(0.0);
+        }
+
+        /**
+         * Sets the element to fill the entire label height (0 margin).
+         *
+         * @return this builder for method chaining
+         */
+        public B fillHeight()
+        {
+            return withDynamicHeight(0.0);
+        }
+
+        /**
+         * Sets the element to fill the entire label (0 margin on all sides).
+         *
+         * @return this builder for method chaining
+         */
+        public B fill()
+        {
+            return fillWidth().fillHeight();
+        }
+
+
+        /**
+         * Validates and adds this element to the specified label, resolving any dynamic sizing and positioning first.
+         */
+        @Override
+        public C addToLabel(ZebraLabel label) throws IllegalStateException
+        {
+            // Resolve dynamic sizing then positioning using the label context before building
+            resolveDynamicSizing(label.getSize());
+            resolveDynamicPositioning(label.getSize(), widthMm, heightMm);
+            return super.addToLabel(label);
+        }
+
+        protected void resolveDynamicSizing(LabelSize labelSize)
+        {
+            if (dynamicWidth != null) {
+                double margin = widthMarginMm != null ? widthMarginMm : 0.0;
+                widthMm = labelSize.getWidthMm() - margin;
+            }
+            if (dynamicHeight != null) {
+                double margin = heightMarginMm != null ? heightMarginMm : 0.0;
+                heightMm = labelSize.getHeightMm() - margin;
+            }
+        }
+
+        /**
+         * Enum for dynamic sizing options
+         */
+        protected enum DynamicSizing
+        {
+            FILL
         }
     }
 }

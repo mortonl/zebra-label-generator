@@ -1,7 +1,9 @@
 package com.github.mortonl.zebra.elements.barcodes.interleaved_2OF5;
 
+import com.github.mortonl.zebra.ZebraLabel;
 import com.github.mortonl.zebra.ZplCommand;
 import com.github.mortonl.zebra.elements.barcodes.Barcode;
+import com.github.mortonl.zebra.elements.fields.Field;
 import com.github.mortonl.zebra.elements.fonts.DefaultFont;
 import com.github.mortonl.zebra.formatting.Orientation;
 import com.github.mortonl.zebra.label_settings.LabelSize;
@@ -105,6 +107,37 @@ public class BarcodeInterleaved2of5 extends Barcode
      */
     private final boolean calculateAndPrintMod10CheckDigit;
 
+    // Local defaults and estimation logic moved from BarcodeWidthEstimator
+    private static final int DEFAULT_MODULE_WIDTH_DOTS = 2; // Typical ^BY default
+    private static final double DEFAULT_WIDE_TO_NARROW_RATIO = 2.0; // Typical ^BY default
+    private static final int DEFAULT_QUIET_ZONE_MODULES = 10; // Common practice/spec minimum
+
+    private static int estimateInterleaved2of5WidthDots(String content, int moduleWidthDots, double wideToNarrowRatio)
+    {
+        if (moduleWidthDots <= 0) {
+            moduleWidthDots = DEFAULT_MODULE_WIDTH_DOTS;
+        }
+        if (wideToNarrowRatio <= 0) {
+            wideToNarrowRatio = DEFAULT_WIDE_TO_NARROW_RATIO;
+        }
+        int digits = 0;
+        if (content != null) {
+            for (int i = 0; i < content.length(); i++) {
+                if (Character.isDigit(content.charAt(i))) {
+                    digits++;
+                }
+            }
+        }
+        int pairs = (digits + 1) / 2; // ceil(digits/2)
+
+        double totalUnits = 0.0;
+        totalUnits += 2 * DEFAULT_QUIET_ZONE_MODULES; // quiet zones
+        totalUnits += (6.0 + wideToNarrowRatio); // start + stop
+        totalUnits += (8.0 + 2.0 * wideToNarrowRatio) * pairs; // body per pair
+
+        return (int) Math.round(moduleWidthDots * totalUnits);
+    }
+
     /**
      * {@inheritDoc}
      *
@@ -199,6 +232,29 @@ public class BarcodeInterleaved2of5 extends Barcode
 
         if (!calculateAndPrintMod10CheckDigit && data.length() % 2 != 0) {
             throw new IllegalStateException("Data length must be even when not using check digit");
+        }
+    }
+
+    public static abstract class BarcodeInterleaved2of5Builder<C extends BarcodeInterleaved2of5, B extends BarcodeInterleaved2of5Builder<C, B>>
+        extends Barcode.BarcodeBuilder<C, B>
+    {
+        @Override
+        public C addToLabel(ZebraLabel label) throws IllegalStateException
+        {
+            Double elementHeightMm = this.heightMm;
+            Double elementWidthMm = null;
+            try {
+                Field fld = peekContent();
+                String data = fld != null ? fld.getData() : null;
+                int widthDots = estimateInterleaved2of5WidthDots(data,
+                        DEFAULT_MODULE_WIDTH_DOTS,
+                        DEFAULT_WIDE_TO_NARROW_RATIO);
+                elementWidthMm = label.getPrinter().getDpi().toMillimetres(widthDots);
+            } catch (Exception ignored) {
+                // best-effort; if estimation fails we proceed without width
+            }
+            resolveDynamicPositioning(label.getSize(), elementWidthMm, elementHeightMm);
+            return super.addToLabel(label);
         }
     }
 }

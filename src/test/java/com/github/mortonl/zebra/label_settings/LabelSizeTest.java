@@ -41,7 +41,7 @@ class LabelSizeTest
 
     private static final double OUTSIDE_TOLERANCE = 0.01;
 
-    private static final String EXPECTED_TOSTRING_FORMAT = "4\" x 6\" (101.6 mm x 152.4 mm)";
+    private static final String EXPECTED_TOSTRING_FORMAT = "4\" x 6\" (102.0mm x 152.0mm)";
 
     private static LabelSize classUnderTest;
 
@@ -73,7 +73,7 @@ class LabelSizeTest
     {
         return Stream.of(
             // Exact match
-            Arguments.of(101.6, 152.4, EXACT_MATCH_TOLERANCE, Optional.of(LABEL_4X6)),
+            Arguments.of(102.0, 152.0, EXACT_MATCH_TOLERANCE, Optional.of(LABEL_4X6)),
             // Within tolerance
             Arguments.of(101.0, 152.0, WITHIN_TOLERANCE, Optional.of(LABEL_4X6)),
             // Outside tolerance
