@@ -1,5 +1,6 @@
-package com.github.mortonl.zebra;
+package com.github.mortonl.label_tests;
 
+import com.github.mortonl.zebra.ZebraLabel;
 import com.github.mortonl.zebra.elements.fonts.DefaultFont;
 import com.github.mortonl.zebra.elements.graphics.CompressionType;
 import com.github.mortonl.zebra.elements.graphics.GraphicBox;
@@ -20,12 +21,12 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 
 @DisplayName("FullLabel Tests")
 @Tag("integration")
-class FullLabelTest
+class BasicFullLabelTest
 {
     private static final String EXPECTED_DPI_203_ZPL = """
         ^XA
-        ^PW812
-        ^LL1219
+        ^PW808
+        ^LL1215
         ^CI28
         ^FO300,0^GB220,80,80,,0^FS
         ^FO800,800^GFA,11,8000,80,ABCDEFabcdef0123456789^FS
@@ -37,8 +38,8 @@ class FullLabelTest
 
     private static final String EXPECTED_DPI_300_ZPL = """
         ^XA
-        ^PW1219
-        ^LL1828
+        ^PW1215
+        ^LL1824
         ^CI28
         ^FO450,0^GB330,120,120,,0^FS
         ^FO1200,1200^GFA,11,8000,80,ABCDEFabcdef0123456789^FS

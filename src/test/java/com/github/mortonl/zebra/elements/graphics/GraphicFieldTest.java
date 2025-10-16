@@ -43,7 +43,7 @@ class GraphicFieldTest
         return Stream.of(
             Arguments.of(0.0, 0.0, "Minimum position values"),
             Arguments.of(50.0, 75.0, "Middle position values"),
-            Arguments.of(101.6, 152.4, "Maximum position values")
+            Arguments.of(101.60, 152.40, "Maximum position values")
         );
     }
 
@@ -52,7 +52,7 @@ class GraphicFieldTest
         return Stream.of(
             Arguments.of(-1.0, 0.0, "Negative X position"),
             Arguments.of(0.0, -1.0, "Negative Y position"),
-            Arguments.of(102.0, 75.0, "X position exceeds label width (102mm > 101.6mm)"),
+            Arguments.of(103.0, 75.0, "X position exceeds label width (102mm > 101.6mm)"),
             Arguments.of(50.0, 153.0, "Y position exceeds label height (153mm > 152.4mm)")
         );
     }

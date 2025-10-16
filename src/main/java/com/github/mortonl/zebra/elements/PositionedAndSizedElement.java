@@ -1,5 +1,9 @@
 package com.github.mortonl.zebra.elements;
 
+import com.github.mortonl.zebra.ZebraLabel;
+import com.github.mortonl.zebra.elements.fonts.DefaultFont;
+import com.github.mortonl.zebra.label_settings.LabelSize;
+import com.github.mortonl.zebra.printer_configuration.PrintDensity;
 import lombok.Getter;
 import lombok.experimental.SuperBuilder;
 
@@ -57,6 +61,47 @@ public abstract class PositionedAndSizedElement extends PositionedElement
      * @return the element height in millimeters
      */
     protected Double heightMm;
+
+    /**
+     * {@inheritDoc}
+     *
+     * <p>Additional validation for PositionedAndSizedElement includes:
+     * <ul>
+     *     <li>Width less than or equal to label width check</li>
+     *     <li>Height less than or equal to label height check</li>
+     * </ul>
+     */
+    @Override
+    public void validateInContext(LabelSize size, PrintDensity dpi, final DefaultFont defaultFont) throws IllegalStateException
+    {
+        super.validateInContext(size, dpi, defaultFont);
+        validateWidth(size);
+        validateHeight(size);
+    }
+
+    private void validateHeight(LabelSize size)
+    {
+        if (heightMm != null) {
+            if (heightMm > size.getHeightMm()) {
+                throw new IllegalStateException(
+                    String.format("Height (%.2f mm) exceeds label height (%.2f mm)",
+                        heightMm, size.getHeightMm())
+                );
+            }
+        }
+    }
+
+    private void validateWidth(LabelSize size)
+    {
+        if (widthMm != null) {
+            if (widthMm > size.getWidthMm()) {
+                throw new IllegalStateException(
+                    String.format("Width (%.2f mm) exceeds label width (%.2f mm)",
+                        widthMm, size.getWidthMm())
+                );
+            }
+        }
+    }
 
     /**
      * Builder for creating elements that have both position and size.

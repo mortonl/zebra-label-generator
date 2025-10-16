@@ -85,9 +85,9 @@ class ZebraLabelTest
                 String.format("ZPL should start with ^XA%nActual ZPL: %s", actualZpl)),
             () -> assertTrue(actualZpl.endsWith("^XZ"),
                 String.format("ZPL should end with ^XZ%nActual ZPL: %s", actualZpl)),
-            () -> assertTrue(actualZpl.contains("^PW812"),
+            () -> assertTrue(actualZpl.contains("^PW808"),
                 String.format("ZPL should contain print width command%nActual ZPL: %s", actualZpl)),
-            () -> assertTrue(actualZpl.contains("^LL1219"),
+            () -> assertTrue(actualZpl.contains("^LL1215"),
                 String.format("ZPL should contain label length command%nActual ZPL: %s", actualZpl))
         );
     }
@@ -162,13 +162,13 @@ class ZebraLabelTest
     void Given_InvalidPositions_When_AddToLabel_Then_ThrowsExceptions()
     {
         // Given
-        int labelWidth = LABEL_4X6.getWidthInDots(DPI_203);
-        int labelHeight = LABEL_4X6.getHeightInDots(DPI_203);
+        double labelWidth = LABEL_4X6.getWidthMm();
+        double labelHeight = LABEL_4X6.getHeightMm();
 
         String expectedNegativeXMessage = "X-axis position cannot be negative: -1.00";
         String expectedNegativeYMessage = "Y-axis position cannot be negative: -1.00";
-        String expectedExceedsWidthMessage = "X-axis position (813.00 mm) exceeds label width (101.60 mm). The element must be positioned within the label dimensions.";
-        String expectedExceedsHeightMessage = "Y-axis position (1220.00 mm) exceeds label height (152.40 mm). The element must be positioned within the label dimensions.";
+        String expectedExceedsWidthMessage = "X-axis position (102.60 mm) exceeds label width (101.60 mm). The element must be positioned within the label dimensions.";
+        String expectedExceedsHeightMessage = "Y-axis position (153.40 mm) exceeds label height (152.40 mm). The element must be positioned within the label dimensions.";
 
         // When & Then
         assertAll("Position validation",

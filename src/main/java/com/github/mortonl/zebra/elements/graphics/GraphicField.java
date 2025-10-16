@@ -9,14 +9,9 @@ import lombok.Getter;
 import lombok.NonNull;
 import lombok.experimental.SuperBuilder;
 
-import java.awt.image.BufferedImage;
-
 import static com.github.mortonl.zebra.ZplCommand.FIELD_END;
 import static com.github.mortonl.zebra.ZplCommand.GRAPHIC_FIELD;
 import static com.github.mortonl.zebra.ZplCommand.generateZplIICommand;
-import static com.github.mortonl.zebra.image_encoding.ImageToGraphicDataConverter.calculateBytesPerRow;
-import static com.github.mortonl.zebra.image_encoding.ImageToGraphicDataConverter.calculateTotalBytes;
-import static com.github.mortonl.zebra.image_encoding.ImageToGraphicDataConverter.convertToData;
 import static com.github.mortonl.zebra.validation.Validator.validateNotEmpty;
 import static com.github.mortonl.zebra.validation.Validator.validateRange;
 
@@ -285,40 +280,5 @@ public class GraphicField extends PositionedElement
     public static abstract class GraphicFieldBuilder<C extends GraphicField, B extends GraphicFieldBuilder<C, B>>
         extends PositionedElementBuilder<C, B>
     {
-        /**
-         * Converts an image to graphic field data and configures this builder.
-         * Automatically calculates all required parameters from the image.
-         *
-         * @param image           the BufferedImage to convert
-         * @param compressionType the compression type to use for encoding
-         *
-         * @return this builder for method chaining
-         */
-        public B fromImage(BufferedImage image, CompressionType compressionType)
-        {
-            String data = convertToData(image, compressionType);
-            int bytesPerRow = calculateBytesPerRow(image.getWidth());
-            int totalBytes = calculateTotalBytes(image, compressionType);
-
-            return this.withCompressionType(compressionType)
-                       .withData(data)
-                       .withBytesPerRow(bytesPerRow)
-                       .withBinaryByteCount(totalBytes)
-                       .withGraphicFieldCount(totalBytes);
-        }
-
-        /**
-         * Converts an image to graphic field data using ASCII_HEX compression.
-         * Convenience method that defaults to ASCII_HEX compression type.
-         *
-         * @param image the BufferedImage to convert
-         *
-         * @return this builder for method chaining
-         */
-        public B fromImage(BufferedImage image)
-        {
-            return fromImage(image, CompressionType.ASCII_HEX);
-        }
-
     }
 }

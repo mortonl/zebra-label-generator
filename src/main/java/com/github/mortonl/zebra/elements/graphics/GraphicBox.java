@@ -223,6 +223,8 @@ public class GraphicBox extends PositionedAndSizedElement
     @Override
     public void validateInContext(LabelSize size, PrintDensity dpi, final DefaultFont defaultFont) throws IllegalStateException
     {
+        super.validateInContext(size, dpi, defaultFont);
+
         // If all parameters are null, that's valid
         if (widthMm == null && heightMm == null && thicknessMm == null && color == null && roundness == null) {
             return;
@@ -253,13 +255,6 @@ public class GraphicBox extends PositionedAndSizedElement
             }
 
             validateRange(heightMm, 0, MAX_DIMENSION, "Height");
-
-            if (heightMm > size.getHeightMm()) {
-                throw new IllegalStateException(
-                    String.format("Height (%.2f mm) exceeds label height (%.2f mm)",
-                        heightMm, size.getHeightMm())
-                );
-            }
         }
     }
 
@@ -275,13 +270,6 @@ public class GraphicBox extends PositionedAndSizedElement
             }
 
             validateRange(widthMm, 0, MAX_DIMENSION, "Width");
-
-            if (widthMm > size.getWidthMm()) {
-                throw new IllegalStateException(
-                    String.format("Width (%.2f mm) exceeds label width (%.2f mm)",
-                        widthMm, size.getWidthMm())
-                );
-            }
         }
     }
 

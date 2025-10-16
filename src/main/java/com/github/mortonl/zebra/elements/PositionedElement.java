@@ -144,15 +144,18 @@ public abstract class PositionedElement extends LabelElement
 
     private void validatePositionedOnLabel(LabelSize size, PrintDensity dpi) throws IllegalStateException
     {
-        if (xAxisLocationMm > size.getWidthMm() || yAxisLocationMm > size.getHeightMm()) {
+        final double labelWidthMm = size.getWidthMm();
+        final double labelHeightMm = size.getHeightMm();
+
+        if (xAxisLocationMm > labelWidthMm || yAxisLocationMm > labelHeightMm) {
             StringBuilder errorMessage = new StringBuilder();
-            if (xAxisLocationMm > size.getWidthMm()) {
+            if (xAxisLocationMm > labelWidthMm) {
                 errorMessage.append(String.format("X-axis position (%.2f mm) exceeds label width (%.2f mm). ",
-                    xAxisLocationMm, size.getWidthMm()));
+                    xAxisLocationMm, labelWidthMm));
             }
-            if (yAxisLocationMm > size.getHeightMm()) {
+            if (yAxisLocationMm > labelHeightMm) {
                 errorMessage.append(String.format("Y-axis position (%.2f mm) exceeds label height (%.2f mm). ",
-                    yAxisLocationMm, size.getHeightMm()));
+                    yAxisLocationMm, labelHeightMm));
             }
             errorMessage.append("The element must be positioned within the label dimensions.");
 

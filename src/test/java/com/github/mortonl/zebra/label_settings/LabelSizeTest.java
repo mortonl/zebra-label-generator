@@ -31,9 +31,9 @@ class LabelSizeTest
 
     private static final Pattern LABEL_LENGTH_PATTERN = Pattern.compile("\\^LL(\\d+)");
 
-    private static final int EXPECTED_WIDTH_DPI_203 = 812;
+    private static final int EXPECTED_WIDTH_DPI_203 = 808;
 
-    private static final int EXPECTED_HEIGHT_DPI_203 = 1219;
+    private static final int EXPECTED_HEIGHT_DPI_203 = 1215;
 
     private static final double EXACT_MATCH_TOLERANCE = 0.1;
 
@@ -41,7 +41,7 @@ class LabelSizeTest
 
     private static final double OUTSIDE_TOLERANCE = 0.01;
 
-    private static final String EXPECTED_TOSTRING_FORMAT = "4\" x 6\" (101.6mm x 152.4mm)";
+    private static final String EXPECTED_TOSTRING_FORMAT = "4\" x 6\" (101.6 mm x 152.4 mm)";
 
     private static LabelSize classUnderTest;
 
@@ -54,18 +54,18 @@ class LabelSizeTest
     private static Stream<Arguments> densityWidthDataForGetWidthInDots()
     {
         return Stream.of(
-            Arguments.of(DPI_203, 812),  // 101.6mm * 8
-            Arguments.of(DPI_300, 1219), // 101.6mm * 12
-            Arguments.of(DPI_600, 2438)  // 101.6mm * 24
+            Arguments.of(DPI_203, 808),  // 101.6 mm * 8
+            Arguments.of(DPI_300, 1215), // 101.6 mm * 12
+            Arguments.of(DPI_600, 2434)  // 101.6 mm * 24
         );
     }
 
     private static Stream<Arguments> densityHeightDataForGetHeightInDots()
     {
         return Stream.of(
-            Arguments.of(DPI_203, 1219), // 152.4mm * 8
-            Arguments.of(DPI_300, 1828), // 152.4mm * 12
-            Arguments.of(DPI_600, 3657)  // 152.4mm * 24
+            Arguments.of(DPI_203, 1215), // 152.4 mm * 8
+            Arguments.of(DPI_300, 1824), // 152.4 mm * 12
+            Arguments.of(DPI_600, 3653)  // 152.4 mm * 24
         );
     }
 

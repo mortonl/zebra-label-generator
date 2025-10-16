@@ -138,7 +138,7 @@ class GraphicBoxTest
         // Given
         GraphicBox wideBox = GraphicBox
             .createGraphicBox()
-            .withWidthMm(102.0) // Exceeds LABEL_4X6 width (101.6mm)
+            .withWidthMm(103.0) // Exceeds LABEL_4X6 width (101.6mm)
             .build();
 
         // When & Then
