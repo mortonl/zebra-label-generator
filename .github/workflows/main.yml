@@ -16,27 +16,14 @@ jobs:
   build:
     uses: ./.github/workflows/build.yml
 
-  version:
-    needs: build
+  versiuon-sign-and-deploy:
+    needs: [ build]
     runs-on: ubuntu-latest
+    environment: production
     outputs:
       new-version: ${{ steps.increment-version.outputs.new-version }}
     steps:
       - uses: actions/checkout@v4
-      - name: Increment version
-        id: increment-version
-        uses: RichardInnocent/semantic-versioning-maven@v0.1.0
-      - name: Print if version changed
-        if: steps.increment-version.outputs.previous-version != steps.increment-version.outputs.new-version
-        run: echo "The new version is now ${{ steps.increment-version.outputs.new-version }}"
-
-  sign-and-deploy:
-    needs: [ build, version ]
-    runs-on: ubuntu-latest
-    environment: production
-    steps:
-      - uses: actions/checkout@v4
-
       - uses: actions/setup-java@v4
         with:
           java-version: '21'
@@ -58,6 +45,12 @@ jobs:
           git_user_signingkey: true
           git_commit_gpgsign: true
           git_tag_gpgsign: true
+      - name: Increment version
+        id: increment-version
+        uses: RichardInnocent/semantic-versioning-maven@v0.1.0
+      - name: Print if version changed
+        if: steps.increment-version.outputs.previous-version != steps.increment-version.outputs.new-version
+        run: echo "The new version is now ${{ steps.increment-version.outputs.new-version }}"
       - name: Download build artifacts
         uses: actions/download-artifact@v4
         with:

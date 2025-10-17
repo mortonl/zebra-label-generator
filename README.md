@@ -33,15 +33,25 @@ This project is currently under active development. While the core functionality
     - Code 128
     - Interleaved 2 of 5
     - PDF417
+- **Barcode Defaults (`^BY`) Support**
+    - Define default barcode settings with spec-aligned validation
+    - Enforces module width, wide-to-narrow ratio, and height constraints
+    - Context-aware validation ensures barcode fits within label dimensions
+- **Default Font Support**
+    - Warning when setting an items font to the same as the current default
 - **Graphics and Text Elements**
     - Create graphic boxes, lines, and text with various fonts and formatting.
+    - `ImageElement` for rendering images in labels
+    - `GraphicSymbol` and `SymbolDesignation` for symbol encoding
 - **Position Validation**
     - Ensure all elements are correctly placed within label boundaries.
 - **Configurable Validation Levels**
     - Control element validation with `STRICT`, `NORMAL`, `LENIENT`, or `OFF` levels.
 - **Fluid Builders with `addToLabel()` Method**
     - Simplify the creation and addition of elements to labels in a single, fluent chain.
-    -
+- **Compression Support**
+    - ASCII hex compression via `AlternativeCompressionSchemeCompressor`
+    - Compressed and uncompressed ZPL image fixtures for testing
 
 ### Planned Features
 
@@ -51,22 +61,28 @@ This project is currently under active development. While the core functionality
         - Circle
         - Diagonal Lines
         - Ellipses
-        - Symbols
-- Graphic field validation
-    - I currently don't understand some of the examples I've seen of graphic fields being used where non-hex characters
-      were used in a hex command, when I can learn more about how this functionality is supposed to work I will add
-      better validation.
-- Setting defaults for the label
-    - Warning when setting an item the same as a default setting?
 - Explicit mode as an alternative to using defaults?
     - This would no longer print empty parts of the Zebra command and instead use the default values for that command
       where possible or the latest relevant default set?
 - Image helpers to convert to ASCII hex and binary?
-- Template vs complete zpl generation?
+- Template vs complete ZPL generation?
     - Currently designed around passing actual values into elements like text and barcodes etc. we could allow field
       parameters to be provided separately and this would allow the template to be permanently stored on the printer?
 - Native command support? - will there be any cases where this would be needed, would like to avoid this as it goes
   against desired Java API.
+- ZPL Formatting configuration & preference
+  - Spaces after commands
+  - Field origin on the same vs separate lines
+  - Field seperator on the same vs separate lines
+  - Font command positioning, inside the field data, before the field data, before the field origin?
+  - Don’t print all commas in a command unless mandatory
+  - Add comments dynamically to explain settings as they are added
+  - Replace line separators in multi line strings with the zebra encoded version `\&`
+  - Validate new lines are only present in element content that supports it
+    - Text Block
+    - PDF 414 Barcode
+  - Check for characters not in the specified encoding
+- Blank line element
 
 ## Getting Started
 
@@ -85,7 +101,7 @@ Add the following dependency to your `pom.xml` (ensure you use the latest versio
 <dependency>
     <groupId>io.github.mortonl</groupId>
     <artifactId>zebra-label-generator</artifactId>
-    <version>1.1.0</version>
+    <version>1.6.0</version>
 </dependency>
 ```
 
@@ -94,7 +110,7 @@ Add the following dependency to your `pom.xml` (ensure you use the latest versio
 Add the following to your `build.gradle` (ensure you use the latest version):
 
 ```
-implementation 'io.github.mortonl:zebra-label-generator:1.1.0'
+implementation 'io.github.mortonl:zebra-label-generator:1.6.0'
 ```
 
 ## Usage
@@ -103,7 +119,7 @@ For detailed usage instructions and examples, please refer to the [Usage Guide](
 
 ## Reference Documentation
 
-Official Zebra Programming Guide 2018 documentation is used as reference for implementation
+Official Zebra Programming Guide 2018 documentation is used as reference for implementation:
 
 - [Zebra Programming Guide 2018](https://support.zebra.com/cpws/docs/zpl/zpl-zbi2-pm-en.pdf)
 
@@ -114,7 +130,7 @@ This project was created as an alternative to existing solutions, with a specifi
 - DPI-agnostic label generation
 - More Comprehensive Validation
 
-These projects in particular were
+These projects in particular were:
 
 - [W3 Blog France / Zebra ZPL Project](https://github.com/w3blogfr/zebra-zpl)
   I was originally going to make use of this project but for many reasons I chose not to use it or fork it. In
@@ -132,7 +148,7 @@ The Labelary Viewer allows you to:
 - Visualize labels before printing
 - Verify proper placement of elements
 - Check barcode formatting
-- Test different label sizes and dpi configurations
+- Test different label sizes and DPI configurations
 - Validate ZPL syntax
 
 This is particularly useful during development to ensure your labels are formatted correctly without
@@ -185,13 +201,13 @@ Each commit message consists of a **header**, an optional **body** and an option
 
 Commit messages are used to automatically determine the next version number:
 
-- `fix:` patch version bump (1.0.0 -> 1.0.1)
-- `feat:` minor version bump (1.0.0 -> 1.1.0)
-- `feat!:` or `BREAKING CHANGE:` major version bump (1.0.0 -> 2.0.0)
+- `fix:` patch version bump (1.0.0 → 1.0.1)
+- `feat:` minor version bump (1.0.0 → 1.1.0)
+- `feat!:` or `BREAKING CHANGE:` major version bump (1.0.0 → 2.0.0)
 
 ## License
 
-This project is licensed under the Apache License 2.0 - see the LICENSE file for details.
+This project is licensed under the Apache License 2.0 – see the LICENSE file for details.
 
 The Apache License 2.0 is a permissive license that allows you to:
 
