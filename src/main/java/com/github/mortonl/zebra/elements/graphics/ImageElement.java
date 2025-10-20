@@ -24,7 +24,7 @@ import java.awt.image.BufferedImage;
  * }</pre>
  */
 @Getter
-@SuperBuilder(builderMethodName = "createImage", setterPrefix = "with")
+@SuperBuilder(builderMethodName = "createImageElement", setterPrefix = "with")
 public class ImageElement extends PositionedAndSizedElement
 {
     /** The source image to print. */

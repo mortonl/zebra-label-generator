@@ -64,7 +64,6 @@ This project is currently under active development. While the core functionality
 - Explicit mode as an alternative to using defaults?
     - This would no longer print empty parts of the Zebra command and instead use the default values for that command
       where possible or the latest relevant default set?
-- Image helpers to convert to ASCII hex and binary?
 - Template vs complete ZPL generation?
     - Currently designed around passing actual values into elements like text and barcodes etc. we could allow field
       parameters to be provided separately and this would allow the template to be permanently stored on the printer?
