@@ -28,13 +28,9 @@ class BarcodeInterleaved2of5Test
 
     private static final String VALID_EVEN_DATA = "1234";
 
-    private static final String VALID_ODD_DATA = "12345";
-
     private static final String EXPECTED_NULL_ORIENTATION_MESSAGE = "Orientation cannot be null";
 
     private static final String EXPECTED_ZPL_OUTPUT = "^FO0,0^B2N,80,Y,N,N^FD1234^FS";
-
-    private BarcodeInterleaved2of5 classUnderTest;
 
     private static Stream<Arguments> validLengthCasesForValidateInContext()
     {
@@ -42,17 +38,6 @@ class BarcodeInterleaved2of5Test
             Arguments.of("1234", false),  // even length, no check digit
             Arguments.of("12345", true)   // odd length, with check digit
         );
-    }
-
-    @BeforeEach
-    void setUp()
-    {
-        classUnderTest = BarcodeInterleaved2of5
-            .createInterleaved2of5Barcode()
-            .withPlainTextContent(VALID_EVEN_DATA)
-            .withOrientation(NORMAL)
-            .withHeightMm(VALID_HEIGHT_MM)
-            .build();
     }
 
     @Test

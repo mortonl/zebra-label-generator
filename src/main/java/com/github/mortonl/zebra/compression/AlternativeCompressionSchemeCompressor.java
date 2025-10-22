@@ -97,7 +97,7 @@ public class AlternativeCompressionSchemeCompressor extends DataCompressor
 
     private boolean theLinesAreTheSame(final String currentLine, final String previousLine)
     {
-        return previousLine != null && currentLine.equals(previousLine);
+        return currentLine.equals(previousLine);
     }
 
     private String compressLine(final String line, final int charactersPerLine)

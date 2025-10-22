@@ -3,7 +3,6 @@ package com.github.mortonl.zebra.label_settings;
 import com.github.mortonl.zebra.printer_configuration.PrintDensity;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
-import lombok.experimental.SuperBuilder;
 
 import java.math.RoundingMode;
 import java.util.Arrays;
@@ -257,7 +256,7 @@ public enum LabelSize
      *
      * @param density the print density to use for conversion
      *
-     * @return height in dots, rounded down to the nearest integer
+     * @return height in dots (rounded down, then minus 4 to reflect max allowed)
      *
      * @see PrintDensity
      * @see <a href="https://labelary.com/viewer.html">Labelary Online ZPL Viewer</a>

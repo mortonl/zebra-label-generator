@@ -41,10 +41,6 @@ class BarcodeCode128Test
 
     private static final String LONG_TEST_CONTENT = "123456789";
 
-    private static final String INVALID_LONG_CONTENT = "12345678901234567890";
-
-    private BarcodeCode128 classUnderTest;
-
     private static Stream<Arguments> validParametersForToZplString()
     {
         return Stream.of(
@@ -72,17 +68,6 @@ class BarcodeCode128Test
             Arguments.of("12345678901234567890", "UCC Case Mode cannot handle more than 19 digits"),
             Arguments.of(null, "Data cannot be null when using UCC Case Mode")
         );
-    }
-
-    @BeforeEach
-    void setUp()
-    {
-        classUnderTest = BarcodeCode128
-            .createCode128Barcode()
-            .withHeightMm(VALID_HEIGHT_MM)
-            .withOrientation(NORMAL)
-            .withPlainTextContent(TEST_CONTENT)
-            .build();
     }
 
     @Test

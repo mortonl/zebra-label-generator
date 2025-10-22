@@ -35,7 +35,7 @@ class ZebraLabelTest
 
     private static final String EXAMPLE_TEXT_CONTENT = "Example Text";
 
-    private static final String EXPECTED_NULL_ELEMENT_MESSAGE = "Cannot add null elements to Label";
+    private static final String EXPECTED_NULL_ELEMENT_MESSAGE = "Can't add null elements to Label";
 
     private static final double FIRST_X_POSITION = 1.25;
 

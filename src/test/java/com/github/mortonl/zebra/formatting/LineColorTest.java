@@ -27,14 +27,6 @@ class LineColorTest
 
     private static final int EXPECTED_ENUM_COUNT = 2;
 
-    private static LineColor classUnderTest;
-
-    @BeforeAll
-    static void setUp()
-    {
-        classUnderTest = BLACK; // Using BLACK as default for stateless enum testing
-    }
-
     @Test
     @DisplayName("getCode returns correct character codes")
     @Tag("enum-methods")

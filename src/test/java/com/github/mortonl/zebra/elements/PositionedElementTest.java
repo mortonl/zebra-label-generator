@@ -1,5 +1,11 @@
 package com.github.mortonl.zebra.elements;
 
+import com.github.mortonl.zebra.ZebraLabel;
+import com.github.mortonl.zebra.formatting.FontEncoding;
+import com.github.mortonl.zebra.formatting.OriginJustification;
+import com.github.mortonl.zebra.label_settings.InternationalCharacterSet;
+import com.github.mortonl.zebra.printer_configuration.LoadedMedia;
+import com.github.mortonl.zebra.printer_configuration.PrinterConfiguration;
 import lombok.Getter;
 import lombok.experimental.SuperBuilder;
 import org.junit.jupiter.api.BeforeEach;
@@ -39,6 +45,19 @@ class PositionedElementTest
 
     private TestPositionedElement classUnderTest;
 
+    private ZebraLabel testLabel;
+
+    private final PrinterConfiguration givenPrinterConfiguration = PrinterConfiguration
+        .createPrinterConfiguration()
+        .forDpi(DPI_203)
+        .forLoadedMedia(LoadedMedia.fromLabelSize(LABEL_4X6))
+        .build();
+
+    private final InternationalCharacterSet givenCharacterSet = InternationalCharacterSet
+        .createInternationalCharacterSet()
+        .withEncoding(FontEncoding.UTF_8)
+        .build();
+
     private static Stream<Arguments> validPositionsForValidateInContext()
     {
         return Stream.of(
@@ -64,6 +83,84 @@ class PositionedElementTest
             .createTestElement()
             .withPosition(VALID_X_POSITION, VALID_Y_POSITION)
             .build();
+
+        testLabel = ZebraLabel
+            .createLabel()
+            .forSize(LABEL_4X6)
+            .forPrinter(givenPrinterConfiguration)
+            .forInternationalCharacterSet(givenCharacterSet)
+            .build();
+    }
+
+    private static Stream<Arguments> edgePositionScenarios()
+    {
+        return Stream.of(
+            Arguments.of("Left only", TestPositionedElement
+                .createTestElement()
+                .onLeftEdge()
+                .withYAxisLocationMm(0.0), 0.0, 0.0, null, false, "^FO0,0"),
+            Arguments.of("Right only", TestPositionedElement
+                .createTestElement()
+                .onRightEdge()
+                .withYAxisLocationMm(0.0), LABEL_4X6.getWidthMm(), 0.0, OriginJustification.RIGHT, false, "^FO813,0,1"),
+            Arguments.of("Top only", TestPositionedElement
+                .createTestElement()
+                .onTopEdge()
+                .withXAxisLocationMm(0.0), 0.0, 0.0, null, false, "^FO0,0"),
+            Arguments.of("Bottom only", TestPositionedElement
+                .createTestElement()
+                .onBottomEdge()
+                .withXAxisLocationMm(0.0), 0.0, LABEL_4X6.getHeightMm(), null, true, "^FT0,1219"),
+            Arguments.of("Top & Left", TestPositionedElement
+                .createTestElement()
+                .onTopEdge()
+                .onLeftEdge(), 0.0, 0.0, null, false, "^FO0,0"),
+            Arguments.of("Top & Right", TestPositionedElement
+                .createTestElement()
+                .onTopEdge()
+                .onRightEdge(), LABEL_4X6.getWidthMm(), 0.0, OriginJustification.RIGHT, false, "^FO813,0,1"),
+            Arguments.of("Bottom & Left", TestPositionedElement
+                .createTestElement()
+                .onBottomEdge()
+                .onLeftEdge(), 0.0, LABEL_4X6.getHeightMm(), null, true, "^FT0,1219"),
+            Arguments.of("Bottom & Right", TestPositionedElement
+                .createTestElement()
+                .onBottomEdge()
+                .onRightEdge(), LABEL_4X6.getWidthMm(), LABEL_4X6.getHeightMm(), OriginJustification.RIGHT, true, "^FT813,1219,1"),
+            Arguments.of("With position only", TestPositionedElement
+                .createTestElement()
+                .withPosition(VALID_X_POSITION, VALID_Y_POSITION), VALID_X_POSITION, VALID_Y_POSITION, null, false, "^FO80,160")
+        );
+    }
+
+    @ParameterizedTest(name = "{0}")
+    @MethodSource("edgePositionScenarios")
+    @DisplayName("Given edge scenario, When resolved, Then position and flags and full zpl string are correct.")
+    @Tag("builder")
+    void Given_EdgeScenario_When_Resolved_Then_PositionAndFlagsAreCorrect(
+        String scenarioName,
+        TestPositionedElement.TestPositionedElementBuilderImpl builder,
+        double expectedX,
+        double expectedY,
+        OriginJustification expectedJustification,
+        boolean expectedTypeset,
+        String expectedZPL)
+    {
+        TestPositionedElement actualElement = builder.addToLabel(testLabel);
+        String actualZplString = actualElement.toZplString(DPI_203);
+
+        assertAll(
+            () -> assertEquals(expectedX, actualElement.getXAxisLocationMm(), scenarioName + " - X position"),
+            () -> assertEquals(expectedY, actualElement.getYAxisLocationMm(), scenarioName + " - Y position"),
+            () ->
+            {
+                if (expectedJustification != null) {
+                    assertEquals(expectedJustification, actualElement.getZOriginJustification(), scenarioName + " - Justification");
+                }
+            },
+            () -> assertEquals(expectedTypeset, actualElement.isTypeset(), scenarioName + " - Typeset"),
+            () -> assertEquals(expectedZPL, actualZplString, scenarioName + " - ZPL string")
+        );
     }
 
     @Test
@@ -138,7 +235,7 @@ class PositionedElementTest
     }
 
     @Test
-    @DisplayName("validateInContext throws exception when X-axis exceeds maximum")
+    @DisplayName("validateInContext throws an exception when X-axis exceeds maximum")
     @Tag("validation")
     void Given_XAxisExceedsMax_When_ValidateInContext_Then_ThrowsException()
     {
@@ -160,16 +257,20 @@ class PositionedElementTest
     }
 
     @Test
-    @DisplayName("withPosition sets both axis locations correctly")
+    @DisplayName("onLeftEdge with X offset resolves correctly")
     @Tag("builder")
-    void Given_PositionValues_When_WithPosition_Then_SetsBothAxes()
+    void Given_OnLeftEdgeWithOffset_When_Resolved_Then_XIsOffset()
     {
-        // Given & When (classUnderTest is built with position values)
+        double offset = 5.0;
+        TestPositionedElement element = TestPositionedElement
+            .createTestElement()
+            .onLeftEdge()
+            .withXOffset(offset)
+            .withYAxisLocationMm(VALID_Y_POSITION)
+            .addToLabel(testLabel);
 
-        // Then
         assertAll(
-            () -> assertEquals(VALID_X_POSITION, classUnderTest.getXAxisLocationMm()),
-            () -> assertEquals(VALID_Y_POSITION, classUnderTest.getYAxisLocationMm())
+            () -> assertEquals(offset, element.getXAxisLocationMm())
         );
     }
 

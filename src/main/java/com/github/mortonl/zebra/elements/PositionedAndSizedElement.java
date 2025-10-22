@@ -1,6 +1,5 @@
 package com.github.mortonl.zebra.elements;
 
-import com.github.mortonl.zebra.ZebraLabel;
 import com.github.mortonl.zebra.elements.fonts.DefaultFont;
 import com.github.mortonl.zebra.label_settings.LabelSize;
 import com.github.mortonl.zebra.printer_configuration.PrintDensity;

@@ -64,7 +64,6 @@ This project is currently under active development. While the core functionality
 - Explicit mode as an alternative to using defaults?
     - This would no longer print empty parts of the Zebra command and instead use the default values for that command
       where possible or the latest relevant default set?
-- Image helpers to convert to ASCII hex and binary?
 - Template vs complete ZPL generation?
     - Currently designed around passing actual values into elements like text and barcodes etc. we could allow field
       parameters to be provided separately and this would allow the template to be permanently stored on the printer?
@@ -81,8 +80,33 @@ This project is currently under active development. While the core functionality
   - Validate new lines are only present in element content that supports it
     - Text Block
     - PDF 414 Barcode
-  - Check for characters not in the specified encoding
+  - Check for characters not in the specified encoding ASCII page 1332
 - Blank line element
+- Table
+  - Rows
+  - Columns
+  - Cells
+  - Alignment
+  - Borders
+  - Padding
+  - Spacing
+  - Row/Column Spacing
+  - Row/Column Height
+  - Row/Column Width
+
+- Dynamic Positioning
+  - Offset
+  - Margins
+    - use ^FT for aligning based on bottom instead of ^FO for top
+    - pages 1370 – 1373
+    - vertical and reverse field printing
+
+- Font size validation – page 1336 – 1341
+- Font size from point size helpers
+- underlined text?
+
+- Create Templates rather than format each time
+- Store fonts and images on the printer
 
 ## Getting Started
 

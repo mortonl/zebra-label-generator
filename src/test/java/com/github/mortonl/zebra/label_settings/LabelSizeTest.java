@@ -20,6 +20,7 @@ import static com.github.mortonl.zebra.printer_configuration.PrintDensity.DPI_30
 import static com.github.mortonl.zebra.printer_configuration.PrintDensity.DPI_600;
 import static org.junit.jupiter.api.Assertions.assertAll;
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 @DisplayName("LabelSize dimension calculations and ZPL generation")
@@ -219,7 +220,7 @@ class LabelSizeTest
         boolean actualResult = classUnderTest.matches(givenWidth, givenHeight, givenTolerance);
 
         // Then
-        assertEquals(false, actualResult, "Should not match when dimensions are outside tolerance");
+        assertFalse(actualResult, "Should not match when dimensions are outside tolerance");
     }
 
     @Test

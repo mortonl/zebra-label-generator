@@ -121,7 +121,7 @@ public class ZebraLabel
         }
         if (!printer.canPrintLabel(size)) {
             throw new IllegalArgumentException(
-                String.format("Label size %.1fx%.1fmm does not fit on the loaded media",
+                String.format("Label size %.1fx%.1fmm doesn't fit on the loaded media.",
                     size.getWidthMm(),
                     size.getHeightMm()));
         }
@@ -155,14 +155,13 @@ public class ZebraLabel
     public void validateAndAddElement(LabelElement element)
     {
         if (element == null) {
-            throw new IllegalArgumentException("Cannot add null elements to Label");
+            throw new IllegalArgumentException("Can't add null elements to Label");
         }
         element.validateInContext(size, printer.getDpi(), currentDefaultFont);
 
         if (element instanceof DefaultFont) {
             currentDefaultFont = (DefaultFont) element;
-        } else if (element instanceof Text) {
-            Text textElement = (Text) element;
+        } else if (element instanceof final Text textElement) {
             if (textElement.getFont() == null && currentDefaultFont == null) {
                 throw new IllegalStateException(
                     "Text element must either specify a font or have a default font set on the label"

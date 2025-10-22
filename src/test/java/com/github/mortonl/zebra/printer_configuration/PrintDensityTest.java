@@ -41,14 +41,6 @@ class PrintDensityTest
 
     private static final String EXPECTED_INVALID_DOTS_MM_MESSAGE = "No PrintDensity found for 10 dots per millimetre";
 
-    private static PrintDensity classUnderTest;
-
-    @BeforeAll
-    static void setUp()
-    {
-        classUnderTest = DPI_203; // Using DPI_203 as default for stateless enum testing
-    }
-
     private static Stream<Arguments> conversionDataForToDots()
     {
         return Stream.of(

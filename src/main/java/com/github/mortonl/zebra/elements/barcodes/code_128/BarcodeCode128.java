@@ -14,6 +14,8 @@ import org.jetbrains.annotations.Nullable;
 
 import static com.github.mortonl.zebra.ZplCommand.BARCODE_CODE_128;
 import static com.github.mortonl.zebra.ZplCommand.generateZplIICommand;
+import static com.github.mortonl.zebra.printer_configuration.PrintDensity.getMaxDotsPerMillimetre;
+import static com.github.mortonl.zebra.printer_configuration.PrintDensity.getMinDotsPerMillimetre;
 
 /**
  * Represents a Code 128 barcode element for Zebra label generation.
@@ -229,8 +231,8 @@ public class BarcodeCode128 extends Barcode
     @Override
     public void validateInContext(LabelSize size, PrintDensity dpi, final DefaultFont defaultFont)
     {
-        double minValidHeightMm = 1.0 / dpi.getMaxDotsPerMillimetre();
-        double maxValidHeightMm = 32000.0 / dpi.getMinDotsPerMillimetre();
+        double minValidHeightMm = 1.0 / getMaxDotsPerMillimetre();
+        double maxValidHeightMm = 32000.0 / getMinDotsPerMillimetre();
 
         Validator.validateRange(heightMm,
             minValidHeightMm,
@@ -244,10 +246,10 @@ public class BarcodeCode128 extends Barcode
             }
 
             // Check digit count for UCC Case Mode
-            long digitCount = String.valueOf(content.getData())
-                                    .chars()
-                                    .filter(Character::isDigit)
-                                    .count();
+            long digitCount = content.getData()
+                                     .chars()
+                                     .filter(Character::isDigit)
+                                     .count();
 
             if (digitCount > 19) {
                 throw new IllegalStateException("UCC Case Mode cannot handle more than 19 digits");

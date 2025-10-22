@@ -290,7 +290,7 @@ class ImageElementIntegrationTest
         return sb.toString();
     }
 
-    private ImageElement createImageElementFromTestCase(final TestCase testCase) throws IOException
+    private ImageElement createImageElementFromTestCase(final TestCase testCase)
     {
         BufferedImage source = IMAGE_CACHE.computeIfAbsent(testCase.sourceImageResource, key ->
         {
@@ -328,13 +328,11 @@ class ImageElementIntegrationTest
             .forLoadedMedia(LOADED_MEDIA_4X6)
             .build();
 
-        ZebraLabel label = ZebraLabel
+        return ZebraLabel
             .createLabel()
             .forSize(LabelSize.LABEL_4X6)
             .forPrinter(printer)
             .build();
-
-        return label;
     }
 
     private ExtractedCommands extractCommandsFromZpl(String zpl)
