@@ -49,10 +49,12 @@ jobs:
           # git_push_gpgsign: true
 
       # https://github.com/RichardInnocent/semantic-versioning-maven
-      # Doesn't sign the commits, so they're rejected by GitHub
       - name: Increment version
         id: increment-version
         uses: RichardInnocent/semantic-versioning-maven@v0.1.0
+        with:
+          git-email: ${{ secrets.GPG_EMAIL }}
+          git-username: ${{ secrets.GPG_USERNAME }}
 
       - name: Print if version changed
         if: steps.increment-version.outputs.previous-version != steps.increment-version.outputs.new-version
