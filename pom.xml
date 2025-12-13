@@ -274,6 +274,44 @@
                     </execution>
                 </executions>
             </plugin>
+            <plugin>
+                <groupId>org.pitest</groupId>
+                <artifactId>pitest-maven</artifactId>
+                <version>1.16.1</version>
+                <dependencies>
+                    <dependency>
+                        <groupId>org.pitest</groupId>
+                        <artifactId>pitest-junit5-plugin</artifactId>
+                        <version>1.2.1</version>
+                    </dependency>
+                    <dependency>
+                        <groupId>org.junit.platform</groupId>
+                        <artifactId>junit-platform-launcher</artifactId>
+                        <version>1.10.0</version>
+                    </dependency>
+                </dependencies>
+                <configuration>
+                    <threads>4</threads>
+                    <historyInputFile>${project.build.directory}/pit-history.txt</historyInputFile>
+                    <historyOutputFile>${project.build.directory}/pit-history.txt</historyOutputFile>
+                    <targetClasses>
+                        <param>com.github.mortonl.zebra.*</param>
+                    </targetClasses>
+                    <targetTests>
+                        <param>com.github.mortonl.zebra.*</param>
+                    </targetTests>
+                    <outputFormats>
+                        <outputFormat>XML</outputFormat>
+                        <outputFormat>HTML</outputFormat>
+                    </outputFormats>
+                    <mutationThreshold>60</mutationThreshold>
+                    <verbose>true</verbose>
+                    <jvmArgs>
+                        <jvmArg>--add-opens=java.base/java.lang=ALL-UNNAMED</jvmArg>
+                        <jvmArg>--add-opens=java.base/java.util=ALL-UNNAMED</jvmArg>
+                    </jvmArgs>
+                </configuration>
+            </plugin>
         </plugins>
     </build>
 </project>

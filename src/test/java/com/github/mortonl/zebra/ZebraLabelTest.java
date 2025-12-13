@@ -88,7 +88,9 @@ class ZebraLabelTest
             () -> assertTrue(actualZpl.contains("^PW808"),
                 String.format("ZPL should contain print width command%nActual ZPL: %s", actualZpl)),
             () -> assertTrue(actualZpl.contains("^LL1215"),
-                String.format("ZPL should contain label length command%nActual ZPL: %s", actualZpl))
+                String.format("ZPL should contain label length command%nActual ZPL: %s", actualZpl)),
+            () -> assertTrue(actualZpl.contains("^CF0,93,70"),
+                String.format("ZPL should contain default font command%nActual ZPL: %s", actualZpl))
         );
     }
 
