@@ -1,0 +1,31 @@
+name: Mutation Testing
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  mutation-testing:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Check out code
+        uses: actions/checkout@v3
+
+      - name: Set up Java
+        uses: actions/setup-java@v3
+        with:
+          java-version: '21'
+          distribution: 'temurin'
+
+      - name: Cache Pitest history
+        uses: actions/cache@v3
+        with:
+          path: target/pit-history.txt
+          key: ${{ runner.os }}-pitest-history-${{ github.sha }}
+          restore-keys: |
+            ${{ runner.os }}-pitest-history-
+
+      - name: Run mutation testing
+        run: mvn org.pitest:pitest-maven:mutationCoverage
